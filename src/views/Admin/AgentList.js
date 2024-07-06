@@ -253,9 +253,10 @@ const AgentList = () => {
                         label="First Name"
                         type="text"
                         fullWidth
-                        variant="standard"
+                        variant="outlined"
                         value={newAgent.first_name}
                         onChange={handleChange}
+                        sx={{ mb: 2 }}
                     />
                     <TextField
                         margin="dense"
@@ -263,9 +264,10 @@ const AgentList = () => {
                         label="Last Name"
                         type="text"
                         fullWidth
-                        variant="standard"
+                        variant="outlined"
                         value={newAgent.last_name}
                         onChange={handleChange}
+                        sx={{ mb: 2 }}
                     />
                     <TextField
                         margin="dense"
@@ -273,9 +275,10 @@ const AgentList = () => {
                         label="Email"
                         type="email"
                         fullWidth
-                        variant="standard"
+                        variant="outlined"
                         value={newAgent.email}
                         onChange={handleChange}
+                        sx={{ mb: 2 }}
                     />
                     <TextField
                         margin="dense"
@@ -283,9 +286,10 @@ const AgentList = () => {
                         label="Password"
                         type="password"
                         fullWidth
-                        variant="standard"
+                        variant="outlined"
                         value={newAgent.password}
                         onChange={handleChange}
+                        sx={{ mb: 2 }}
                     />
                     <TextField
                         margin="dense"
@@ -293,7 +297,7 @@ const AgentList = () => {
                         label="Phone"
                         type="text"
                         fullWidth
-                        variant="standard"
+                        variant="outlined"
                         value={newAgent.phone}
                         onChange={handleChange}
                     />
