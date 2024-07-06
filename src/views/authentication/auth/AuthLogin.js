@@ -16,7 +16,7 @@ import axios from 'axios';
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
 
 const AuthLogin = ({ title, subtitle, subtext }) => {
-    const [formData, setFormData] = useState({ username: '', password: '' });
+    const [formData, setFormData] = useState({ email: '', password: '' });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
@@ -57,14 +57,14 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             <form onSubmit={handleSubmit}>
                 <Stack spacing={2}>
                     <Box>
-                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor='username' mb="5px">
-                            Username
+                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor='email' mb="5px">
+                            Email
                         </Typography>
                         <CustomTextField
-                            id="username"
+                            id="email"
                             variant="outlined"
                             fullWidth
-                            value={formData.username}
+                            value={formData.email}
                             onChange={handleInputChange}
                             required
                         />
