@@ -310,7 +310,7 @@ const AgentList = () => {
             </Box>
 
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle sx={{ marginTop: '15px', marginBottom: '10px', textAlign: 'center', fontWeight: '500', fontSize: '19px' }}>
+                <DialogTitle sx={{ marginTop: '15px', marginBottom: '10px', textAlign: 'center', fontWeight: 'bold', fontSize: '19px' }}>
                     Add New Agent
                 </DialogTitle>
 
