@@ -82,8 +82,15 @@ const AgentList = () => {
 
     const handleSubmit = async () => {
         try {
-            const response = await axios.post('http://localhost:9999/api/register', newAgent);
+            const response = await axios.post('http://localhost:8999/form/createAgent', newAgent);
             setAgents([...agents, response.data.data]);  // Adjust based on actual response structure
+            setNewAgent({
+                first_name: '',
+                last_name: '',
+                email: '',
+                password: '',
+                phone: '',
+            }); // Reset form data
             handleClose();
             toast.success('New agent added successfully!');
         } catch (err) {
