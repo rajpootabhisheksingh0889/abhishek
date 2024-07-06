@@ -34,6 +34,13 @@ const AgentList = () => {
         password: '',
         phone: '',
     });
+    const [formErrors, setFormErrors] = useState({
+        first_name: '',
+        last_name: '',
+        email: '',
+        password: '',
+        phone: '',
+    });
 
     useEffect(() => {
         const fetchAgents = async () => {
@@ -73,14 +80,70 @@ const AgentList = () => {
         }
     };
 
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleOpen = () => {
+        setOpen(true);
+        setFormErrors({
+            first_name: '',
+            last_name: '',
+            email: '',
+            password: '',
+            phone: '',
+        }); // Clear form validation errors on open
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+        setNewAgent({
+            first_name: '',
+            last_name: '',
+            email: '',
+            password: '',
+            phone: '',
+        }); // Reset form data
+    };
 
     const handleChange = (e) => {
         setNewAgent({ ...newAgent, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async () => {
+        // Validate fields before submitting
+        let isValid = true;
+        const errors = {
+            first_name: '',
+            last_name: '',
+            email: '',
+            password: '',
+            phone: '',
+        };
+
+        // Check required fields
+        if (!newAgent.first_name.trim()) {
+            errors.first_name = 'First Name is required';
+            isValid = false;
+        }
+        if (!newAgent.last_name.trim()) {
+            errors.last_name = 'Last Name is required';
+            isValid = false;
+        }
+        if (!newAgent.email.trim()) {
+            errors.email = 'Email is required';
+            isValid = false;
+        }
+        if (!newAgent.password.trim()) {
+            errors.password = 'Password is required';
+            isValid = false;
+        }
+        if (!newAgent.phone.trim()) {
+            errors.phone = 'Phone is required';
+            isValid = false;
+        }
+
+        if (!isValid) {
+            setFormErrors(errors);
+            return; // Exit if any field is empty
+        }
+
         try {
             const response = await axios.post('http://localhost:9999/api/createAgent', newAgent);
             setAgents([...agents, response.data.data]);  // Adjust based on actual response structure
@@ -244,7 +307,7 @@ const AgentList = () => {
             </Box>
 
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Add New Agent</DialogTitle>
+                <DialogTitle sx={{ marginTop: '4px', textAlign: 'center' }}>Add New Agent</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -255,7 +318,10 @@ const AgentList = () => {
                         fullWidth
                         variant="outlined"
                         value={newAgent.first_name}
+                        autoComplete="off"
                         onChange={handleChange}
+                        error={!!formErrors.first_name}
+                        helperText={formErrors.first_name}
                         sx={{ mb: 2 }}
                     />
                     <TextField
@@ -267,6 +333,9 @@ const AgentList = () => {
                         variant="outlined"
                         value={newAgent.last_name}
                         onChange={handleChange}
+                        autoComplete="off"
+                        error={!!formErrors.last_name}
+                        helperText={formErrors.last_name}
                         sx={{ mb: 2 }}
                     />
                     <TextField
@@ -275,9 +344,12 @@ const AgentList = () => {
                         label="Email"
                         type="email"
                         fullWidth
+                        autoComplete="off"
                         variant="outlined"
                         value={newAgent.email}
                         onChange={handleChange}
+                        error={!!formErrors.email}
+                        helperText={formErrors.email}
                         sx={{ mb: 2 }}
                     />
                     <TextField
@@ -289,24 +361,30 @@ const AgentList = () => {
                         variant="outlined"
                         value={newAgent.password}
                         onChange={handleChange}
+                        error={!!formErrors.password}
+                        helperText={formErrors.password}
                         sx={{ mb: 2 }}
+                        autoComplete="off"
                     />
                     <TextField
                         margin="dense"
                         name="phone"
                         label="Phone"
                         type="text"
+                        autoComplete="off"
                         fullWidth
                         variant="outlined"
                         value={newAgent.phone}
                         onChange={handleChange}
+                        error={!!formErrors.phone}
+                        helperText={formErrors.phone}
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} color="primary">
+                    <Button variant="outlined" color="primary" onClick={handleClose}>
                         Cancel
                     </Button>
-                    <Button onClick={handleSubmit} color="primary">
+                    <Button variant="contained" onClick={handleSubmit} color="primary">
                         Save
                     </Button>
                 </DialogActions>
