@@ -9,7 +9,14 @@ import {
     TableRow,
     Chip,
     Skeleton,
-    Switch
+    Switch,
+    Button,
+    Modal,
+    TextField,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
 } from '@mui/material';
 import DashboardCard from 'src/components/shared/DashboardCard';
 import { ToastContainer, toast } from 'react-toastify';
@@ -19,6 +26,14 @@ const AgentList = () => {
     const [agents, setAgents] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [open, setOpen] = useState(false);
+    const [newAgent, setNewAgent] = useState({
+        first_name: '',
+        last_name: '',
+        email: '',
+        password: '',
+        phone: '',
+    });
 
     useEffect(() => {
         const fetchAgents = async () => {
@@ -58,6 +73,25 @@ const AgentList = () => {
         }
     };
 
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    const handleChange = (e) => {
+        setNewAgent({ ...newAgent, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async () => {
+        try {
+            const response = await axios.post('http://localhost:9999/api/register', newAgent);
+            setAgents([...agents, response.data.data]);  // Adjust based on actual response structure
+            handleClose();
+            toast.success('New agent added successfully!');
+        } catch (err) {
+            console.error('Error adding new agent:', err);
+            toast.error('Failed to add new agent.');
+        }
+    };
+
     if (error) {
         return <Typography>Error: {error.message}</Typography>;
     }
@@ -70,6 +104,11 @@ const AgentList = () => {
     return (
         <DashboardCard title="Agent List">
             <ToastContainer /> {/* ToastContainer to display notifications */}
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                <Button variant="contained" color="primary" onClick={handleOpen}>
+                    Add Agent
+                </Button>
+            </Box>
             <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
                 <Table
                     aria-label="simple table"
@@ -196,6 +235,71 @@ const AgentList = () => {
                     </TableBody>
                 </Table>
             </Box>
+
+            <Dialog open={open} onClose={handleClose}>
+                <DialogTitle>Add New Agent</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        name="first_name"
+                        label="First Name"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        value={newAgent.first_name}
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        margin="dense"
+                        name="last_name"
+                        label="Last Name"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        value={newAgent.last_name}
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        margin="dense"
+                        name="email"
+                        label="Email"
+                        type="email"
+                        fullWidth
+                        variant="standard"
+                        value={newAgent.email}
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        margin="dense"
+                        name="password"
+                        label="Password"
+                        type="password"
+                        fullWidth
+                        variant="standard"
+                        value={newAgent.password}
+                        onChange={handleChange}
+                    />
+                    <TextField
+                        margin="dense"
+                        name="phone"
+                        label="Phone"
+                        type="text"
+                        fullWidth
+                        variant="standard"
+                        value={newAgent.phone}
+                        onChange={handleChange}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Cancel
+                    </Button>
+                    <Button onClick={handleSubmit} color="primary">
+                        Save
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </DashboardCard>
     );
 };
