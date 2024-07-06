@@ -82,7 +82,7 @@ const AgentList = () => {
 
     const handleSubmit = async () => {
         try {
-            const response = await axios.post('http://localhost:9999/form/createAgent', newAgent);
+            const response = await axios.post('http://localhost:9999/api/createAgent', newAgent);
             setAgents([...agents, response.data.data]);  // Adjust based on actual response structure
             setNewAgent({
                 first_name: '',
