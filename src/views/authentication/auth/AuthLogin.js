@@ -58,7 +58,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                 <Stack spacing={2}>
                     <Box>
                         <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor='username' mb="5px">
-                            Username
+                            Email
                         </Typography>
                         <CustomTextField
                             id="email"
