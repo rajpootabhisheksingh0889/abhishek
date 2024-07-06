@@ -172,9 +172,12 @@ const AgentList = () => {
     }
 
     return (
-        <DashboardCard title="Agent List">
+        <DashboardCard>
             <ToastContainer /> {/* ToastContainer to display notifications */}
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h5" component="h2" sx={{ flex: 1 }}>
+                    Agent List
+                </Typography>
                 <Button variant="contained" color="primary" onClick={handleOpen}>
                     Add Agent
                 </Button>
