@@ -7,12 +7,19 @@ import {
     TableCell,
     TableHead,
     TableRow,
-    Chip,
     Skeleton,
     IconButton,
-    Popover
+    Popover,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Button
 } from '@mui/material';
 import { Edit, Delete, Visibility } from '@mui/icons-material';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import DashboardCard from 'src/components/shared/DashboardCard';
 
 const ProductList = () => {
@@ -21,6 +28,8 @@ const ProductList = () => {
     const [error, setError] = useState(null);
     const [anchorEl, setAnchorEl] = useState(null);
     const [popoverContent, setPopoverContent] = useState("");
+    const [openDialog, setOpenDialog] = useState(false);
+    const [productToDelete, setProductToDelete] = useState(null);
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -48,6 +57,22 @@ const ProductList = () => {
         setPopoverContent("");
     };
 
+    const handleDelete = (product) => {
+        setProductToDelete(product);
+        setOpenDialog(true);
+    };
+
+    const confirmDelete = async () => {
+        setOpenDialog(false);
+        try {
+            await axios.delete(`http://localhost:9999/api/delete_product/${productToDelete.id}`);
+            setProducts(products.filter((p) => p.id !== productToDelete.id));
+            toast.success('Product deleted successfully');
+        } catch (error) {
+            toast.error('Failed to delete product');
+        }
+    };
+
     const open = Boolean(anchorEl);
 
     if (error) {
@@ -61,6 +86,7 @@ const ProductList = () => {
 
     return (
         <DashboardCard title="Product List">
+            <ToastContainer />
             <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
                 <Table
                     aria-label="simple table"
@@ -172,6 +198,7 @@ const ProductList = () => {
                                             aria-haspopup="true"
                                             onMouseEnter={(event) => handlePopoverOpen(event, 'Delete')}
                                             onMouseLeave={handlePopoverClose}
+                                            onClick={() => handleDelete(product)}
                                         >
                                             <Delete />
                                         </IconButton>
@@ -212,6 +239,28 @@ const ProductList = () => {
                     </TableBody>
                 </Table>
             </Box>
+
+            <Dialog
+                open={openDialog}
+                onClose={() => setOpenDialog(false)}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Confirm Deletion"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Are you sure you want to delete the product "{productToDelete?.name}"?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+                    <Button onClick={confirmDelete} color="primary" autoFocus>
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </DashboardCard>
     );
 };
