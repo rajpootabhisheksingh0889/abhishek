@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-    Typography, Box,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
-    Chip,
-    Skeleton
+    Typography, Box, TextField,
+    Table, TableBody, TableCell, TableHead, TableRow, Chip, Skeleton
 } from '@mui/material';
 import DashboardCard from 'src/components/shared/DashboardCard';
 
@@ -16,6 +10,7 @@ const CustomerList = () => {
     const [customers, setCustomers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         const fetchCustomers = async () => {
@@ -33,6 +28,12 @@ const CustomerList = () => {
         fetchCustomers();
     }, []);
 
+    const filteredCustomers = customers.filter(customer =>
+        customer.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        customer.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     if (error) {
         return <Typography>Error: {error.message}</Typography>;
     }
@@ -43,7 +44,21 @@ const CustomerList = () => {
     }
 
     return (
-        <DashboardCard title="Customer List">
+        <DashboardCard>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Typography variant="h3" component="h2" sx={{ flex: 1 }}>
+                Customer List
+            </Typography>
+           
+                <TextField
+                    label="Search customers"
+                    variant="outlined"
+                    sx={{ width: 300 }}
+                    margin="normal"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                </Box>
             <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
                 <Table
                     aria-label="simple table"
@@ -103,7 +118,7 @@ const CustomerList = () => {
                                 </TableRow>
                             ))
                         ) : (
-                            customers.map((customer) => (
+                            filteredCustomers.map((customer) => (
                                 <TableRow key={customer.id}>
                                     <TableCell>
                                         <Typography

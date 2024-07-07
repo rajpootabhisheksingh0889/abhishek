@@ -1,22 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-    Typography, Box,
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableRow,
-    Chip,
-    Skeleton,
-    Switch,
-    Button,
-    Modal,
-    TextField,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
+    Typography, Box, TextField,
+    Table, TableBody, TableCell, TableHead, TableRow, Chip, Skeleton, Switch, Button,
+    Dialog, DialogTitle, DialogContent, DialogActions,
 } from '@mui/material';
 import DashboardCard from 'src/components/shared/DashboardCard';
 import { ToastContainer, toast } from 'react-toastify';
@@ -27,6 +14,7 @@ const AgentList = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [open, setOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
     const [newAgent, setNewAgent] = useState({
         first_name: '',
         last_name: '',
@@ -162,6 +150,13 @@ const AgentList = () => {
         }
     };
 
+    const filteredAgents = agents.filter(agent =>
+        agent.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        agent.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        agent.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        agent.phone.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     if (error) {
         return <Typography>Error: {error.message}</Typography>;
     }
@@ -174,14 +169,31 @@ const AgentList = () => {
     return (
         <DashboardCard>
             <ToastContainer /> {/* ToastContainer to display notifications */}
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h5" component="h2" sx={{ flex: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h3" component="h2" sx={{ flex: 1 }}>
                     Agent List
                 </Typography>
-                <Button variant="contained" color="primary" onClick={handleOpen}>
-                    Add Agent
-                </Button>
+
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleOpen}
+                        sx={{ height: '100%', minWidth: '100px' }} // Adjust height and width as needed
+                    >
+                        Add Agent
+                    </Button>
+                    <TextField
+                        label="Search Agents"
+                        variant="outlined"
+                        sx={{ height: '100%', width: 300 }} // Adjust width as needed
+                        margin="normal"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </Box>
             </Box>
+
             <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
                 <Table
                     aria-label="simple table"
@@ -249,7 +261,7 @@ const AgentList = () => {
                                 </TableRow>
                             ))
                         ) : (
-                            agents.map((agent) => (
+                            filteredAgents.map((agent) => (
                                 <TableRow key={agent.id}>
                                     <TableCell>
                                         <Typography
