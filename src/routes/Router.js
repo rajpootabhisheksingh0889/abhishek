@@ -45,6 +45,7 @@ const Router = [
       { path: '/productlist', exact: true, element: <ProductList /> },
       { path: '/recordinglist', exact: true, element: <RecordingList /> },
       { path: '/ordermangement', exact: true, element: <OrderList /> },
+      
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },

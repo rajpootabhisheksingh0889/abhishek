@@ -36,7 +36,14 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             const { user_type, accessToken } = response.data;
             localStorage.setItem('user_type', user_type);
             localStorage.setItem('accessToken', accessToken);
-            navigate('/dashboard'); // Navigate to dashboard on successful login
+
+            if (user_type === 'AD') {
+                navigate('/dashboard');
+            } else if (user_type === 'CU') {
+                navigate('/customer');
+            } else if (user_type === 'AJ') {
+                navigate('/agent');
+            }
         } catch (error) {
             setError('Login failed. Please check your credentials.');
         } finally {
@@ -75,7 +82,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                         </Typography>
                         <CustomTextField
                             id="password"
-                            type="password"
+                            type="text"
                             variant="outlined"
                             fullWidth
                             value={formData.password}
