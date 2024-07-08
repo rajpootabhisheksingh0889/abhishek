@@ -8,6 +8,7 @@ import {
 import DashboardCard from 'src/components/shared/DashboardCard';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import NoData from "src/assets/images/products/NoData.jpg";
 
 const AgentList = () => {
     const [agents, setAgents] = useState([]);
@@ -183,14 +184,14 @@ const AgentList = () => {
                     >
                         Add Agent
                     </Button>
-                    <TextField
+                    {/* <TextField
                         label="Search Agents"
                         variant="outlined"
                         sx={{ height: '100%', width: 300 }} // Adjust width as needed
                         margin="normal"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+                    /> */}
                 </Box>
             </Box>
 
@@ -204,32 +205,32 @@ const AgentList = () => {
                 >
                     <TableHead>
                         <TableRow>
-                            <TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Id
                                 </Typography>
                             </TableCell>
-                            <TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Name
                                 </Typography>
                             </TableCell>
-                            <TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Email
                                 </Typography>
                             </TableCell>
-                            <TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Phone
                                 </Typography>
                             </TableCell>
-                            <TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Status
                                 </Typography>
                             </TableCell>
-                            <TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Actions
                                 </Typography>
@@ -262,7 +263,7 @@ const AgentList = () => {
                             ))
                         ) : (
                             filteredAgents.map((agent) => (
-                                <TableRow key={agent.id}>
+                                <TableRow key={agent.id} sx={{ '&:hover': { backgroundColor: '#f0f0f0' } }}>
                                     <TableCell>
                                         <Typography
                                             sx={{
@@ -319,6 +320,11 @@ const AgentList = () => {
                         )}
                     </TableBody>
                 </Table>
+                {agents.length === 0 && !loading && (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '300px' }}>
+                        <img src={NoData} alt="No data available" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+                    </Box>
+                )}
             </Box>
 
             <Dialog open={open} onClose={handleClose}>

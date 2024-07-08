@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+
 import {
   Avatar,
   Box,
@@ -8,6 +9,7 @@ import {
   IconButton,
   MenuItem,
   ListItemIcon,
+  ListItem,
   ListItemText
 } from '@mui/material';
 
@@ -22,11 +24,6 @@ const Profile = () => {
   };
   const handleClose2 = () => {
     setAnchorEl2(null);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem('user_type');
-    localStorage.removeItem('accessToken');
   };
 
   return (
@@ -74,29 +71,24 @@ const Profile = () => {
           <ListItemIcon>
             <IconUser width={20} />
           </ListItemIcon>
-          <ListItemText>My Profile</ListItemText>
+          <ListItem button component={Link} to="/profile">
+            <ListItemText primary="My Profile" />
+          </ListItem>
         </MenuItem>
-        <MenuItem>
+        {/* <MenuItem>
           <ListItemIcon>
             <IconMail width={20} />
           </ListItemIcon>
           <ListItemText>My Account</ListItemText>
-        </MenuItem>
-        <MenuItem>
+        </MenuItem> */}
+        {/* <MenuItem>
           <ListItemIcon>
             <IconListCheck width={20} />
           </ListItemIcon>
           <ListItemText>My Tasks</ListItemText>
-        </MenuItem>
+        </MenuItem> */}
         <Box mt={1} py={1} px={2}>
-          <Button
-            to="/auth/login"
-            variant="outlined"
-            color="primary"
-            component={Link}
-            fullWidth
-            onClick={handleLogout}
-          >
+          <Button to="/auth/login" variant="outlined" color="primary" component={Link} fullWidth>
             Logout
           </Button>
         </Box>

@@ -5,6 +5,7 @@ import {
     Table, TableBody, TableCell, TableHead, TableRow, Chip, Skeleton
 } from '@mui/material';
 import DashboardCard from 'src/components/shared/DashboardCard';
+import NoData from "src/assets/images/products/NoData.jpg";// Replace with your actual path
 
 const CustomerList = () => {
     const [customers, setCustomers] = useState([]);
@@ -45,20 +46,19 @@ const CustomerList = () => {
 
     return (
         <DashboardCard>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-            <Typography variant="h3" component="h2" sx={{ flex: 1 }}>
-                Customer List
-            </Typography>
-           
-                <TextField
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h3" component="h2">
+                    Customer List
+                </Typography>
+                {/* <TextField
                     label="Search customers"
                     variant="outlined"
-                    sx={{ width: 300 }}
+                    sx={{ width: '100%', maxWidth: 300, mt: 2 }}
                     margin="normal"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                </Box>
+                /> */}
+            </Box>
             <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
                 <Table
                     aria-label="simple table"
@@ -69,27 +69,27 @@ const CustomerList = () => {
                 >
                     <TableHead>
                         <TableRow>
-                            <TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5', }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Id
                                 </Typography>
                             </TableCell>
-                            <TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5', }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Name
                                 </Typography>
                             </TableCell>
-                            <TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5', }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Email
                                 </Typography>
                             </TableCell>
-                            <TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5', }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Phone
                                 </Typography>
                             </TableCell>
-                            <TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5', }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Status
                                 </Typography>
@@ -119,13 +119,12 @@ const CustomerList = () => {
                             ))
                         ) : (
                             filteredCustomers.map((customer) => (
-                                <TableRow key={customer.id}>
+                                <TableRow key={customer.id} sx={{ '&:hover': { backgroundColor: '#f0f0f0' } }}>
                                     <TableCell>
-                                        <Typography
-                                            sx={{
-                                                fontSize: "15px",
-                                                fontWeight: "500",
-                                            }}
+                                        <Typography sx={{
+                                            fontSize: "15px",
+                                            fontWeight: "500",
+                                        }}
                                         >
                                             {customer.id}
                                         </Typography>
@@ -136,12 +135,12 @@ const CustomerList = () => {
                                         </Typography>
                                     </TableCell>
                                     <TableCell>
-                                        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+                                        <Typography color="textSecondary">
                                             {customer.email}
                                         </Typography>
                                     </TableCell>
                                     <TableCell>
-                                        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+                                        <Typography color="textSecondary">
                                             {customer.phone}
                                         </Typography>
                                     </TableCell>
@@ -161,6 +160,11 @@ const CustomerList = () => {
                         )}
                     </TableBody>
                 </Table>
+                {customers.length === 0 && !loading && (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '300px' }}>
+                        <img src={NoData} alt="No data available" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+                    </Box>
+                )}
             </Box>
         </DashboardCard>
     );

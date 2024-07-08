@@ -24,6 +24,7 @@ const CouponList = Loadable(lazy(() => import('../views/Admin/CouponList')));
 const ProductList = Loadable(lazy(() => import('../views/Admin/ProductList')));
 const RecordingList = Loadable(lazy(() => import('../views/Admin/RecordingList')));
 const OrderList = Loadable(lazy(() => import('../views/Admin/OrderList')));
+const MyProfile = Loadable(lazy(() => import('../views/Admin/MyProfile')));
 
 
 const Router = [
@@ -45,7 +46,7 @@ const Router = [
       { path: '/productlist', exact: true, element: <ProductList /> },
       { path: '/recordinglist', exact: true, element: <RecordingList /> },
       { path: '/ordermangement', exact: true, element: <OrderList /> },
-      
+      { path: '/profile', exact: true, element: <MyProfile /> },
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },
