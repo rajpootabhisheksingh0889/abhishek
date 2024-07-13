@@ -7,11 +7,12 @@ import {
     Button,
     Stack,
     Checkbox,
-    CircularProgress,
-    Snackbar
+    CircularProgress
 } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
 
@@ -40,12 +41,13 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             if (user_type === 'AD') {
                 navigate('/dashboard');
             } else if (user_type === 'CU') {
-                navigate('/dashboard');
+                navigate('/customerdashboards');
             } else if (user_type === 'AJ') {
-                navigate('/dashboard');
+                navigate('/agentdashbaords');
             }
         } catch (error) {
             setError('Login failed. Please check your credentials.');
+            toast.error('Login failed. Please check your credentials.');
         } finally {
             setLoading(false);
         }
@@ -64,7 +66,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             <form onSubmit={handleSubmit}>
                 <Stack spacing={2}>
                     <Box>
-                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor='username' mb="5px">
+                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor='email' mb="5px">
                             Email
                         </Typography>
                         <CustomTextField
@@ -124,12 +126,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
             {subtitle}
 
-            <Snackbar
-                open={!!error}
-                message={error}
-                onClose={() => setError(null)}
-                autoHideDuration={6000}
-            />
+            <ToastContainer />
         </>
     );
 };
