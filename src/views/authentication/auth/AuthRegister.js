@@ -10,7 +10,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
         last_name: '',
         email: '',
         password: '',
-        mobile: '',
+       
     });
 
     const [formErrors, setFormErrors] = useState({
@@ -18,7 +18,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
         last_name: '',
         email: '',
         password: '',
-        mobile: '',
+       
     });
 
     const navigate = useNavigate();
@@ -57,13 +57,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             errors.password = 'Password must contain at least one alphabet, one special character, and be at least 6 characters long';
             valid = false;
         }
-        if (!formData.mobile.trim()) {
-            errors.mobile = 'Mobile number is required';
-            valid = false;
-        } else if (!/^\d{10}$/.test(formData.mobile)) {
-            errors.mobile = 'Mobile number is not valid';
-            valid = false;
-        }
+        
 
         setFormErrors(errors);
         return valid;
@@ -169,21 +163,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                             autoComplete="new-password"
                         />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="mobile" mb="5px">
-                            Mobile Number
-                        </Typography>
-                        <CustomTextField
-                            id="mobile"
-                            variant="outlined"
-                            fullWidth
-                            value={formData.mobile}
-                            onChange={handleChange}
-                            error={!!formErrors.mobile}
-                            helperText={formErrors.mobile}
-                            autoComplete="tel"
-                        />
-                    </Grid>
+                    
                 </Grid>
                 <Button color="primary" variant="contained" size="large" fullWidth type="submit">
                     Sign Up
