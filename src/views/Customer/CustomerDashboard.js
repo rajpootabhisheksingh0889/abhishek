@@ -7,7 +7,7 @@ import {
 import DashboardCard from 'src/components/shared/DashboardCard';
 import NoData from "src/assets/images/products/NoData.jpg";// Replace with your actual path
 
-const CustomerList = () => {
+const CustomerDashboard = () => {
     const [customers, setCustomers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -48,7 +48,7 @@ const CustomerList = () => {
         <DashboardCard>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h3" component="h2">
-                    Customer List
+                    Customer Dashboard
                 </Typography>
                 {/* <TextField
                     label="Search customers"
@@ -170,4 +170,4 @@ const CustomerList = () => {
     );
 };
 
-export default CustomerList;
+export default CustomerDashboard;

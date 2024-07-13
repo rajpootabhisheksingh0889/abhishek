@@ -26,6 +26,11 @@ const RecordingList = Loadable(lazy(() => import('../views/Admin/RecordingList')
 const OrderList = Loadable(lazy(() => import('../views/Admin/OrderList')));
 const MyProfile = Loadable(lazy(() => import('../views/Admin/MyProfile')));
 
+const CustomerDashboard = Loadable(lazy(() => import('../views/Customer/CustomerDashboard')));
+const AgentDashboard = Loadable(lazy(() => import('../views/Agent/AgentDashboard')));
+
+
+
 
 const Router = [
   {
@@ -47,6 +52,8 @@ const Router = [
       { path: '/recordinglist', exact: true, element: <RecordingList /> },
       { path: '/ordermangement', exact: true, element: <OrderList /> },
       { path: '/profile', exact: true, element: <MyProfile /> },
+      { path: '/customerdashboard', exact: true, element: < CustomerDashboard /> },
+      { path: '/agentdashbaord', exact: true, element: <AgentDashboard /> },
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },
