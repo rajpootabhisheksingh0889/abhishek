@@ -118,6 +118,9 @@ const AgentList = () => {
         if (!newAgent.email.trim()) {
             errors.email = 'Email is required';
             isValid = false;
+        } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(newAgent.email)) {
+            errors.email = 'Invalid email format';
+            isValid = false;
         }
         if (!newAgent.password.trim()) {
             errors.password = 'Password is required';
@@ -125,6 +128,9 @@ const AgentList = () => {
         }
         if (!newAgent.phone.trim()) {
             errors.phone = 'Phone is required';
+            isValid = false;
+        } else if (!/^\d{10}$/.test(newAgent.phone)) {  // Adjust regex based on the required phone number format
+            errors.phone = 'Invalid phone number format';
             isValid = false;
         }
 
@@ -184,14 +190,14 @@ const AgentList = () => {
                     >
                         Add Agent
                     </Button>
-                    {/* <TextField
+                    <TextField
                         label="Search Agents"
                         variant="outlined"
                         sx={{ height: '100%', width: 300 }} // Adjust width as needed
                         margin="normal"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                    /> */}
+                    />
                 </Box>
             </Box>
 
@@ -254,23 +260,18 @@ const AgentList = () => {
                                         <Skeleton variant="text" width={60} />
                                     </TableCell>
                                     <TableCell>
-                                        <Skeleton variant="text" width={40} />
+                                        <Skeleton variant="text" width={80} />
                                     </TableCell>
                                     <TableCell>
-                                        <Skeleton variant="text" width={100} />
+                                        <Skeleton variant="text" width={80} />
                                     </TableCell>
                                 </TableRow>
                             ))
-                        ) : (
-                            filteredAgents.map((agent) => (
-                                <TableRow key={agent.id} sx={{ '&:hover': { backgroundColor: '#f0f0f0' } }}>
+                        ) : filteredAgents.length > 0 ? (
+                            filteredAgents.map((agent, index) => (
+                                <TableRow key={index}>
                                     <TableCell>
-                                        <Typography
-                                            sx={{
-                                                fontSize: "15px",
-                                                fontWeight: "500",
-                                            }}
-                                        >
+                                        <Typography variant="subtitle2" fontWeight={600}>
                                             {agent.id}
                                         </Typography>
                                     </TableCell>
@@ -280,58 +281,50 @@ const AgentList = () => {
                                         </Typography>
                                     </TableCell>
                                     <TableCell>
-                                        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+                                        <Typography variant="subtitle2" fontWeight={400}>
                                             {agent.email}
                                         </Typography>
                                     </TableCell>
                                     <TableCell>
-                                        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+                                        <Typography variant="subtitle2" fontWeight={400}>
                                             {agent.phone}
                                         </Typography>
                                     </TableCell>
                                     <TableCell>
                                         <Chip
-                                            sx={{
-                                                px: "4px",
-                                                backgroundColor: agent.status ? 'success.main' : 'error.main',
-                                                color: "#fff",
-                                            }}
                                             size="small"
-                                            label={agent.status ? 'Active' : 'Inactive'}
+                                            label={agent.status ? "Active" : "Inactive"}
+                                            sx={{
+                                                backgroundColor: agent.status ? "green" : "red",
+                                                color: "white",
+                                            }}
                                         />
                                     </TableCell>
                                     <TableCell>
                                         <Switch
-                                            sx={{
-                                                '& .MuiSwitch-switchBase.Mui-checked': {
-                                                    color: 'success.main',
-                                                },
-                                                '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                                                    backgroundColor: 'success.main',
-                                                },
-                                            }}
                                             checked={agent.status}
                                             onChange={() => handleToggleStatus(agent.id, agent.status)}
-                                            inputProps={{ 'aria-label': 'toggle agent status' }}
+                                            inputProps={{ "aria-label": "controlled" }}
                                         />
                                     </TableCell>
                                 </TableRow>
                             ))
+                        ) : (
+                            <TableRow>
+                                <TableCell colSpan={6} align="center">
+                                    <img src={NoData} alt="No data" style={{ width: '100%', height: 'auto' }} />
+                                    <Typography variant="h6" gutterBottom>
+                                        No agents found.
+                                    </Typography>
+                                </TableCell>
+                            </TableRow>
                         )}
                     </TableBody>
                 </Table>
-                {agents.length === 0 && !loading && (
-                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '300px' }}>
-                        <img src={NoData} alt="No data available" style={{ maxWidth: '100%', maxHeight: '100%' }} />
-                    </Box>
-                )}
             </Box>
 
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle sx={{ marginTop: '15px', marginBottom: '10px', textAlign: 'center', fontWeight: 'bold', fontSize: '19px' }}>
-                    Add New Agent
-                </DialogTitle>
-
+                <DialogTitle>Add Agent</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -342,11 +335,9 @@ const AgentList = () => {
                         fullWidth
                         variant="outlined"
                         value={newAgent.first_name}
-                        autoComplete="off"
                         onChange={handleChange}
                         error={!!formErrors.first_name}
                         helperText={formErrors.first_name}
-                        sx={{ mb: 2 }}
                     />
                     <TextField
                         margin="dense"
@@ -357,10 +348,8 @@ const AgentList = () => {
                         variant="outlined"
                         value={newAgent.last_name}
                         onChange={handleChange}
-                        autoComplete="off"
                         error={!!formErrors.last_name}
                         helperText={formErrors.last_name}
-                        sx={{ mb: 2 }}
                     />
                     <TextField
                         margin="dense"
@@ -368,34 +357,29 @@ const AgentList = () => {
                         label="Email"
                         type="email"
                         fullWidth
-                        autoComplete="off"
                         variant="outlined"
                         value={newAgent.email}
                         onChange={handleChange}
                         error={!!formErrors.email}
                         helperText={formErrors.email}
-                        sx={{ mb: 2 }}
                     />
                     <TextField
                         margin="dense"
                         name="password"
                         label="Password"
-                        type="password"
+                        type="text" // Set type to "text"
                         fullWidth
                         variant="outlined"
                         value={newAgent.password}
                         onChange={handleChange}
                         error={!!formErrors.password}
                         helperText={formErrors.password}
-                        sx={{ mb: 2 }}
-                        autoComplete="off"
                     />
                     <TextField
                         margin="dense"
                         name="phone"
                         label="Phone"
-                        type="text"
-                        autoComplete="off"
+                        type="tel"
                         fullWidth
                         variant="outlined"
                         value={newAgent.phone}
@@ -405,11 +389,11 @@ const AgentList = () => {
                     />
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="outlined" color="primary" onClick={handleClose}>
+                    <Button onClick={handleClose} color="primary">
                         Cancel
                     </Button>
-                    <Button variant="contained" onClick={handleSubmit} color="primary">
-                        Save
+                    <Button onClick={handleSubmit} color="primary">
+                        Add Agent
                     </Button>
                 </DialogActions>
             </Dialog>
