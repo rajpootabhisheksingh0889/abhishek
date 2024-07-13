@@ -313,14 +313,13 @@ const AgentList = () => {
                                 </TableRow>
                             ))
                         ) : (
-                            <TableRow>
-                                <TableCell colSpan={6} align="center">
-                                    <img src={NoData} alt="No data" style={{ width: '100%', height: '50%' }} />
-                                    <Typography variant="h6" gutterBottom>
-                                        No agents found.
-                                    </Typography>
-                                </TableCell>
-                            </TableRow>
+                                    <TableRow>
+                                        <TableCell colSpan={6}>
+                                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '300px' }}>
+                                                <img src={NoData} alt="No data available" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+                                            </Box>
+                                        </TableCell>
+                                    </TableRow>
                         )}
                     </TableBody>
                 </Table>

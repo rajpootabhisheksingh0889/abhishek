@@ -87,57 +87,61 @@ const ProductList = () => {
     return (
         <DashboardCard title="Product List">
             <ToastContainer />
-            {loading ? (
-                <SkeletonLoading />
-            ) : products.length === 0 ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '300px' }}>
-                    <img src={NoData} alt="No data available" style={{ maxWidth: '100%', maxHeight: '100%' }} />
-                </Box>
-            ) : (
-                <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
-                    <Table
-                        aria-label="simple table"
-                        sx={{
-                            whiteSpace: "nowrap",
-                            mt: 2
-                        }}
-                    >
-                        <TableHead>
+            <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
+                <Table
+                    aria-label="simple table"
+                    sx={{
+                        whiteSpace: "nowrap",
+                        mt: 2
+                    }}
+                >
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>
+                                <Typography variant="subtitle2" fontWeight={600}>
+                                    Id
+                                </Typography>
+                            </TableCell>
+                            <TableCell>
+                                <Typography variant="subtitle2" fontWeight={600}>
+                                    Name
+                                </Typography>
+                            </TableCell>
+                            <TableCell>
+                                <Typography variant="subtitle2" fontWeight={600}>
+                                    Description
+                                </Typography>
+                            </TableCell>
+                            <TableCell>
+                                <Typography variant="subtitle2" fontWeight={600}>
+                                    Price
+                                </Typography>
+                            </TableCell>
+                            <TableCell align="right">
+                                <Typography variant="subtitle2" fontWeight={600}>
+                                    Quantity
+                                </Typography>
+                            </TableCell>
+                            <TableCell align="right">
+                                <Typography variant="subtitle2" fontWeight={600}>
+                                    Actions
+                                </Typography>
+                            </TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {loading ? (
+                            <SkeletonLoading />
+                        ) : products.length === 0 ? (
                             <TableRow>
-                                <TableCell>
-                                    <Typography variant="subtitle2" fontWeight={600}>
-                                        Id
-                                    </Typography>
-                                </TableCell>
-                                <TableCell>
-                                    <Typography variant="subtitle2" fontWeight={600}>
-                                        Name
-                                    </Typography>
-                                </TableCell>
-                                <TableCell>
-                                    <Typography variant="subtitle2" fontWeight={600}>
-                                        Description
-                                    </Typography>
-                                </TableCell>
-                                <TableCell>
-                                    <Typography variant="subtitle2" fontWeight={600}>
-                                        Price
-                                    </Typography>
-                                </TableCell>
-                                <TableCell align="right">
-                                    <Typography variant="subtitle2" fontWeight={600}>
-                                        Quantity
-                                    </Typography>
-                                </TableCell>
-                                <TableCell align="right">
-                                    <Typography variant="subtitle2" fontWeight={600}>
-                                        Actions
-                                    </Typography>
+                                <TableCell colSpan={6}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '300px' }}>
+                                        <img src={NoData} alt="No data available" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+                                    </Box>
                                 </TableCell>
                             </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {products.map((product) => (
+                        ) : (
+                            products.map((product) => (
                                 <TableRow key={product.id}>
                                     <TableCell>
                                         <Typography
@@ -217,11 +221,11 @@ const ProductList = () => {
                                         </Popover>
                                     </TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </Box>
-            )}
+                            ))
+                        )}
+                    </TableBody>
+                </Table>
+            </Box>
 
             <Dialog
                 open={openDialog}
