@@ -324,7 +324,7 @@ const AgentList = () => {
             </Box>
 
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>Add Agent</DialogTitle>
+                <DialogTitle className='popup-heading'>Add Agent</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus

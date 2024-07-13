@@ -3,3 +3,11 @@
     /* padding: 10px; */
     border: 1px solid #198754;
 }
+.popup-heading{  font-size: 19px;
+display: flex;
+justify-content: center;
+align-items: center;
+flex-direction: row;
+margin-top: 15px!important;
+margin-bottom: 10px!important;
+}
