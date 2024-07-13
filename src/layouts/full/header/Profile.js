@@ -74,7 +74,10 @@ const Profile = () => {
           <ListItemIcon>
             <IconUser width={20} />
           </ListItemIcon>
-          <ListItem button component={Link} to="/profile">
+          <ListItem
+           button
+            // component={Link} to="/profile"
+           >
             <ListItemText primary="My Profile" />
           </ListItem>
         </MenuItem>
