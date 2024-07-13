@@ -71,7 +71,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
         }
 
         try {
-            const response = await axios.post('http://localhost:9999/api/register', formData);
+            const response = await axios.post('http://134.209.145.149:9999/api/register', formData);
             console.log('Registration successful:', response.data);
             navigate('/auth/login'); // Redirect to login page after successful registration
         } catch (error) {

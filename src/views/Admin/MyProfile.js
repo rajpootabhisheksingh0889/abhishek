@@ -11,7 +11,7 @@ const MyProfile = () => {
         // Fetch profile data from API
         const fetchProfileData = async () => {
             try {
-                const response = await fetch('http://localhost:9999/api/profile', {
+                const response = await fetch('http://134.209.145.149:9999/api/profile', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

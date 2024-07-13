@@ -34,7 +34,7 @@ const AgentList = () => {
     useEffect(() => {
         const fetchAgents = async () => {
             try {
-                const response = await axios.post('http://localhost:9999/api/userType', { user_type: "AG" });
+                const response = await axios.post('http://134.209.145.149:9999/api/userType', { user_type: "AG" });
                 console.log(response.data);  // Debugging: Check the structure of the API response
                 setAgents(response.data.data);  // Adjust based on actual response structure
             } catch (err) {
@@ -56,7 +56,7 @@ const AgentList = () => {
             setAgents(updatedAgents);
 
             // Update status on the server
-            await axios.put(`http://localhost:9999/api/toggle/${agentId}`, {
+            await axios.put(`http://134.209.145.149:9999/api/toggle/${agentId}`, {
                 // Send any additional data needed in the request body
                 // In your case, if no additional data is needed, you can omit this part
             });
@@ -134,7 +134,7 @@ const AgentList = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:9999/api/createAgent', newAgent);
+            const response = await axios.post('http://134.209.145.149:9999/api/createAgent', newAgent);
             setAgents([...agents, response.data.data]);  // Adjust based on actual response structure
             setNewAgent({
                 first_name: '',
