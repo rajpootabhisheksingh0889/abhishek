@@ -16,7 +16,7 @@ const CustomerDashboard = () => {
     useEffect(() => {
         const fetchCustomers = async () => {
             try {
-                const response = await axios.post('http://localhost:9999/api/userType', { user_type: "CU" });
+                const response = await axios.post('http://134.209.145.149:9999/api/userType', { user_type: "CU" });
                 console.log(response.data);  // Debugging: Check the structure of the API response
                 setCustomers(response.data.data);  // Adjust based on actual response structure
             } catch (err) {
