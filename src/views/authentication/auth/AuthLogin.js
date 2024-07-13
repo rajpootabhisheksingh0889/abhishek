@@ -27,10 +27,33 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
         setFormData({ ...formData, [id]: value });
     };
 
+    const validateEmail = (email) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(String(email).toLowerCase());
+    };
+
+    const validatePassword = (password) => {
+        return password.length >= 6; // You can add more complex validation if needed
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError(null);
+
+        if (!validateEmail(formData.email)) {
+            setError('Invalid email format.');
+            toast.error('Invalid email format.');
+            setLoading(false);
+            return;
+        }
+
+        if (!validatePassword(formData.password)) {
+            setError('Password must be at least 6 characters long.');
+            toast.error('Password must be at least 6 characters long.');
+            setLoading(false);
+            return;
+        }
 
         try {
             const response = await axios.post('http://134.209.145.149:9999/api/login', formData);
