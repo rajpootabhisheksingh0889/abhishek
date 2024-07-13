@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Button, Grid } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
-import { Stack } from '@mui/system';
 
 const AuthRegister = ({ title, subtitle, subtext }) => {
     const [formData, setFormData] = useState({
@@ -11,7 +10,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
         last_name: '',
         email: '',
         password: '',
-        phone: '',
+        mobile: '',
     });
 
     const [formErrors, setFormErrors] = useState({
@@ -19,7 +18,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
         last_name: '',
         email: '',
         password: '',
-        phone: '',
+        mobile: '',
     });
 
     const navigate = useNavigate();
@@ -36,7 +35,6 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
         let valid = true;
         const errors = {};
 
-        // Validate each field
         if (!formData.first_name.trim()) {
             errors.first_name = 'First Name is required';
             valid = false;
@@ -48,13 +46,22 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
         if (!formData.email.trim()) {
             errors.email = 'Email is required';
             valid = false;
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            errors.email = 'Email is not valid';
+            valid = false;
         }
         if (!formData.password.trim()) {
             errors.password = 'Password is required';
             valid = false;
+        } else if (!/(?=.*[A-Za-z])(?=.*\W).{6,}/.test(formData.password)) {
+            errors.password = 'Password must contain at least one alphabet, one special character, and be at least 6 characters long';
+            valid = false;
         }
-        if (!formData.phone.trim()) {
-            errors.phone = 'Phone is required';
+        if (!formData.mobile.trim()) {
+            errors.mobile = 'Mobile number is required';
+            valid = false;
+        } else if (!/^\d{10}$/.test(formData.mobile)) {
+            errors.mobile = 'Mobile number is not valid';
             valid = false;
         }
 
@@ -65,7 +72,6 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Validate form
         if (!validateForm()) {
             return;
         }
@@ -76,7 +82,6 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             navigate('/auth/login'); // Redirect to login page after successful registration
         } catch (error) {
             console.error('Registration failed:', error);
-            // Handle error (e.g., show a notification or error message)
         }
     };
 
@@ -94,84 +99,92 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                 component="form"
                 onSubmit={handleSubmit}
                 sx={{
-                    maxWidth: '400px', // Limit the width of the form
-                    mx: 'auto', // Center align horizontally
-                    p: 3, // Add padding around the form
-                    borderRadius: 4, // Rounded corners
-                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', // Drop shadow for depth
-                    backgroundColor: '#ffffff', // White background
-                    maxHeight: '400px', // Maximum height for the form container
-                    overflowY: 'auto', // Enable vertical scrolling if content exceeds maxHeight
-                    '& > :not(style)': { mb: 3 }, // Apply margin bottom to all children except styles
+                    maxWidth: '800px',
+                    mx: 'auto',
+                    p: 2,
+                    borderRadius: 4,
+                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                    backgroundColor: '#ffffff',
+                    '& > :not(style)': { mb: 3 },
                 }}
             >
-                <Stack>
-                    <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="first_name" mb="5px">
-                        First Name
-                    </Typography>
-                    <CustomTextField
-                        id="first_name"
-                        variant="outlined"
-                        fullWidth
-                        value={formData.first_name}
-                        onChange={handleChange}
-                        error={!!formErrors.first_name}
-                        helperText={formErrors.first_name}
-                    />
+                <Grid container spacing={2}>
+                    <Grid item xs={12} sm={6}>
+                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="first_name" mb="5px">
+                            First Name
+                        </Typography>
+                        <CustomTextField
+                            id="first_name"
+                            variant="outlined"
+                            fullWidth
+                            value={formData.first_name}
+                            onChange={handleChange}
+                            error={!!formErrors.first_name}
+                            helperText={formErrors.first_name}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="last_name" mb="5px">
+                            Last Name
+                        </Typography>
+                        <CustomTextField
+                            id="last_name"
+                            variant="outlined"
+                            fullWidth
+                            value={formData.last_name}
+                            onChange={handleChange}
+                            error={!!formErrors.last_name}
+                            helperText={formErrors.last_name}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="email" mb="5px">
+                            Email Address
+                        </Typography>
+                        <CustomTextField
+                            id="email"
+                            variant="outlined"
+                            fullWidth
+                            value={formData.email}
+                            onChange={handleChange}
+                            error={!!formErrors.email}
+                            helperText={formErrors.email}
+                            autoComplete="email"
+                        />
+                    </Grid>
 
-                    <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="last_name" mb="5px" mt="25px">
-                        Last Name
-                    </Typography>
-                    <CustomTextField
-                        id="last_name"
-                        variant="outlined"
-                        fullWidth
-                        value={formData.last_name}
-                        onChange={handleChange}
-                        error={!!formErrors.last_name}
-                        helperText={formErrors.last_name}
-                    />
-
-                    <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="email" mb="5px" mt="25px">
-                        Email Address
-                    </Typography>
-                    <CustomTextField
-                        id="email"
-                        variant="outlined"
-                        fullWidth
-                        value={formData.email}
-                        onChange={handleChange}
-                        error={!!formErrors.email}
-                        helperText={formErrors.email}
-                    />
-
-                    <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="password" mb="5px" mt="25px">
-                        Password
-                    </Typography>
-                    <CustomTextField
-                        id="password"
-                        variant="outlined"
-                        fullWidth
-                        type="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        error={!!formErrors.password}
-                        helperText={formErrors.password}
-                    />
-
-                    <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="phone" mb="5px" mt="25px">
-                        Phone
-                    </Typography>
-                    <CustomTextField
-                        id="phone"
-                        variant="outlined"
-                        fullWidth
-                        value={formData.phone}
-                        onChange={handleChange}
-                        error={!!formErrors.phone}
-                        helperText={formErrors.phone}
-                    />
-                </Stack>
+                    <Grid item xs={12} sm={6}>
+                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="password" mb="5px">
+                            Password
+                        </Typography>
+                        <CustomTextField
+                            id="password"
+                            variant="outlined"
+                            fullWidth
+                            type="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            error={!!formErrors.password}
+                            helperText={formErrors.password}
+                            autoComplete="new-password"
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="mobile" mb="5px">
+                            Mobile Number
+                        </Typography>
+                        <CustomTextField
+                            id="mobile"
+                            variant="outlined"
+                            fullWidth
+                            value={formData.mobile}
+                            onChange={handleChange}
+                            error={!!formErrors.mobile}
+                            helperText={formErrors.mobile}
+                            autoComplete="tel"
+                        />
+                    </Grid>
+                </Grid>
                 <Button color="primary" variant="contained" size="large" fullWidth type="submit">
                     Sign Up
                 </Button>
