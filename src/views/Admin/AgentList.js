@@ -181,20 +181,23 @@ const AgentList = () => {
                     Agent List
                 </Typography>
 
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <Box sx={{ display: 'flex', gap: 2 }}>
                     <Button
                         variant="contained"
                         color="primary"
+                        size="large"
                         onClick={handleOpen}
-                        sx={{ height: '100%', minWidth: '100px' }} // Adjust height and width as needed
+                        // sx={{ height: '100%', minWidth: '100px' }} // Adjust height and width as needed
                     >
                         Add Agent
                     </Button>
                     <TextField
+                        size="medium"
+
                         label="Search Agents"
                         variant="outlined"
-                        sx={{ height: '100%', width: 300 }} // Adjust width as needed
-                        margin="normal"
+                        // sx={{ height: '100%', width: 300 }} // Adjust width as needed
+                        // margin="normal"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
