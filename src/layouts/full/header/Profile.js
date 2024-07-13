@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
 import {
   Avatar,
   Box,
@@ -10,29 +9,36 @@ import {
   MenuItem,
   ListItemIcon,
   ListItem,
-  ListItemText
+  ListItemText,
 } from '@mui/material';
-
-import { IconListCheck, IconMail, IconUser } from '@tabler/icons';
-
+import { IconUser } from '@tabler/icons';
 import ProfileImg from 'src/assets/images/profile/user-1.jpg';
 
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null);
+  const navigate = useNavigate();
+
   const handleClick2 = (event) => {
     setAnchorEl2(event.currentTarget);
   };
+
   const handleClose2 = () => {
     setAnchorEl2(null);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('user_type');
+    localStorage.removeItem('accessToken');
+    navigate('/auth/login');
   };
 
   return (
     <Box>
       <IconButton
         size="large"
-        aria-label="show 11 new notifications"
+        aria-label="profile menu"
         color="inherit"
-        aria-controls="msgs-menu"
+        aria-controls="profile-menu"
         aria-haspopup="true"
         sx={{
           ...(typeof anchorEl2 === 'object' && {
@@ -43,18 +49,15 @@ const Profile = () => {
       >
         <Avatar
           src={ProfileImg}
-          alt={ProfileImg}
+          alt="Profile"
           sx={{
             width: 35,
             height: 35,
           }}
         />
       </IconButton>
-      {/* ------------------------------------------- */}
-      {/* Message Dropdown */}
-      {/* ------------------------------------------- */}
       <Menu
-        id="msgs-menu"
+        id="profile-menu"
         anchorEl={anchorEl2}
         keepMounted
         open={Boolean(anchorEl2)}
@@ -75,20 +78,8 @@ const Profile = () => {
             <ListItemText primary="My Profile" />
           </ListItem>
         </MenuItem>
-        {/* <MenuItem>
-          <ListItemIcon>
-            <IconMail width={20} />
-          </ListItemIcon>
-          <ListItemText>My Account</ListItemText>
-        </MenuItem> */}
-        {/* <MenuItem>
-          <ListItemIcon>
-            <IconListCheck width={20} />
-          </ListItemIcon>
-          <ListItemText>My Tasks</ListItemText>
-        </MenuItem> */}
         <Box mt={1} py={1} px={2}>
-          <Button to="/auth/login" variant="outlined" color="primary" component={Link} fullWidth>
+          <Button onClick={handleLogout} variant="outlined" color="primary" fullWidth>
             Logout
           </Button>
         </Box>
