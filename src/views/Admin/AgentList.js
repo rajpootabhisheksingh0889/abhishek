@@ -315,7 +315,7 @@ const AgentList = () => {
                         ) : (
                             <TableRow>
                                 <TableCell colSpan={6} align="center">
-                                    <img src={NoData} alt="No data" style={{ width: '100%', height: 'auto' }} />
+                                    <img src={NoData} alt="No data" style={{ width: '100%', height: '50%' }} />
                                     <Typography variant="h6" gutterBottom>
                                         No agents found.
                                     </Typography>

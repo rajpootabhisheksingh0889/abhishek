@@ -87,7 +87,9 @@ const ProductList = () => {
     return (
         <DashboardCard title="Product List">
             <ToastContainer />
-            {products.length === 0 ? (
+            {loading ? (
+                <SkeletonLoading />
+            ) : products.length === 0 ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '300px' }}>
                     <img src={NoData} alt="No data available" style={{ maxWidth: '100%', maxHeight: '100%' }} />
                 </Box>
@@ -135,112 +137,87 @@ const ProductList = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {loading ? (
-                                Array.from(new Array(5)).map((_, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell>
-                                            <Skeleton variant="text" width={40} />
-                                        </TableCell>
-                                        <TableCell>
-                                            <Skeleton variant="text" width={100} />
-                                        </TableCell>
-                                        <TableCell>
-                                            <Skeleton variant="text" width={150} />
-                                        </TableCell>
-                                        <TableCell>
-                                            <Skeleton variant="text" width={60} />
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <Skeleton variant="text" width={40} />
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <Skeleton variant="text" width={60} />
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            ) : (
-                                products.map((product) => (
-                                    <TableRow key={product.id}>
-                                        <TableCell>
-                                            <Typography
-                                                sx={{
-                                                    fontSize: "15px",
-                                                    fontWeight: "500",
-                                                }}
-                                            >
-                                                {product.id}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography variant="subtitle2" fontWeight={600}>
-                                                {product.name}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-                                                {product.description}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-                                                {product.price} {product.currency}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <Typography variant="h6">{product.quantity}</Typography>
-                                        </TableCell>
-                                        <TableCell align="right">
-                                            <IconButton
-                                                aria-owns={open ? 'mouse-over-popover' : undefined}
-                                                aria-haspopup="true"
-                                                onMouseEnter={(event) => handlePopoverOpen(event, 'Edit')}
-                                                onMouseLeave={handlePopoverClose}
-                                            >
-                                                <Edit />
-                                            </IconButton>
-                                            <IconButton
-                                                aria-owns={open ? 'mouse-over-popover' : undefined}
-                                                aria-haspopup="true"
-                                                onMouseEnter={(event) => handlePopoverOpen(event, 'Delete')}
-                                                onMouseLeave={handlePopoverClose}
-                                                onClick={() => handleDelete(product)}
-                                            >
-                                                <Delete />
-                                            </IconButton>
-                                            <IconButton
-                                                aria-owns={open ? 'mouse-over-popover' : undefined}
-                                                aria-haspopup="true"
-                                                onMouseEnter={(event) => handlePopoverOpen(event, 'View Details')}
-                                                onMouseLeave={handlePopoverClose}
-                                            >
-                                                <Visibility />
-                                            </IconButton>
-                                            <Popover
-                                                id="mouse-over-popover"
-                                                sx={{
-                                                    pointerEvents: 'none',
-                                                }}
-                                                open={open}
-                                                anchorEl={anchorEl}
-                                                anchorOrigin={{
-                                                    vertical: 'bottom',
-                                                    horizontal: 'left',
-                                                }}
-                                                transformOrigin={{
-                                                    vertical: 'top',
-                                                    horizontal: 'left',
-                                                }}
-                                                onClose={handlePopoverClose}
-                                                disableRestoreFocus
-                                            >
-                                                <Box sx={{ p: 1 }}>
-                                                    <Typography>{popoverContent}</Typography>
-                                                </Box>
-                                            </Popover>
-                                        </TableCell>
-                                    </TableRow>
-                                ))
-                            )}
+                            {products.map((product) => (
+                                <TableRow key={product.id}>
+                                    <TableCell>
+                                        <Typography
+                                            sx={{
+                                                fontSize: "15px",
+                                                fontWeight: "500",
+                                            }}
+                                        >
+                                            {product.id}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="subtitle2" fontWeight={600}>
+                                            {product.name}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+                                            {product.description}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+                                            {product.price} {product.currency}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <Typography variant="h6">{product.quantity}</Typography>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <IconButton
+                                            aria-owns={open ? 'mouse-over-popover' : undefined}
+                                            aria-haspopup="true"
+                                            onMouseEnter={(event) => handlePopoverOpen(event, 'Edit')}
+                                            onMouseLeave={handlePopoverClose}
+                                        >
+                                            <Edit />
+                                        </IconButton>
+                                        <IconButton
+                                            aria-owns={open ? 'mouse-over-popover' : undefined}
+                                            aria-haspopup="true"
+                                            onMouseEnter={(event) => handlePopoverOpen(event, 'Delete')}
+                                            onMouseLeave={handlePopoverClose}
+                                            onClick={() => handleDelete(product)}
+                                        >
+                                            <Delete />
+                                        </IconButton>
+                                        <IconButton
+                                            aria-owns={open ? 'mouse-over-popover' : undefined}
+                                            aria-haspopup="true"
+                                            onMouseEnter={(event) => handlePopoverOpen(event, 'View Details')}
+                                            onMouseLeave={handlePopoverClose}
+                                        >
+                                            <Visibility />
+                                        </IconButton>
+                                        <Popover
+                                            id="mouse-over-popover"
+                                            sx={{
+                                                pointerEvents: 'none',
+                                            }}
+                                            open={open}
+                                            anchorEl={anchorEl}
+                                            anchorOrigin={{
+                                                vertical: 'bottom',
+                                                horizontal: 'left',
+                                            }}
+                                            transformOrigin={{
+                                                vertical: 'top',
+                                                horizontal: 'left',
+                                            }}
+                                            onClose={handlePopoverClose}
+                                            disableRestoreFocus
+                                        >
+                                            <Box sx={{ p: 1 }}>
+                                                <Typography>{popoverContent}</Typography>
+                                            </Box>
+                                        </Popover>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
                         </TableBody>
                     </Table>
                 </Box>
@@ -270,5 +247,32 @@ const ProductList = () => {
         </DashboardCard>
     );
 };
+
+const SkeletonLoading = () => (
+    <Table sx={{ whiteSpace: 'nowrap', mt: 2 }}>
+        <TableHead>
+            <TableRow>
+                <TableCell><Skeleton variant="text" width={40} /></TableCell>
+                <TableCell><Skeleton variant="text" width={100} /></TableCell>
+                <TableCell><Skeleton variant="text" width={150} /></TableCell>
+                <TableCell><Skeleton variant="text" width={60} /></TableCell>
+                <TableCell align="right"><Skeleton variant="text" width={40} /></TableCell>
+                <TableCell align="right"><Skeleton variant="text" width={60} /></TableCell>
+            </TableRow>
+        </TableHead>
+        <TableBody>
+            {Array.from(new Array(5)).map((_, index) => (
+                <TableRow key={index}>
+                    <TableCell><Skeleton variant="text" width={40} /></TableCell>
+                    <TableCell><Skeleton variant="text" width={100} /></TableCell>
+                    <TableCell><Skeleton variant="text" width={150} /></TableCell>
+                    <TableCell><Skeleton variant="text" width={60} /></TableCell>
+                    <TableCell align="right"><Skeleton variant="text" width={40} /></TableCell>
+                    <TableCell align="right"><Skeleton variant="text" width={60} /></TableCell>
+                </TableRow>
+            ))}
+        </TableBody>
+    </Table>
+);
 
 export default ProductList;
