@@ -369,7 +369,7 @@ const AgentList = () => {
                         margin="dense"
                         name="password"
                         label="Password"
-                        type="text" // Set type to "text"
+                        type="password" // Set type to "text"
                         fullWidth
                         variant="outlined"
                         value={newAgent.password}
@@ -381,7 +381,7 @@ const AgentList = () => {
                         margin="dense"
                         name="phone"
                         label="Phone"
-                        type="tel"
+                        type="number"
                         fullWidth
                         variant="outlined"
                         value={newAgent.phone}
