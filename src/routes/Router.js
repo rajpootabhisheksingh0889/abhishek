@@ -27,6 +27,7 @@ const MyProfile = Loadable(lazy(() => import('../views/Admin/MyProfile')));
 
 const CustomerDashboard = Loadable(lazy(() => import('../views/Customer/CustomerDashboard')));
 const AgentDashboard = Loadable(lazy(() => import('../views/Agent/AgentDashboard')));
+const Chat = Loadable(lazy(() => import('../views/Customer/Chat')));
 
 const Router = [
   {
@@ -167,6 +168,15 @@ const Router = [
         element: (
           <PrivateRoute>
             <AgentDashboard />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/chat',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <Chat />
           </PrivateRoute>
         ),
       },

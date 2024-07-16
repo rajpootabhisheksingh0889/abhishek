@@ -64,9 +64,9 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             if (user_type === 'AD') {
                 navigate('/dashboard');
             } else if (user_type === 'CU') {
-                navigate('/customerdashboards');
-            } else if (user_type === 'AJ') {
-                navigate('/agentdashbaords');
+                navigate('/dashboard');
+            } else if (user_type === 'AG') {
+                navigate('/dashboard');
             }
         } catch (error) {
             setError('Login failed. Please check your credentials.');

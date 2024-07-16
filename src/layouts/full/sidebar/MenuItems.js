@@ -16,7 +16,7 @@ const Menuitems = [
     icon: IconLayoutDashboard,
     href: '/dashboard',
   },
- 
+
   {
     id: uniqueId(),
     title: 'User List',
@@ -62,54 +62,100 @@ const Menuitems = [
     icon: IconLayoutDashboard,
     href: '/transactionrecords',
   },
-  // {
-  //   navlabel: true,
-  //   subheader: 'Utilities',
-  // },
-  // {
-  //   id: uniqueId(),
-  //   title: 'Typography',
-  //   icon: IconTypography,
-  //   href: '/ui/typography',
-  // },
-  // {
-  //   id: uniqueId(),
-  //   title: 'Shadow',
-  //   icon: IconCopy,
-  //   href: '/ui/shadow',
-  // },
-  // {
-  //   navlabel: true,
-  //   subheader: 'Auth',
-  // },
-  // {
-  //   id: uniqueId(),
-  //   title: 'Login',
-  //   icon: IconLogin,
-  //   href: '/auth/login',
-  // },
-  // {
-  //   id: uniqueId(),
-  //   title: 'Register',
-  //   icon: IconUserPlus,
-  //   href: '/auth/register',
-  // },
-  // {
-  //   navlabel: true,
-  //   subheader: 'Extra',
-  // },
-  // {
-  //   id: uniqueId(),
-  //   title: 'Icons',
-  //   icon: IconMoodHappy,
-  //   href: '/icons',
-  // },
-  // {
-  //   id: uniqueId(),
-  //   title: 'Sample Page',
-  //   icon: IconAperture,
-  //   href: '/sample-page',
-  // },
 ];
 
-export default Menuitems;
+const Menuitems1 = [
+  {
+    navlabel: true,
+    subheader: 'Home',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Dashboard',
+    icon: IconLayoutDashboard,
+    href: '/dashboard',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Chat',
+    icon: IconLayoutDashboard,
+    href: '/chat',
+  },
+  {
+    id: uniqueId(),
+    title: 'Product',
+    icon: IconLayoutDashboard,
+    href: '/agentlist',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Order History',
+    icon: IconLayoutDashboard,
+    href: '/recordinglist',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Subscription',
+    icon: IconLayoutDashboard,
+    href: '/productlist',
+  },
+
+ 
+];
+
+const Menuitems2 = [
+  {
+    navlabel: true,
+    subheader: 'Home',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Dashboard',
+    icon: IconLayoutDashboard,
+    href: '/dashboard',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Call History',
+    icon: IconLayoutDashboard,
+    href: '/Abhi Agent',
+  },
+  {
+    id: uniqueId(),
+    title: 'Chat',
+    icon: IconLayoutDashboard,
+    href: '/agentlist',
+  },
+
+  {
+    id: uniqueId(),
+    title: 'Reports',
+    icon: IconLayoutDashboard,
+    href: '/recordinglist',
+  },
+
+  
+];
+
+const getMenuItems = () => {
+  const userType = localStorage.getItem('user_type');
+  console.log(`User type: ${userType}`); // Debugging line
+  switch (userType) {
+    case 'AD':
+      return Menuitems;
+    case 'CU':
+      return Menuitems1;
+    case 'AG':
+      return Menuitems2;
+    default:
+      return []; // Always return an array
+  }
+};
+
+export default getMenuItems;
