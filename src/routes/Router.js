@@ -29,6 +29,10 @@ const CustomerDashboard = Loadable(lazy(() => import('../views/Customer/Customer
 const AgentDashboard = Loadable(lazy(() => import('../views/Agent/AgentDashboard')));
 const Chat = Loadable(lazy(() => import('../views/Customer/Chat')));
 const OrderHistory = Loadable(lazy(() => import('../views/Customer/OrderHistory')));
+const Subscription = Loadable(lazy(() => import('../views/Customer/Subscription')));
+const Product = Loadable(lazy(() => import('../views/Customer/Product')));
+const Callhistory = Loadable(lazy(() => import('../views/Agent/Callhistory')));
+const Reports = Loadable(lazy(() => import('../views/Agent/Reports')));
 
 const Router = [
   {
@@ -187,6 +191,52 @@ const Router = [
         element: (
           <PrivateRoute>
             <Chat />
+          </PrivateRoute>
+        ),
+      },
+
+      {
+        path: '/callhistory',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <Callhistory />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/reports',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <Reports />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/orderhistory',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <Chat />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/product',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <Product />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/subscription',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <Subscription />
           </PrivateRoute>
         ),
       },

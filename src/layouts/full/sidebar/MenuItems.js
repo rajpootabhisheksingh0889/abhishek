@@ -87,7 +87,7 @@ const Menuitems1 = [
     id: uniqueId(),
     title: 'Product',
     icon: IconLayoutDashboard,
-    href: '/agentlist',
+    href: '/product',
   },
 
   {
@@ -101,7 +101,7 @@ const Menuitems1 = [
     id: uniqueId(),
     title: 'Subscription',
     icon: IconLayoutDashboard,
-    href: '/productlist',
+    href: '/subscription',
   },
 
  
@@ -124,20 +124,20 @@ const Menuitems2 = [
     id: uniqueId(),
     title: 'Call History',
     icon: IconLayoutDashboard,
-    href: '/Abhi Agent',
+    href: '/callhistory',
   },
   {
     id: uniqueId(),
     title: 'Chat',
     icon: IconLayoutDashboard,
-    href: '/agentlist',
+    href: '/Chat',
   },
 
   {
     id: uniqueId(),
     title: 'Reports',
     icon: IconLayoutDashboard,
-    href: '/recordinglist',
+    href: '/reports',
   },
 
   
