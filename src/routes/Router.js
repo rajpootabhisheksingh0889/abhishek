@@ -28,6 +28,7 @@ const MyProfile = Loadable(lazy(() => import('../views/Admin/MyProfile')));
 const CustomerDashboard = Loadable(lazy(() => import('../views/Customer/CustomerDashboard')));
 const AgentDashboard = Loadable(lazy(() => import('../views/Agent/AgentDashboard')));
 const Chat = Loadable(lazy(() => import('../views/Customer/Chat')));
+const OrderHistory = Loadable(lazy(() => import('../views/Customer/OrderHistory')));
 
 const Router = [
   {
@@ -150,6 +151,15 @@ const Router = [
         element: (
           <PrivateRoute>
             <MyProfile />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/orderhistory',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <OrderHistory />
           </PrivateRoute>
         ),
       },
