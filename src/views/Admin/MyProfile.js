@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import {
     Container,
     Card,
@@ -26,6 +27,7 @@ const MyProfile = () => {
         user_type: '',
     });
     const [error, setError] = useState(null);
+    const navigate = useNavigate(); // Initialize navigate
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -77,19 +79,24 @@ const MyProfile = () => {
                 uid,
                 ...formValues,
             });
-            if (response.data.Success) {
+            console.log('Response data:', response.data); // Log response data
+            if (response.data.success) {
                 setProfile(formValues);
                 setEditMode(false);
                 toast.success('Profile updated successfully!');
+                setTimeout(() => {
+                    navigate('/profile'); // Navigate after 3 seconds
+                }, 3000); // 3000 milliseconds = 3 seconds
             } else {
-                throw new Error('Failed to update profile');
+                throw new Error(response.data.Message || 'Failed to update profile');
             }
         } catch (error) {
             console.error('Error updating profile:', error);
-            setError('Failed to update profile');
-            toast.error('Failed to update profile');
+            setError(error.message || 'Failed to update profile');
+            toast.error(error.message || 'Failed to update profile');
         }
     };
+
 
     if (error) {
         return <Typography color="error">{error}</Typography>;
@@ -164,8 +171,8 @@ const MyProfile = () => {
                                             onChange={handleInputChange}
                                             fullWidth
                                             margin="normal"
-                                            readonly
                                             variant="outlined"
+                                            InputProps={{ readOnly: true }}  // Make field read-only
                                         />
                                         <Button
                                             variant="contained"
