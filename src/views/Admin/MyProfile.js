@@ -1,154 +1,198 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Typography, Grid, Paper, Avatar, IconButton, TextField, Button, CircularProgress } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import {
+    Container,
+    Card,
+    CardContent,
+    Typography,
+    Avatar,
+    Grid,
+    TextField,
+    Button,
+    Box,
+    Paper,
+} from '@mui/material';
 
 const MyProfile = () => {
-    const [profileData, setProfileData] = useState(null);
-    const [isEditing, setIsEditing] = useState(false);
-    const [editedProfile, setEditedProfile] = useState({});
-    const [loading, setLoading] = useState(true);
+    const [profile, setProfile] = useState(null);
+    const [editMode, setEditMode] = useState(false);
+    const [formValues, setFormValues] = useState({
+        first_name: '',
+        last_name: '',
+        email: '',
+        phone: '',
+        user_type: '',
+    });
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        const fetchProfileData = async () => {
+        const fetchProfile = async () => {
             try {
-                const response = await fetch('http://134.209.145.149:9999/api/profile', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ uid: 1 })
+                const response = await axios.post('http://134.209.145.149:9999/api/profile', {
+                    uid: 1,
                 });
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch profile data');
+                if (response.data.Success) {
+                    const profileData = response.data.data[0];
+                    setProfile(profileData);
+                    setFormValues({
+                        first_name: profileData.first_name,
+                        last_name: profileData.last_name,
+                        email: profileData.email,
+                        phone: profileData.phone,
+                        user_type: profileData.user_type,
+                    });
                 }
-
-                const data = await response.json();
-                setProfileData(data);
-                setEditedProfile(data); // Initialize editedProfile with fetched data
             } catch (error) {
-                console.error('Error fetching profile:', error);
-            } finally {
-                setLoading(false);
+                setError('Failed to fetch profile data');
             }
         };
 
-        fetchProfileData();
+        fetchProfile();
     }, []);
-
-    const handleEditToggle = () => {
-        setIsEditing(!isEditing);
-    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setEditedProfile(prevState => ({
-            ...prevState,
-            [name]: value
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            [name]: value,
         }));
     };
 
-    const handleSaveChanges = async () => {
-        console.log('Saving changes:', editedProfile);
-        // Add your API call to save changes here
-        setIsEditing(false);
+    const handleSave = async () => {
+        try {
+            const response = await axios.post('http://134.209.145.149:9999/api/editProfile', {
+                uid: 1,
+                ...formValues,
+            });
+            if (response.data.Success) {
+                setProfile(formValues);
+                setEditMode(false);
+            } else {
+                setError('Failed to update profile');
+            }
+        } catch (error) {
+            setError('Failed to update profile');
+        }
     };
 
-    if (loading) {
-        return (
-            <Container style={{ textAlign: 'center', padding: '50px 0' }}>
-                <CircularProgress />
-            </Container>
-        );
+    if (error) {
+        return <Typography color="error">{error}</Typography>;
+    }
+
+    if (!profile) {
+        return <Typography>Loading...</Typography>;
     }
 
     return (
-        <Container maxWidth="sm">
-            <Typography variant="h4" gutterBottom align="center">
-                Profile Details
-            </Typography>
-            {profileData && (
-                <Paper elevation={3} style={{ padding: 20 }}>
-                    <Grid container spacing={2} alignItems="center">
-                        <Grid item xs={12} sm={4}>
-                            <Avatar alt="Profile Picture" src={profileData.avatarUrl} style={{ width: 100, height: 100 }} />
-                            {isEditing && (
-                                <IconButton onClick={handleEditToggle} style={{ position: 'absolute', top: 10, right: 10 }}>
-                                    <EditIcon />
-                                </IconButton>
-                            )}
-                        </Grid>
-                        <Grid item xs={12} sm={8}>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                margin="normal"
-                                label="First Name"
-                                name="first_name"
-                                value={editedProfile.first_name || ''}
-                                onChange={handleInputChange}
-                                disabled={!isEditing}
-                            />
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                margin="normal"
-                                label="Last Name"
-                                name="last_name"
-                                value={editedProfile.last_name || ''}
-                                onChange={handleInputChange}
-                                disabled={!isEditing}
-                            />
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                margin="normal"
-                                label="Email"
-                                name="email"
-                                value={editedProfile.email || ''}
-                                onChange={handleInputChange}
-                                disabled={!isEditing}
-                            />
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                margin="normal"
-                                label="Phone"
-                                name="phone"
-                                value={editedProfile.phone || ''}
-                                onChange={handleInputChange}
-                                disabled={!isEditing}
-                            />
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                margin="normal"
-                                label="User Type"
-                                name="user_type"
-                                value={editedProfile.user_type || ''}
-                                onChange={handleInputChange}
-                                disabled={!isEditing}
-                            />
-                            <Grid container spacing={2} justifyContent="flex-end" style={{ marginTop: 16 }}>
-                                {!isEditing && (
-                                    <Grid item>
-                                        <Button variant="outlined" onClick={handleEditToggle} color="primary">
+        <Container>
+            <Paper elevation={3} sx={{ padding: 4, marginTop: 4 }}>
+                <Card>
+                    <CardContent>
+                        <Grid container spacing={2} alignItems="center">
+                            <Grid item>
+                                <Avatar
+                                    sx={{
+                                        width: 80,
+                                        height: 80,
+                                        bgcolor: 'primary.main',
+                                        fontSize: 40,
+                                    }}
+                                >
+                                    {profile.first_name.charAt(0)}
+                                </Avatar>
+                            </Grid>
+                            <Grid item xs={12} sm={8}>
+                                {editMode ? (
+                                    <Box>
+                                        <TextField
+                                            label="First Name"
+                                            name="first_name"
+                                            value={formValues.first_name}
+                                            onChange={handleInputChange}
+                                            fullWidth
+                                            margin="normal"
+                                            variant="outlined"
+                                        />
+                                        <TextField
+                                            label="Last Name"
+                                            name="last_name"
+                                            value={formValues.last_name}
+                                            onChange={handleInputChange}
+                                            fullWidth
+                                            margin="normal"
+                                            variant="outlined"
+                                        />
+                                        <TextField
+                                            label="Email"
+                                            name="email"
+                                            value={formValues.email}
+                                            onChange={handleInputChange}
+                                            fullWidth
+                                            margin="normal"
+                                            variant="outlined"
+                                        />
+                                        <TextField
+                                            label="Phone"
+                                            name="phone"
+                                            value={formValues.phone}
+                                            onChange={handleInputChange}
+                                            fullWidth
+                                            margin="normal"
+                                            variant="outlined"
+                                        />
+                                        <TextField
+                                            label="User Type"
+                                            name="user_type"
+                                            value={formValues.user_type}
+                                            onChange={handleInputChange}
+                                            fullWidth
+                                            margin="normal"
+                                            variant="outlined"
+                                        />
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            onClick={handleSave}
+                                            sx={{ marginTop: 2 }}
+                                        >
+                                            Save
+                                        </Button>
+                                        <Button
+                                            variant="outlined"
+                                            onClick={() => setEditMode(false)}
+                                            sx={{ marginTop: 2, marginLeft: 1 }}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </Box>
+                                ) : (
+                                    <Box>
+                                        <Typography variant="h5">{`${profile.first_name} ${profile.last_name}`}</Typography>
+                                        <Typography variant="body1">{profile.email}</Typography>
+                                        <Typography variant="body1">{profile.phone}</Typography>
+                                        <Typography variant="body2">
+                                            User Type: {profile.user_type}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                            Created At: {new Date(profile.createdAt).toLocaleString()}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                            Updated At: {new Date(profile.updatedAt).toLocaleString()}
+                                        </Typography>
+                                        <Button
+                                            variant="contained"
+                                            onClick={() => setEditMode(true)}
+                                            sx={{ marginTop: 2 }}
+                                        >
                                             Edit
                                         </Button>
-                                    </Grid>
-                                )}
-                                {isEditing && (
-                                    <Grid item>
-                                        <Button variant="contained" color="primary" onClick={handleSaveChanges}>
-                                            Save Changes
-                                        </Button>
-                                    </Grid>
+                                    </Box>
                                 )}
                             </Grid>
                         </Grid>
-                    </Grid>
-                </Paper>
-            )}
+                    </CardContent>
+                </Card>
+            </Paper>
         </Container>
     );
 };
