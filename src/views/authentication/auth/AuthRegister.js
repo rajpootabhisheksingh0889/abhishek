@@ -1,24 +1,21 @@
 import React, { useState } from 'react';
 import { Box, Typography, Button, Grid } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { ToastContainer } from 'react-toastify';
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
+import { toast } from 'react-toastify'; // Import toast
+import 'react-toastify/dist/ReactToastify.css'; // Import toast styles
 
 const AuthRegister = ({ title, subtitle, subtext }) => {
     const [formData, setFormData] = useState({
-        first_name: '',
-        last_name: '',
         email: '',
         password: '',
-       
     });
 
     const [formErrors, setFormErrors] = useState({
-        first_name: '',
-        last_name: '',
         email: '',
         password: '',
-       
     });
 
     const navigate = useNavigate();
@@ -35,14 +32,6 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
         let valid = true;
         const errors = {};
 
-        if (!formData.first_name.trim()) {
-            errors.first_name = 'First Name is required';
-            valid = false;
-        }
-        if (!formData.last_name.trim()) {
-            errors.last_name = 'Last Name is required';
-            valid = false;
-        }
         if (!formData.email.trim()) {
             errors.email = 'Email is required';
             valid = false;
@@ -57,7 +46,6 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             errors.password = 'Password must contain at least one alphabet, one special character, and be at least 6 characters long';
             valid = false;
         }
-        
 
         setFormErrors(errors);
         return valid;
@@ -75,12 +63,29 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             console.log('Registration successful:', response.data);
             navigate('/auth/login'); // Redirect to login page after successful registration
         } catch (error) {
-            console.error('Registration failed:', error);
+            if (error.response) {
+                // Extract and display the error message from the response
+                const apiErrors = error.response.data.errors;
+                if (apiErrors && apiErrors.length > 0) {
+                    const errorMessage = apiErrors[0].message || 'An error occurred. Please try again.';
+                    console.log("errorMessage", errorMessage)
+                    toast.error(errorMessage);
+                } else {
+                    toast.error('An error occurred. Please try again.');
+                }
+            } else if (error.request) {
+                // The request was made but no response was received
+                toast.error('No response from server. Please try again later.');
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                toast.error('An error occurred. Please try again.');
+            }
         }
     };
 
     return (
         <>
+            <ToastContainer />
             {title ? (
                 <Typography fontWeight="700" variant="h2" mb={1}>
                     {title}
@@ -103,35 +108,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                 }}
             >
                 <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="first_name" mb="5px">
-                            First Name
-                        </Typography>
-                        <CustomTextField
-                            id="first_name"
-                            variant="outlined"
-                            fullWidth
-                            value={formData.first_name}
-                            onChange={handleChange}
-                            error={!!formErrors.first_name}
-                            helperText={formErrors.first_name}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="last_name" mb="5px">
-                            Last Name
-                        </Typography>
-                        <CustomTextField
-                            id="last_name"
-                            variant="outlined"
-                            fullWidth
-                            value={formData.last_name}
-                            onChange={handleChange}
-                            error={!!formErrors.last_name}
-                            helperText={formErrors.last_name}
-                        />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={12}>
                         <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="email" mb="5px">
                             Email Address
                         </Typography>
@@ -147,7 +124,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={12}>
                         <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="password" mb="5px">
                             Password
                         </Typography>
@@ -163,7 +140,6 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                             autoComplete="new-password"
                         />
                     </Grid>
-                    
                 </Grid>
                 <Button color="primary" variant="contained" size="large" fullWidth type="submit">
                     Sign Up

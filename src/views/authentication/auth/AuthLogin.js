@@ -13,7 +13,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
 
 const AuthLogin = ({ title, subtitle, subtext }) => {
@@ -21,43 +20,53 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
-
-    const handleInputChange = (e) => {
+    const [formErrors, setFormErrors] = useState({
+        email: '',
+        password: '',
+    });
+    const handleChange = (e) => {
         const { id, value } = e.target;
-        setFormData({ ...formData, [id]: value });
+        setFormData((prevData) => ({
+            ...prevData,
+            [id]: value,
+        }));
     };
+    const validateForm = () => {
+        let valid = true;
+        const errors = {};
 
-    const validateEmail = (email) => {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(String(email).toLowerCase());
+        if (!formData.email.trim()) {
+            errors.email = 'Email is required';
+            valid = false;
+        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+            errors.email = 'Email is not valid';
+            valid = false;
+        }
+        if (!formData.password.trim()) {
+            errors.password = 'Password is required';
+            valid = false;
+        } else if (!/(?=.*[A-Za-z])(?=.*\W).{6,}/.test(formData.password)) {
+            errors.password = 'Password must contain at least one alphabet, one special character, and be at least 6 characters long';
+            valid = false;
+        }
+
+        setFormErrors(errors);
+        return valid;
     };
-
-    const validatePassword = (password) => {
-        return password.length >= 6; // You can add more complex validation if needed
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
-        setError(null);
+        // setLoading(true);
+       
 
-        if (!validateEmail(formData.email)) {
-            setError('Invalid email format.');
-            toast.error('Invalid email format.');
-            setLoading(false);
+        if (!validateForm()) {
             return;
         }
 
-        if (!validatePassword(formData.password)) {
-            setError('Password must be at least 6 characters long.');
-            toast.error('Password must be at least 6 characters long.');
-            setLoading(false);
-            return;
-        }
+        
 
         try {
             const response = await axios.post('http://134.209.145.149:9999/api/login', formData);
-            const { user_type, accessToken ,id} = response.data;
+            const { user_type, accessToken, id } = response.data;
             localStorage.setItem('user_type', user_type);
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('uid', id);
@@ -70,15 +79,32 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                 navigate('/dashboard');
             }
         } catch (error) {
-            setError('Login failed. Please check your credentials.');
-            toast.error('Login failed. Please check your credentials.');
+            if (error.response) {
+                // Extract and display the error message from the response
+                const apiErrors = error.response.data.errors;
+                if (apiErrors && apiErrors.length > 0) {
+                    const errorMessage = apiErrors[0].message || 'An error occurred. Please try again.';
+                    console.log("errorMessage", errorMessage)
+                    toast.error(errorMessage);
+                } else {
+                    toast.error('An error occurred. Please try again.');
+                }
+            } else if (error.request) {
+                // The request was made but no response was received
+                toast.error('No response from server. Please try again later.');
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                toast.error('An error occurred. Please try again.');
+            }
         } finally {
-            setLoading(false);
+            // setLoading(false);
         }
     };
 
+
     return (
         <>
+            <ToastContainer />
             {title ? (
                 <Typography fontWeight="700" variant="h2" mb={1}>
                     {title}
@@ -98,8 +124,11 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                             variant="outlined"
                             fullWidth
                             value={formData.email}
-                            onChange={handleInputChange}
-                            required
+                            error={!!formErrors.email}
+                            helperText={formErrors.email}
+                            autoComplete="email"
+                            onChange={handleChange}
+                           
                         />
                     </Box>
                     <Box>
@@ -112,8 +141,11 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                             variant="outlined"
                             fullWidth
                             value={formData.password}
-                            onChange={handleInputChange}
-                            required
+                            onChange={handleChange}
+                            error={!!formErrors.password}
+                            helperText={formErrors.password}
+                            autoComplete="new-password"
+                           
                         />
                     </Box>
                     <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}>
