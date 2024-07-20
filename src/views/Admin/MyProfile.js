@@ -12,6 +12,8 @@ import {
     Box,
     Paper,
 } from '@mui/material';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const MyProfile = () => {
     const [profile, setProfile] = useState(null);
@@ -28,8 +30,12 @@ const MyProfile = () => {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
+                const uid = localStorage.getItem('uid');
+                if (!uid) {
+                    throw new Error('User ID not found');
+                }
                 const response = await axios.post('http://134.209.145.149:9999/api/profile', {
-                    uid: 1,
+                    uid,
                 });
                 if (response.data.Success) {
                     const profileData = response.data.data[0];
@@ -41,8 +47,11 @@ const MyProfile = () => {
                         phone: profileData.phone,
                         user_type: profileData.user_type,
                     });
+                } else {
+                    throw new Error('Failed to fetch profile data');
                 }
             } catch (error) {
+                console.error('Error fetching profile:', error);
                 setError('Failed to fetch profile data');
             }
         };
@@ -60,18 +69,25 @@ const MyProfile = () => {
 
     const handleSave = async () => {
         try {
-            const response = await axios.post('http://134.209.145.149:9999/api/editProfile', {
-                uid: 1,
+            const uid = localStorage.getItem('uid');
+            if (!uid) {
+                throw new Error('User ID not found');
+            }
+            const response = await axios.put('http://134.209.145.149:9999/api/editProfile', {
+                uid,
                 ...formValues,
             });
             if (response.data.Success) {
                 setProfile(formValues);
                 setEditMode(false);
+                toast.success('Profile updated successfully!');
             } else {
-                setError('Failed to update profile');
+                throw new Error('Failed to update profile');
             }
         } catch (error) {
+            console.error('Error updating profile:', error);
             setError('Failed to update profile');
+            toast.error('Failed to update profile');
         }
     };
 
@@ -85,6 +101,7 @@ const MyProfile = () => {
 
     return (
         <Container>
+            <ToastContainer />
             <Paper elevation={3} sx={{ padding: 4, marginTop: 4 }}>
                 <Card>
                     <CardContent>
@@ -173,12 +190,7 @@ const MyProfile = () => {
                                         <Typography variant="body2">
                                             User Type: {profile.user_type}
                                         </Typography>
-                                        <Typography variant="body2">
-                                            Created At: {new Date(profile.createdAt).toLocaleString()}
-                                        </Typography>
-                                        <Typography variant="body2">
-                                            Updated At: {new Date(profile.updatedAt).toLocaleString()}
-                                        </Typography>
+
                                         <Button
                                             variant="contained"
                                             onClick={() => setEditMode(true)}

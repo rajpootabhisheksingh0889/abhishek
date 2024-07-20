@@ -57,9 +57,10 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
         try {
             const response = await axios.post('http://134.209.145.149:9999/api/login', formData);
-            const { user_type, accessToken } = response.data;
+            const { user_type, accessToken ,id} = response.data;
             localStorage.setItem('user_type', user_type);
             localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('uid', id);
 
             if (user_type === 'AD') {
                 navigate('/dashboard');
