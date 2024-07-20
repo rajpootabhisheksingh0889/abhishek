@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
     Typography, Box, TextField,
+    FormControl, InputLabel, Select, MenuItem,
     Table, TableBody, TableCell, TableHead, TableRow, Chip, Skeleton, Switch, Button,
     Dialog, DialogTitle, DialogContent, DialogActions,
 } from '@mui/material';
@@ -31,11 +32,14 @@ const AgentList = () => {
         phone: '',
     });
 
+    const [selectedOption, setSelectedOption] = useState(12); // Default to 'All'
+
     useEffect(() => {
         const fetchAgents = async () => {
+            setLoading(true); // Set loading to true when fetching new data
             try {
-                const response = await axios.post('http://134.209.145.149:9999/api/userType', { user_type: "AG" });
-                console.log(response.data);  // Debugging: Check the structure of the API response
+                const response = await axios.post('http://134.209.145.149:9999/api/statusFilter', { status: selectedOption });
+                console.log('API Response:', response.data);  // Debugging: Check the structure of the API response
                 setAgents(response.data.data);  // Adjust based on actual response structure
             } catch (err) {
                 setError(err);
@@ -45,7 +49,11 @@ const AgentList = () => {
         };
 
         fetchAgents();
-    }, []);
+    }, [selectedOption]); // Re-fetch agents when selectedOption changes
+
+    const handleChange1 = (event) => {
+        setSelectedOption(event.target.value);
+    };
 
     const handleToggleStatus = async (agentId, currentStatus) => {
         try {
@@ -56,10 +64,7 @@ const AgentList = () => {
             setAgents(updatedAgents);
 
             // Update status on the server
-            await axios.put(`http://134.209.145.149:9999/api/toggle/${agentId}`, {
-                // Send any additional data needed in the request body
-                // In your case, if no additional data is needed, you can omit this part
-            });
+            await axios.put(`http://134.209.145.149:9999/api/toggle/${agentId}`);
 
             // Show toast notification
             toast.success(`${updatedAgents.find(agent => agent.id === agentId).first_name} is now ${!currentStatus ? 'active' : 'inactive'}.`);
@@ -158,10 +163,12 @@ const AgentList = () => {
     };
 
     const filteredAgents = agents.filter(agent =>
-        agent.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        agent.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        agent.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        agent.phone.toLowerCase().includes(searchTerm.toLowerCase())
+        (selectedOption === 12 || (selectedOption === 1 && agent.status) || (selectedOption === 0 && !agent.status)) && (
+            agent.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            agent.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            agent.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            agent.phone.toLowerCase().includes(searchTerm.toLowerCase())
+        )
     );
 
     if (error) {
@@ -182,22 +189,32 @@ const AgentList = () => {
                 </Typography>
 
                 <Box sx={{ display: 'flex', gap: 2 }}>
+                    <FormControl variant="outlined" size="medium">
+                        <InputLabel>Select</InputLabel>
+                        <Select
+                            value={selectedOption}
+                            onChange={handleChange1}
+                            label="Select"
+                            sx={{ height: '100%', minWidth: '120px' }} // Adjust height and width as needed
+                        >
+                            <MenuItem value={12}>All</MenuItem>
+                            <MenuItem value={1}>Active</MenuItem>
+                            <MenuItem value={0}>Inactive</MenuItem>
+                        </Select>
+                    </FormControl>
                     <Button
                         variant="contained"
                         color="primary"
                         size="large"
                         onClick={handleOpen}
-                        // sx={{ height: '100%', minWidth: '100px' }} // Adjust height and width as needed
+                    // sx={{ height: '100%', minWidth: '100px' }} // Adjust height and width as needed
                     >
                         Add Agent
                     </Button>
                     <TextField
                         size="medium"
-
                         label="Search Agents"
                         variant="outlined"
-                        // sx={{ height: '100%', width: 300 }} // Adjust width as needed
-                        // margin="normal"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -241,92 +258,88 @@ const AgentList = () => {
                             </TableCell>
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    Actions
+                                    Action
                                 </Typography>
                             </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {loading ? (
-                            Array.from(new Array(5)).map((_, index) => (
+                            // Display skeletons when loading
+                            Array.from({ length: 5 }).map((_, index) => (
                                 <TableRow key={index}>
                                     <TableCell>
-                                        <Skeleton variant="text" width={40} />
+                                        <Skeleton variant="text" />
                                     </TableCell>
                                     <TableCell>
-                                        <Skeleton variant="text" width={100} />
+                                        <Skeleton variant="text" />
                                     </TableCell>
                                     <TableCell>
-                                        <Skeleton variant="text" width={150} />
+                                        <Skeleton variant="text" />
                                     </TableCell>
                                     <TableCell>
-                                        <Skeleton variant="text" width={60} />
+                                        <Skeleton variant="text" />
                                     </TableCell>
                                     <TableCell>
-                                        <Skeleton variant="text" width={80} />
+                                        <Skeleton variant="text" />
                                     </TableCell>
                                     <TableCell>
-                                        <Skeleton variant="text" width={80} />
+                                        <Skeleton variant="text" />
                                     </TableCell>
                                 </TableRow>
                             ))
-                        ) : filteredAgents.length > 0 ? (
-                            filteredAgents.map((agent, index) => (
-                                <TableRow key={index}>
+                        ) : (
+                            filteredAgents.map((agent) => (
+                                <TableRow key={agent.id}>
                                     <TableCell>
-                                        <Typography variant="subtitle2" fontWeight={600}>
+                                        <Typography variant="subtitle2">
                                             {agent.id}
                                         </Typography>
                                     </TableCell>
                                     <TableCell>
-                                        <Typography variant="subtitle2" fontWeight={600}>
+                                        <Typography variant="subtitle2">
                                             {agent.first_name} {agent.last_name}
                                         </Typography>
                                     </TableCell>
                                     <TableCell>
-                                        <Typography variant="subtitle2" fontWeight={400}>
+                                        <Typography color="textSecondary" variant="subtitle2">
                                             {agent.email}
                                         </Typography>
                                     </TableCell>
                                     <TableCell>
-                                        <Typography variant="subtitle2" fontWeight={400}>
+                                        <Typography color="textSecondary" variant="subtitle2">
                                             {agent.phone}
                                         </Typography>
                                     </TableCell>
                                     <TableCell>
                                         <Chip
-                                            size="small"
-                                            label={agent.status ? "Active" : "Inactive"}
-                                            sx={{
-                                                backgroundColor: agent.status ? "green" : "red",
-                                                color: "white",
-                                            }}
+                                            label={agent.status ? 'Active' : 'Inactive'}
+                                            color={agent.status ? 'success' : 'error'}
+                                            sx={{ borderRadius: '4px', fontSize: '0.8rem' }}
                                         />
                                     </TableCell>
                                     <TableCell>
                                         <Switch
                                             checked={agent.status}
                                             onChange={() => handleToggleStatus(agent.id, agent.status)}
-                                            inputProps={{ "aria-label": "controlled" }}
+                                            color="primary"
                                         />
                                     </TableCell>
                                 </TableRow>
                             ))
-                        ) : (
-                                    <TableRow>
-                                        <TableCell colSpan={6}>
-                                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '300px' }}>
-                                                <img src={NoData} alt="No data available" style={{ maxWidth: '100%', maxHeight: '100%' }} />
-                                            </Box>
-                                        </TableCell>
-                                    </TableRow>
                         )}
                     </TableBody>
                 </Table>
+                {filteredAgents.length === 0 && !loading && (
+                    <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+                        <img src={NoData} alt="No data" />
+                    </Box>
+                )}
             </Box>
 
+            {/* Add Agent Modal */}
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle className='popup-heading'>Add Agent</DialogTitle>
+                <DialogTitle>Add New Agent</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -335,7 +348,6 @@ const AgentList = () => {
                         label="First Name"
                         type="text"
                         fullWidth
-                        variant="outlined"
                         value={newAgent.first_name}
                         onChange={handleChange}
                         error={!!formErrors.first_name}
@@ -347,7 +359,6 @@ const AgentList = () => {
                         label="Last Name"
                         type="text"
                         fullWidth
-                        variant="outlined"
                         value={newAgent.last_name}
                         onChange={handleChange}
                         error={!!formErrors.last_name}
@@ -356,10 +367,9 @@ const AgentList = () => {
                     <TextField
                         margin="dense"
                         name="email"
-                        label="Email"
+                        label="Email Address"
                         type="email"
                         fullWidth
-                        variant="outlined"
                         value={newAgent.email}
                         onChange={handleChange}
                         error={!!formErrors.email}
@@ -369,9 +379,8 @@ const AgentList = () => {
                         margin="dense"
                         name="password"
                         label="Password"
-                        type="password" // Set type to "text"
+                        type="password"
                         fullWidth
-                        variant="outlined"
                         value={newAgent.password}
                         onChange={handleChange}
                         error={!!formErrors.password}
@@ -380,10 +389,9 @@ const AgentList = () => {
                     <TextField
                         margin="dense"
                         name="phone"
-                        label="Phone"
-                        type="number"
+                        label="Phone Number"
+                        type="text"
                         fullWidth
-                        variant="outlined"
                         value={newAgent.phone}
                         onChange={handleChange}
                         error={!!formErrors.phone}
