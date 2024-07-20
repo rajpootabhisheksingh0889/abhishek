@@ -130,6 +130,9 @@ const AgentList = () => {
         if (!newAgent.password.trim()) {
             errors.password = 'Password is required';
             isValid = false;
+        } else if (!/(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/.test(newAgent.password)) {
+            errors.password = 'Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character';
+            isValid = false;
         }
         if (!newAgent.phone.trim()) {
             errors.phone = 'Phone is required';
@@ -390,7 +393,7 @@ const AgentList = () => {
                         margin="dense"
                         name="phone"
                         label="Phone Number"
-                        type="text"
+                        type="number"
                         fullWidth
                         value={newAgent.phone}
                         onChange={handleChange}
