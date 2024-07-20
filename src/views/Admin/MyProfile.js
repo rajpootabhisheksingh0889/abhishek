@@ -164,6 +164,7 @@ const MyProfile = () => {
                                             onChange={handleInputChange}
                                             fullWidth
                                             margin="normal"
+                                            readonly
                                             variant="outlined"
                                         />
                                         <Button

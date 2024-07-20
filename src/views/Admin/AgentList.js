@@ -192,6 +192,15 @@ const AgentList = () => {
                 </Typography>
 
                 <Box sx={{ display: 'flex', gap: 2 }}>
+                   
+                    
+                    <TextField
+                        size="medium"
+                        label="Search Agents"
+                        variant="outlined"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                     <FormControl variant="outlined" size="medium">
                         <InputLabel>Select</InputLabel>
                         <Select
@@ -214,13 +223,6 @@ const AgentList = () => {
                     >
                         Add Agent
                     </Button>
-                    <TextField
-                        size="medium"
-                        label="Search Agents"
-                        variant="outlined"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
                 </Box>
             </Box>
 
@@ -335,7 +337,7 @@ const AgentList = () => {
                 </Table>
                 {filteredAgents.length === 0 && !loading && (
                     <Box display="flex" justifyContent="center" alignItems="center" height="100%">
-                        <img src={NoData} alt="No data" />
+                        <img height="400px" src={NoData} alt="No data" />
                     </Box>
                 )}
             </Box>
