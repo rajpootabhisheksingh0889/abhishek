@@ -45,7 +45,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
         if (!formData.password.trim()) {
             errors.password = 'Password is required';
             valid = false;
-        } 
+        }
 
         setFormErrors(errors);
         return valid;
@@ -53,13 +53,13 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         // setLoading(true);
-       
+
 
         if (!validateForm()) {
             return;
         }
 
-        
+
 
         try {
             const response = await axios.post('http://134.209.145.149:9999/api/login', formData);
@@ -125,7 +125,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                             helperText={formErrors.email}
                             autoComplete="email"
                             onChange={handleChange}
-                           
+
                         />
                     </Box>
                     <Box>
@@ -142,7 +142,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                             error={!!formErrors.password}
                             helperText={formErrors.password}
                             autoComplete="new-password"
-                           
+
                         />
                     </Box>
                     <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}>

@@ -29,11 +29,14 @@ const CustomerList = () => {
         fetchCustomers();
     }, []);
 
-    const filteredCustomers = customers.filter(customer =>
-        customer.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer.email.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredCustomers = customers.filter(customer => {
+        const lowerCaseSearchTerm = searchTerm.toLowerCase();
+        return (
+            (customer?.first_name?.toLowerCase().includes(lowerCaseSearchTerm) || '') ||
+            (customer?.last_name?.toLowerCase().includes(lowerCaseSearchTerm) || '') ||
+            (customer?.email?.toLowerCase().includes(lowerCaseSearchTerm) || '')
+        );
+    });
 
     if (error) {
         return <Typography>Error: {error.message}</Typography>;
