@@ -45,10 +45,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
         if (!formData.password.trim()) {
             errors.password = 'Password is required';
             valid = false;
-        } else if (!/(?=.*[A-Za-z])(?=.*\W).{6,}/.test(formData.password)) {
-            errors.password = 'Password must contain at least one alphabet, one special character, and be at least 6 characters long';
-            valid = false;
-        }
+        } 
 
         setFormErrors(errors);
         return valid;
