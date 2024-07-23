@@ -14,7 +14,28 @@ import {
     Paper,
 } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
+import { styled } from '@mui/system';
 import 'react-toastify/dist/ReactToastify.css';
+
+// Define keyframes for animations
+const fadeIn = `
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+`;
+
+// Styled component for the Card
+const AnimatedCard = styled(Paper)`
+  animation: fadeIn 0.5s ease-in-out;
+  ${fadeIn}
+`;
 
 const MyProfile = () => {
     const [profile, setProfile] = useState(null);
@@ -97,7 +118,6 @@ const MyProfile = () => {
         }
     };
 
-
     if (error) {
         return <Typography color="error">{error}</Typography>;
     }
@@ -109,110 +129,122 @@ const MyProfile = () => {
     return (
         <Container>
             <ToastContainer />
-            <Paper elevation={3} sx={{ padding: 4, marginTop: 4 }}>
-                <Card>
-                    <CardContent>
-                        <Grid container spacing={2} alignItems="center">
-                            <Grid item>
-                                <Avatar
-                                    sx={{
-                                        width: 80,
-                                        height: 80,
-                                        bgcolor: 'primary.main',
-                                        fontSize: 40,
-                                    }}
-                                >
-                                    {profile.first_name.charAt(0)}
-                                </Avatar>
-                            </Grid>
-                            <Grid item xs={12} sm={8}>
-                                {editMode ? (
-                                    <Box>
-                                        <TextField
-                                            label="First Name"
-                                            name="first_name"
-                                            value={formValues.first_name}
-                                            onChange={handleInputChange}
-                                            fullWidth
-                                            margin="normal"
-                                            variant="outlined"
-                                        />
-                                        <TextField
-                                            label="Last Name"
-                                            name="last_name"
-                                            value={formValues.last_name}
-                                            onChange={handleInputChange}
-                                            fullWidth
-                                            margin="normal"
-                                            variant="outlined"
-                                        />
-                                        <TextField
-                                            label="Email"
-                                            name="email"
-                                            value={formValues.email}
-                                            onChange={handleInputChange}
-                                            fullWidth
-                                            margin="normal"
-                                            variant="outlined"
-                                        />
-                                        <TextField
-                                            label="Phone"
-                                            name="phone"
-                                            value={formValues.phone}
-                                            onChange={handleInputChange}
-                                            fullWidth
-                                            margin="normal"
-                                            variant="outlined"
-                                        />
-                                        <TextField
-                                            label="User Type"
-                                            name="user_type"
-                                            value={formValues.user_type}
-                                            onChange={handleInputChange}
-                                            fullWidth
-                                            margin="normal"
-                                            variant="outlined"
-                                            InputProps={{ readOnly: true }}  // Make field read-only
-                                        />
+            <AnimatedCard elevation={3} sx={{ padding: 4, marginTop: 4 }}>
+                <CardContent>
+                    <Grid container spacing={2} alignItems="center">
+                        <Grid item>
+                            <Avatar
+                                src="/path/to/avatar.jpg" // Add path to your avatar image
+                                sx={{
+                                    width: 80,
+                                    height: 80,
+                                    bgcolor: 'primary.main',
+                                    fontSize: 40,
+                                }}
+                            >
+                                {profile.first_name.charAt(0)}
+                            </Avatar>
+                        </Grid>
+                        <Grid item xs={12} sm={8}>
+                            {editMode ? (
+                                <Box sx={{ animation: 'fadeIn 0.5s ease-in-out' }}>
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                label="First Name"
+                                                name="first_name"
+                                                value={formValues.first_name}
+                                                onChange={handleInputChange}
+                                                fullWidth
+                                                margin="normal"
+                                                variant="outlined"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                label="Last Name"
+                                                name="last_name"
+                                                value={formValues.last_name}
+                                                onChange={handleInputChange}
+                                                fullWidth
+                                                margin="normal"
+                                                variant="outlined"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                label="Email"
+                                                name="email"
+                                                value={formValues.email}
+                                                onChange={handleInputChange}
+                                                fullWidth
+                                                margin="normal"
+                                                variant="outlined"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                label="Phone"
+                                                name="phone"
+                                                value={formValues.phone}
+                                                onChange={handleInputChange}
+                                                fullWidth
+                                                margin="normal"
+                                                variant="outlined"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <TextField
+                                                label="User Type"
+                                                name="user_type"
+                                                value={formValues.user_type}
+                                                onChange={handleInputChange}
+                                                fullWidth
+                                                margin="normal"
+                                                variant="outlined"
+                                                InputProps={{ readOnly: true }}  // Make field read-only
+                                            />
+                                        </Grid>
+                                    </Grid>
+                                    <Box sx={{ marginTop: 2 }}>
                                         <Button
                                             variant="contained"
                                             color="primary"
                                             onClick={handleSave}
-                                            sx={{ marginTop: 2 }}
+                                            sx={{ marginRight: 1 }}
                                         >
                                             Save
                                         </Button>
                                         <Button
                                             variant="outlined"
                                             onClick={() => setEditMode(false)}
-                                            sx={{ marginTop: 2, marginLeft: 1 }}
                                         >
                                             Cancel
                                         </Button>
                                     </Box>
-                                ) : (
-                                    <Box>
-                                        <Typography variant="h5">{`${profile.first_name} ${profile.last_name}`}</Typography>
-                                        <Typography variant="body1">{profile.email}</Typography>
-                                        <Typography variant="body1">{profile.phone}</Typography>
-                                        <Typography variant="body2">
-                                            User Type: {profile.user_type}
-                                        </Typography>
+                                </Box>
+                            ) : (
+                                <Box>
+                                    <Typography variant="h5">{`${profile.first_name} ${profile.last_name}`}</Typography>
+                                    <Typography variant="body1">{profile.email}</Typography>
+                                    <Typography variant="body1">{profile.phone}</Typography>
+                                    <Typography variant="body2">
+                                        User Type: {profile.user_type}
+                                    </Typography>
 
-                                        <Button
-                                            variant="contained"
-                                            onClick={() => setEditMode(true)}
-                                            sx={{ marginTop: 2 }}
-                                        >
-                                            Edit
-                                        </Button>
-                                    </Box>
-                                )}
-                            </Grid>
+                                    <Button
+                                        variant="contained"
+                                        onClick={() => setEditMode(true)}
+                                        sx={{ marginTop: 2 }}
+                                    >
+                                        Edit
+                                    </Button>
+                                </Box>
+                            )}
                         </Grid>
-                    </CardContent>
-                </Card>
-            </Paper>
+                    </Grid>
+                </CardContent>
+            </AnimatedCard>
         </Container>
     );
 };
