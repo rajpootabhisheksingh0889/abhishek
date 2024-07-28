@@ -6,7 +6,7 @@
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@mui/icons-material": "^5.10.9",
-    "@mui/lab": "5.0.0-alpha.106",
+    "@mui/lab": "^5.0.0-alpha.106",
     "@mui/material": "^5.10.12",
     "@mui/x-date-pickers": "^5.0.6",
     "@reduxjs/toolkit": "^1.8.3",
@@ -32,7 +32,6 @@
     "react-spring": "^9.2.4",
     "react-toastify": "^10.0.5",
     "reactstrap": "^9.2.2",
-    
     "stylis-plugin-rtl": "^2.0.2",
     "web-vitals": "^2.1.4",
     "yup": "^0.32.11"

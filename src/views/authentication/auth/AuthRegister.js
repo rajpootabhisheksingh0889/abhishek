@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button, Grid, Modal } from '@mui/material';
+import { Box, Typography, Grid, Modal } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
@@ -21,6 +22,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
 
     const [otpSent, setOtpSent] = useState(false);
     const [openModal, setOpenModal] = useState(false);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -70,6 +72,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
         if (!otpSent) {
             handleSendOtp();
         } else {
+            setLoading(true);
             try {
                 const response = await axios.post('http://134.209.145.149:9999/api/register', formData);
                 console.log('Registration successful:', response.data);
@@ -88,6 +91,8 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                 } else {
                     toast.error('An error occurred. Please try again.');
                 }
+            } finally {
+                setLoading(false);
             }
         }
     };
@@ -101,6 +106,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             return;
         }
 
+        setLoading(true);
         try {
             await axios.post('http://134.209.145.149:9999/api/otp', { email: formData.email });
             toast.success('OTP sent to your email');
@@ -121,9 +127,10 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                 console.error('Error message:', error.message);
                 toast.error(`Error: ${error.message}`);
             }
+        } finally {
+            setLoading(false);
         }
     };
-
 
     const handleModalClose = () => {
         setOpenModal(false);
@@ -170,9 +177,16 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                         />
                     </Grid>
                 </Grid>
-                <Button color="primary" variant="contained" size="large" fullWidth type="submit">
+                <LoadingButton
+                    color="primary"
+                    variant="contained"
+                    size="large"
+                    fullWidth
+                    type="submit"
+                    loading={loading}
+                >
                     Sign Up
-                </Button>
+                </LoadingButton>
             </Box>
 
             <Modal
@@ -228,9 +242,17 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                             helperText={formErrors.password}
                             autoComplete="new-password"
                         />
-                        <Button color="primary" variant="contained" size="large" fullWidth type="submit" sx={{ mt: 2 }}>
+                        <LoadingButton
+                            color="primary"
+                            variant="contained"
+                            size="large"
+                            fullWidth
+                            type="submit"
+                            loading={loading}
+                            sx={{ mt: 2 }}
+                        >
                             Confirm Registration
-                        </Button>
+                        </LoadingButton>
                     </Box>
                 </Box>
             </Modal>
