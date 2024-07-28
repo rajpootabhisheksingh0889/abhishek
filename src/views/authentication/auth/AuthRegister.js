@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button, Grid } from '@mui/material';
+import { Box, Typography, Button, Grid, Modal } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
@@ -20,6 +20,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
     });
 
     const [otpSent, setOtpSent] = useState(false);
+    const [openModal, setOpenModal] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -41,16 +42,18 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             errors.email = 'Email is not valid';
             valid = false;
         }
-        if (!formData.password.trim()) {
-            errors.password = 'Password is required';
-            valid = false;
-        } else if (!/(?=.*[A-Za-z])(?=.*\W).{6,}/.test(formData.password)) {
-            errors.password = 'Password must contain at least one alphabet, one special character, and be at least 6 characters long';
-            valid = false;
-        }
-        if (otpSent && !formData.otp.trim()) {
-            errors.otp = 'OTP is required';
-            valid = false;
+        if (otpSent) {
+            if (!formData.password.trim()) {
+                errors.password = 'Password is required';
+                valid = false;
+            } else if (!/(?=.*[A-Za-z])(?=.*\W).{6,}/.test(formData.password)) {
+                errors.password = 'Password must contain at least one alphabet, one special character, and be at least 6 characters long';
+                valid = false;
+            }
+            if (!formData.otp.trim()) {
+                errors.otp = 'OTP is required';
+                valid = false;
+            }
         }
 
         setFormErrors(errors);
@@ -64,24 +67,27 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             return;
         }
 
-        try {
-            const response = await axios.post('http://134.209.145.149:9999/api/register', formData);
-            console.log('Registration successful:', response.data);
-            navigate('/auth/login');
-        } catch (error) {
-            if (error.response) {
-                const apiErrors = error.response.data.errors;
-                if (apiErrors && apiErrors.length > 0) {
-                    const errorMessage = apiErrors[0].message || 'An error occurred. Please try again.';
-                    console.log("errorMessage", errorMessage)
-                    toast.error(errorMessage);
+        if (!otpSent) {
+            handleSendOtp();
+        } else {
+            try {
+                const response = await axios.post('http://134.209.145.149:9999/api/register', formData);
+                console.log('Registration successful:', response.data);
+                navigate('/auth/login');
+            } catch (error) {
+                if (error.response) {
+                    const apiErrors = error.response.data.errors;
+                    if (apiErrors && apiErrors.length > 0) {
+                        const errorMessage = apiErrors[0].message || 'An error occurred. Please try again.';
+                        toast.error(errorMessage);
+                    } else {
+                        toast.error('An error occurred. Please try again.');
+                    }
+                } else if (error.request) {
+                    toast.error('No response from server. Please try again later.');
                 } else {
                     toast.error('An error occurred. Please try again.');
                 }
-            } else if (error.request) {
-                toast.error('No response from server. Please try again later.');
-            } else {
-                toast.error('An error occurred. Please try again.');
             }
         }
     };
@@ -99,9 +105,28 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             await axios.post('http://134.209.145.149:9999/api/otp', { email: formData.email });
             toast.success('OTP sent to your email');
             setOtpSent(true);
+            setOpenModal(true);
         } catch (error) {
-            toast.error('Failed to send OTP. Please try again.');
+            if (error.response) {
+                // Extract the specific error message from the API response
+                const apiErrors = error.response.data.errors;
+                const errorMessage = apiErrors.length > 0 ? apiErrors[0].message : 'Please try again.';
+                toast.error(`Failed to send OTP: ${errorMessage}`);
+            } else if (error.request) {
+                // The request was made but no response was received
+                console.error('Error request:', error.request);
+                toast.error('No response from the server. Please try again.');
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.error('Error message:', error.message);
+                toast.error(`Error: ${error.message}`);
+            }
         }
+    };
+
+
+    const handleModalClose = () => {
+        setOpenModal(false);
     };
 
     return (
@@ -129,7 +154,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                 }}
             >
                 <Grid container spacing={2}>
-                    <Grid item xs={12} sm={12}>
+                    <Grid item xs={12}>
                         <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="email" mb="5px">
                             Email Address
                         </Typography>
@@ -143,35 +168,52 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                             helperText={formErrors.email}
                             autoComplete="email"
                         />
-                        <Button
-                            color="primary"
-                            variant="contained"
-                            size="small"
-                            onClick={handleSendOtp}
-                            sx={{ mt: 1, float: 'right' }}
-                            disabled={otpSent}
-                        >
-                            Send OTP
-                        </Button>
-
                     </Grid>
-                    {otpSent && (
-                        <Grid item xs={12} sm={12}>
-                            <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="otp" mb="5px">
-                                OTP
-                            </Typography>
-                            <CustomTextField
-                                id="otp"
-                                variant="outlined"
-                                fullWidth
-                                value={formData.otp}
-                                onChange={handleChange}
-                                error={!!formErrors.otp}
-                                helperText={formErrors.otp}
-                            />
-                        </Grid>
-                    )}
-                    <Grid item xs={12} sm={12}>
+                </Grid>
+                <Button color="primary" variant="contained" size="large" fullWidth type="submit">
+                    Sign Up
+                </Button>
+            </Box>
+
+            <Modal
+                open={openModal}
+                onClose={handleModalClose}
+                aria-labelledby="otp-modal-title"
+                aria-describedby="otp-modal-description"
+            >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 400,
+                        bgcolor: 'background.paper',
+                        border: '2px solid #000',
+                        boxShadow: 24,
+                        p: 4,
+                    }}
+                >
+                    <Typography id="otp-modal-title" variant="h6" component="h2">
+                        Enter OTP and Password
+                    </Typography>
+                    <Box
+                        component="form"
+                        onSubmit={handleSubmit}
+                        sx={{ mt: 2 }}
+                    >
+                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="otp" mb="5px">
+                            OTP
+                        </Typography>
+                        <CustomTextField
+                            id="otp"
+                            variant="outlined"
+                            fullWidth
+                            value={formData.otp}
+                            onChange={handleChange}
+                            error={!!formErrors.otp}
+                            helperText={formErrors.otp}
+                        />
                         <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="password" mb="5px">
                             Password
                         </Typography>
@@ -186,14 +228,12 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                             helperText={formErrors.password}
                             autoComplete="new-password"
                         />
-                    </Grid>
-
-
-                </Grid>
-                <Button color="primary" variant="contained" size="large" fullWidth type="submit" disabled={!otpSent}>
-                    Sign Up
-                </Button>
-            </Box>
+                        <Button color="primary" variant="contained" size="large" fullWidth type="submit" sx={{ mt: 2 }}>
+                            Confirm Registration
+                        </Button>
+                    </Box>
+                </Box>
+            </Modal>
             {subtitle}
         </>
     );
