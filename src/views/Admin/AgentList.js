@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-    Typography, Box, TextField,
+    Typography, Box, TextField, Modal,
     FormControl, InputLabel, Select, MenuItem,
     Table, TableBody, TableCell, TableHead, TableRow, Chip, Skeleton, Switch, Button,
     Dialog, DialogTitle, DialogContent, DialogActions,
 } from '@mui/material';
+
+import { LoadingButton } from '@mui/lab';
+
 import DashboardCard from 'src/components/shared/DashboardCard';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,16 +16,19 @@ import NoData from "src/assets/images/products/NoData.jpg";
 
 const AgentList = () => {
     const [agents, setAgents] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [open, setOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [otpSent, setOtpSent] = useState(false);
+
     const [newAgent, setNewAgent] = useState({
         first_name: '',
         last_name: '',
         email: '',
         password: '',
         phone: '',
+        otp: '',
     });
     const [formErrors, setFormErrors] = useState({
         first_name: '',
@@ -30,6 +36,7 @@ const AgentList = () => {
         email: '',
         password: '',
         phone: '',
+        otp: '',
     });
 
     const [selectedOption, setSelectedOption] = useState(12); // Default to 'All'
@@ -82,6 +89,7 @@ const AgentList = () => {
             email: '',
             password: '',
             phone: '',
+            otp: '',
         }); // Clear form validation errors on open
     };
 
@@ -93,75 +101,134 @@ const AgentList = () => {
             email: '',
             password: '',
             phone: '',
+            otp: '',
         }); // Reset form data
+        setOtpSent(false); // Reset OTP sent state
     };
 
     const handleChange = (e) => {
         setNewAgent({ ...newAgent, [e.target.name]: e.target.value });
     };
 
-    const handleSubmit = async () => {
-        // Validate fields before submitting
-        let isValid = true;
-        const errors = {
-            first_name: '',
-            last_name: '',
-            email: '',
-            password: '',
-            phone: '',
-        };
-
-        // Check required fields
+    const validateForm = () => {
+        let valid = true;
+        const errors = {};
         if (!newAgent.first_name.trim()) {
             errors.first_name = 'First Name is required';
-            isValid = false;
+            valid = false;
         }
         if (!newAgent.last_name.trim()) {
             errors.last_name = 'Last Name is required';
-            isValid = false;
+            valid = false;
         }
         if (!newAgent.email.trim()) {
             errors.email = 'Email is required';
-            isValid = false;
-        } else if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(newAgent.email)) {
-            errors.email = 'Invalid email format';
-            isValid = false;
+            valid = false;
+        } else if (!/\S+@\S+\.\S+/.test(newAgent.email)) {
+            errors.email = 'Email is not valid';
+            valid = false;
         }
+
         if (!newAgent.password.trim()) {
             errors.password = 'Password is required';
-            isValid = false;
-        } else if (!/(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/.test(newAgent.password)) {
-            errors.password = 'Password must be at least 8 characters long, contain at least one uppercase letter, one number, and one special character';
-            isValid = false;
+            valid = false;
+        } else if (!/(?=.*[A-Za-z])(?=.*\W).{6,}/.test(newAgent.password)) {
+            errors.password = 'Password must contain at least one alphabet, one special character, and be at least 6 characters long';
+            valid = false;
         }
         if (!newAgent.phone.trim()) {
             errors.phone = 'Phone is required';
-            isValid = false;
+            valid = false;
         } else if (!/^\d{10}$/.test(newAgent.phone)) {  // Adjust regex based on the required phone number format
             errors.phone = 'Invalid phone number format';
-            isValid = false;
+            valid = false;
+        }
+        if (otpSent) {
+            if (!newAgent.otp.trim()) {
+                errors.otp = 'OTP is required';
+                valid = false;
+            }
         }
 
-        if (!isValid) {
-            setFormErrors(errors);
-            return; // Exit if any field is empty
+        setFormErrors(errors);
+        return valid;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!validateForm()) {
+            return;
         }
 
+        if (!otpSent) {
+            handleSendOtp();
+        } else {
+            setLoading(true);
+            try {
+                const response = await axios.post('http://134.209.145.149:9999/api/createAgent', newAgent);
+                setAgents([...agents, response.data.data]);
+                setNewAgent({
+                    first_name: '',
+                    last_name: '',
+                    email: '',
+                    password: '',
+                    phone: '',
+                    otp: '',
+                }); // Reset form data
+                handleClose();
+                toast.success('New agent added successfully!');
+            } catch (error) {
+                if (error.response) {
+                    const apiErrors = error.response.data.data.errors;
+                    if (apiErrors && apiErrors.length > 0) {
+                        const errorMessage = apiErrors[0].message || 'An error occurred. Please try again.';
+                        toast.error(errorMessage);
+                    } else {
+                        toast.error('An error occurred. Please try again.');
+                    }
+                } else if (error.request) {
+                    toast.error('No response from server. Please try again later.');
+                } else {
+                    toast.error('An error occurred. Please try again.');
+                }
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
+
+    const handleSendOtp = async () => {
+        if (!newAgent.email.trim()) {
+            setFormErrors((prevErrors) => ({
+                ...prevErrors,
+                email: 'Email is required to send OTP',
+            }));
+            return;
+        }
+
+        setLoading(true);
         try {
-            const response = await axios.post('http://134.209.145.149:9999/api/createAgent', newAgent);
-            setAgents([...agents, response.data.data]);  // Adjust based on actual response structure
-            setNewAgent({
-                first_name: '',
-                last_name: '',
-                email: '',
-                password: '',
-                phone: '',
-            }); // Reset form data
-            handleClose();
-            toast.success('New agent added successfully!');
-        } catch (err) {
-            console.error('Error adding new agent:', err);
-            toast.error('Failed to add new agent.');
+            await axios.post('http://134.209.145.149:9999/api/otp', { email: newAgent.email });
+            toast.success('OTP sent to your email');
+            setOtpSent(true);
+        } catch (error) {
+            if (error.response) {
+                // Extract the specific error message from the API response
+                const apiErrors = error.response.data.errors;
+                const errorMessage = apiErrors.length > 0 ? apiErrors[0].message : 'Please try again.';
+                toast.error(`Failed to send OTP: ${errorMessage}`);
+            } else if (error.request) {
+                // The request was made but no response was received
+                console.error('Error request:', error.request);
+                toast.error('No response from the server. Please try again.');
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                console.error('Error message:', error.message);
+                toast.error(`Error: ${error.message}`);
+            }
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -183,6 +250,7 @@ const AgentList = () => {
         return <Typography>Error: Unexpected data format</Typography>;
     }
 
+
     return (
         <DashboardCard>
             <ToastContainer /> {/* ToastContainer to display notifications */}
@@ -192,8 +260,8 @@ const AgentList = () => {
                 </Typography>
 
                 <Box sx={{ display: 'flex', gap: 2 }}>
-                   
-                    
+
+
                     <TextField
                         size="medium"
                         label="Search Agents"
@@ -343,73 +411,90 @@ const AgentList = () => {
             </Box>
 
             {/* Add Agent Modal */}
-            <Dialog open={open} onClose={handleClose}>
+            <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
                 <DialogTitle>Add New Agent</DialogTitle>
                 <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        name="first_name"
-                        label="First Name"
-                        type="text"
-                        fullWidth
-                        value={newAgent.first_name}
-                        onChange={handleChange}
-                        error={!!formErrors.first_name}
-                        helperText={formErrors.first_name}
-                    />
-                    <TextField
-                        margin="dense"
-                        name="last_name"
-                        label="Last Name"
-                        type="text"
-                        fullWidth
-                        value={newAgent.last_name}
-                        onChange={handleChange}
-                        error={!!formErrors.last_name}
-                        helperText={formErrors.last_name}
-                    />
-                    <TextField
-                        margin="dense"
-                        name="email"
-                        label="Email Address"
-                        type="email"
-                        fullWidth
-                        value={newAgent.email}
-                        onChange={handleChange}
-                        error={!!formErrors.email}
-                        helperText={formErrors.email}
-                    />
-                    <TextField
-                        margin="dense"
-                        name="password"
-                        label="Password"
-                        type="password"
-                        fullWidth
-                        value={newAgent.password}
-                        onChange={handleChange}
-                        error={!!formErrors.password}
-                        helperText={formErrors.password}
-                    />
-                    <TextField
-                        margin="dense"
-                        name="phone"
-                        label="Phone Number"
-                        type="number"
-                        fullWidth
-                        value={newAgent.phone}
-                        onChange={handleChange}
-                        error={!!formErrors.phone}
-                        helperText={formErrors.phone}
-                    />
+                    <Box component="form" noValidate onSubmit={handleSubmit}>
+                        <TextField
+                            margin="dense"
+                            name="first_name"
+                            label="First Name"
+                            type="text"
+                            fullWidth
+                            value={newAgent.first_name}
+                            onChange={handleChange}
+                            error={Boolean(formErrors.first_name)}
+                            helperText={formErrors.first_name}
+                        />
+                        <TextField
+                            margin="dense"
+                            name="last_name"
+                            label="Last Name"
+                            type="text"
+                            fullWidth
+                            value={newAgent.last_name}
+                            onChange={handleChange}
+                            error={Boolean(formErrors.last_name)}
+                            helperText={formErrors.last_name}
+                        />
+                        <TextField
+                            margin="dense"
+                            name="email"
+                            label="Email"
+                            type="email"
+                            fullWidth
+                            value={newAgent.email}
+                            onChange={handleChange}
+                            error={Boolean(formErrors.email)}
+                            helperText={formErrors.email}
+                        />
+                        <TextField
+                            margin="dense"
+                            name="password"
+                            label="Password"
+                            type="text"
+                            fullWidth
+                            value={newAgent.password}
+                            onChange={handleChange}
+                            error={Boolean(formErrors.password)}
+                            helperText={formErrors.password}
+                        />
+                        <TextField
+                            margin="dense"
+                            name="phone"
+                            label="Phone"
+                            type="text"
+                            fullWidth
+                            value={newAgent.phone}
+                            onChange={handleChange}
+                            error={Boolean(formErrors.phone)}
+                            helperText={formErrors.phone}
+                        />
+                        {otpSent && (
+                            <TextField
+                                margin="dense"
+                                name="otp"
+                                label="OTP"
+                                type="text"
+                                fullWidth
+                                value={newAgent.otp}
+                                onChange={handleChange}
+                                error={Boolean(formErrors.otp)}
+                                helperText={formErrors.otp}
+                            />
+                        )}
+                    </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} color="primary">
-                        Cancel
-                    </Button>
-                    <Button onClick={handleSubmit} color="primary">
-                        Add Agent
-                    </Button>
+                    <Button onClick={handleClose}>Cancel</Button>
+                    <LoadingButton
+                        onClick={handleSubmit}
+                        loading={loading}
+                        variant="contained"
+                        color="primary"
+                    >
+                        {otpSent ? 'Add Agent' : 'Send OTP'}
+                    </LoadingButton>
                 </DialogActions>
             </Dialog>
         </DashboardCard>

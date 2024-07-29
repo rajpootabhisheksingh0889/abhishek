@@ -154,7 +154,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                         </FormGroup>
                         <Typography
                             component={Link}
-                            to="/forgot-password"
+                            to="/forgetpassword"
                             fontWeight="500"
                             sx={{
                                 textDecoration: 'none',

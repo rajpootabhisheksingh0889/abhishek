@@ -2,6 +2,7 @@ import React, { lazy } from 'react';
 import { Navigate } from 'react-router-dom';
 import Loadable from '../layouts/full/shared/loadable/Loadable';
 import PrivateRoute from './PrivateRoute'; // Import the PrivateRoute component
+import ForgetPassword from 'src/views/authentication/auth/ForgetPassword';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -240,6 +241,7 @@ const Router = [
           </PrivateRoute>
         ),
       },
+
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },
@@ -248,6 +250,7 @@ const Router = [
     element: <BlankLayout />,
     children: [
       { path: '404', element: <Error /> },
+      { path: '/auth/forgetpassword', element: <ForgetPassword /> },
       { path: '/auth/register', element: <Register /> },
       { path: '/auth/login', element: <Login /> },
       { path: '*', element: <Navigate to="/auth/404" /> },

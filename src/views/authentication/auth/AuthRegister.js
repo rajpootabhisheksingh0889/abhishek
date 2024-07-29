@@ -44,14 +44,16 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             errors.email = 'Email is not valid';
             valid = false;
         }
+
+        if (!formData.password.trim()) {
+            errors.password = 'Password is required';
+            valid = false;
+        } else if (!/(?=.*[A-Za-z])(?=.*\W).{6,}/.test(formData.password)) {
+            errors.password = 'Password must contain at least one alphabet, one special character, and be at least 6 characters long';
+            valid = false;
+        }
         if (otpSent) {
-            if (!formData.password.trim()) {
-                errors.password = 'Password is required';
-                valid = false;
-            } else if (!/(?=.*[A-Za-z])(?=.*\W).{6,}/.test(formData.password)) {
-                errors.password = 'Password must contain at least one alphabet, one special character, and be at least 6 characters long';
-                valid = false;
-            }
+
             if (!formData.otp.trim()) {
                 errors.otp = 'OTP is required';
                 valid = false;
@@ -176,6 +178,22 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                             autoComplete="email"
                         />
                     </Grid>
+                    <Grid item xs={12}>
+                    <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="password" mb="5px">
+                        Password
+                    </Typography>
+                    <CustomTextField
+                        id="password"
+                        variant="outlined"
+                        fullWidth
+                        type="text"
+                        value={formData.password}
+                        onChange={handleChange}
+                        error={!!formErrors.password}
+                        helperText={formErrors.password}
+                        autoComplete="new-password"
+                    />
+                    </Grid>
                 </Grid>
                 <LoadingButton
                     color="primary"
@@ -209,7 +227,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                     }}
                 >
                     <Typography id="otp-modal-title" variant="h6" component="h2">
-                        Enter OTP and Password
+                        Enter OTP to Varify
                     </Typography>
                     <Box
                         component="form"
@@ -228,20 +246,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                             error={!!formErrors.otp}
                             helperText={formErrors.otp}
                         />
-                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="password" mb="5px">
-                            Password
-                        </Typography>
-                        <CustomTextField
-                            id="password"
-                            variant="outlined"
-                            fullWidth
-                            type="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            error={!!formErrors.password}
-                            helperText={formErrors.password}
-                            autoComplete="new-password"
-                        />
+                        
                         <LoadingButton
                             color="primary"
                             variant="contained"
