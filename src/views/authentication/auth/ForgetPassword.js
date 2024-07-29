@@ -23,7 +23,7 @@ const ForgetPassword = () => {
 
             // Decrypt the data
             const decodedData = decryptData(decodeURIComponent(data1), secretKey);
-            console.log(decodedData[0], "decrypted data is ===>>>");
+            console.log(decodedData[0].email, "decrypted data is ===>>>");
             setDecryptedData(decodedData);
         } catch (error) {
             console.error('Decryption error:', error);
@@ -56,7 +56,7 @@ const ForgetPassword = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ newPassword, email: decryptedData[0] }), // Include decrypted data in the request
+                body: JSON.stringify({ newPassword, email: decryptedData[0].email}), // Include decrypted data in the request
             });
 
             const result = await response.json();
