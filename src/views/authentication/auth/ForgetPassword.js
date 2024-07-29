@@ -51,7 +51,7 @@ const ForgetPassword = () => {
 
         try {
             // Replace with your API call
-            const response = await fetch('http://134.209.145.149:9999/api/reset_password', {
+            const response = await fetch('http://134.209.145.149:9999/api/resetPassword', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
