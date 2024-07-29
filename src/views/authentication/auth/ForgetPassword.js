@@ -56,7 +56,7 @@ const ForgetPassword = () => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ newPassword, userId: decryptedData[0] }), // Include decrypted data in the request
+                body: JSON.stringify({ newPassword, email: decryptedData[0] }), // Include decrypted data in the request
             });
 
             const result = await response.json();
