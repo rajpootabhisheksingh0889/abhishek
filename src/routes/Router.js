@@ -250,7 +250,7 @@ const Router = [
     element: <BlankLayout />,
     children: [
       { path: '404', element: <Error /> },
-      { path: '/auth/forgetpassword', element: <ForgetPassword /> },
+      { path: '/auth/forgetpassword/:data1', element: <ForgetPassword /> },
       { path: '/auth/register', element: <Register /> },
       { path: '/auth/login', element: <Login /> },
       { path: '*', element: <Navigate to="/auth/404" /> },

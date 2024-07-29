@@ -1,167 +1,142 @@
-import React, { useState } from 'react';
-import {
-    Box,
-    Typography,
-    FormGroup,
-    FormControlLabel,
-    Button,
-    Stack,
-    Checkbox,
-    CircularProgress
-} from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
+import React, { useState, useEffect } from 'react';
+import { Box, TextField, Button, Typography, Container, CircularProgress, Avatar } from '@mui/material';
+import { toast } from 'react-toastify';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { useParams } from 'react-router-dom';
+import CryptoJS from 'crypto-js';
 
-const ForgetPassword = ({ title, subtitle, subtext }) => {
-    const [formData, setFormData] = useState({ newpassword: '', confirmpassword: '' });
+const ForgetPassword = () => {
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const navigate = useNavigate();
-    const [formErrors, setFormErrors] = useState({
-        newpassword: '',
-        confirmpassword: '',
-    });
-    const handleChange = (e) => {
-        const { id, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [id]: value,
-        }));
-    };
-    const validateForm = () => {
-        let valid = true;
-        const errors = {};
+    const { data1 } = useParams();
+    const secretKey = 'itsmehere';
+    const [decryptedData, setDecryptedData] = useState(null);
 
-        if (!formData.email.trim()) {
-            errors.email = 'Email is required';
-            valid = false;
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            errors.email = 'Email is not valid';
-            valid = false;
-        }
-        if (!formData.password.trim()) {
-            errors.password = 'Password is required';
-            valid = false;
-        }
+    useEffect(() => {
+        try {
+            // Function to decrypt data
+            const decryptData = (data1, key) => {
+                const bytes = CryptoJS.AES.decrypt(data1, key);
+                return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+            };
 
-        setFormErrors(errors);
-        return valid;
+            // Decrypt the data
+            const decodedData = decryptData(decodeURIComponent(data1), secretKey);
+            console.log(decodedData[0], "decrypted data is ===>>>");
+            setDecryptedData(decodedData);
+        } catch (error) {
+            console.error('Decryption error:', error);
+            toast.error('Invalid or corrupted reset link.');
+        }
+    }, [data1]);
+
+    const handleNewPasswordChange = (e) => {
+        setNewPassword(e.target.value);
     };
+
+    const handleConfirmPasswordChange = (e) => {
+        setConfirmPassword(e.target.value);
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // setLoading(true);
+        setLoading(true);
 
-
-        if (!validateForm()) {
+        if (newPassword !== confirmPassword) {
+            setLoading(false);
+            toast.error('Passwords do not match');
             return;
         }
 
-
-
         try {
-            const response = await axios.post('http://134.209.145.149:9999/api/login', formData);
-            const { user_type, accessToken, id } = response.data;
-            localStorage.setItem('user_type', user_type);
-            localStorage.setItem('accessToken', accessToken);
-            localStorage.setItem('uid', id);
+            // Replace with your API call
+            const response = await fetch('http://localhost:9999/api/reset_password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ newPassword, userId: decryptedData[0] }), // Include decrypted data in the request
+            });
 
-            if (user_type === 'AD') {
-                navigate('/dashboard');
-            } else if (user_type === 'CU') {
-                navigate('/dashboard');
-            } else if (user_type === 'AG') {
-                navigate('/dashboard');
+            const result = await response.json();
+            setLoading(false);
+
+            if (response.ok) {
+                toast.success('Password reset successfully');
+            } else {
+                toast.error(result.message || 'Something went wrong');
             }
         } catch (error) {
-            if (error.response) {
-                // Extract and display the error message from the response
-                const apiErrors = error.response.data.errors;
-                if (apiErrors && apiErrors.length > 0) {
-                    const errorMessage = apiErrors[0].message || 'An error occurred. Please try again.';
-                    console.log("errorMessage", errorMessage)
-                    toast.error(errorMessage);
-                } else {
-                    toast.error('An error occurred. Please try again.');
-                }
-            } else if (error.request) {
-                // The request was made but no response was received
-                toast.error('No response from server. Please try again later.');
-            } else {
-                // Something happened in setting up the request that triggered an Error
-                toast.error('An error occurred. Please try again.');
-            }
-        } finally {
-            // setLoading(false);
+            setLoading(false);
+            toast.error('An error occurred. Please try again.');
         }
     };
 
-
     return (
-        <>
-            <ToastContainer />
-            {title ? (
-                <Typography fontWeight="700" variant="h2" mb={1}>
-                    {title}
+        <Container component="main" maxWidth="xs">
+            <Box
+                sx={{
+                    marginTop: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    padding: 3,
+                    backgroundColor: '#f7f7f7',
+                    borderRadius: 2,
+                    boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+                }}
+            >
+                <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+                    <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                    Reset Password
                 </Typography>
-            ) : null}
-
-            {subtext}
-
-            <form onSubmit={handleSubmit}>
-                <Stack spacing={2}>
-                    <Box>
-                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor='email' mb="5px">
-                            New Password
-                        </Typography>
-                        <CustomTextField
-                            id="email"
+                {decryptedData ? (
+                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                        <TextField
                             variant="outlined"
+                            margin="normal"
+                            required
                             fullWidth
-                            value={formData.email}
-                            error={!!formErrors.email}
-                            helperText={formErrors.email}
-                            autoComplete="email"
-                            onChange={handleChange}
-
+                            name="newPassword"
+                            label="New Password"
+                            type="password"
+                            id="newPassword"
+                            value={newPassword}
+                            onChange={handleNewPasswordChange}
                         />
-                    </Box>
-                    <Box>
-                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor='password' mb="5px">
-                            Confirm Password
-                        </Typography>
-                        <CustomTextField
-                            id="confirmpassword"
-                            type="text"
+                        <TextField
                             variant="outlined"
+                            margin="normal"
+                            required
                             fullWidth
-                            value={formData.password}
-                            onChange={handleChange}
-                            error={!!formErrors.password}
-                            helperText={formErrors.password}
-                            autoComplete="new-password"
-
+                            name="confirmPassword"
+                            label="Confirm New Password"
+                            type="password"
+                            id="confirmPassword"
+                            value={confirmPassword}
+                            onChange={handleConfirmPasswordChange}
                         />
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            sx={{ mt: 3, mb: 2 }}
+                            disabled={loading}
+                        >
+                            {loading ? <CircularProgress size={24} /> : 'Reset Password'}
+                        </Button>
                     </Box>
-                    <Button
-                        color="primary"
-                        variant="contained"
-                        size="large"
-                        fullWidth
-                        type="submit"
-                        disabled={loading}
-                    >
-                        {loading ? <CircularProgress size={24} /> : 'Password Reset'}
-                    </Button>
-                </Stack>
-            </form>
-
-            {subtitle}
-
-            <ToastContainer />
-        </>
+                ) : (
+                    <Typography variant="body1" color="error">
+                        Invalid or corrupted reset link.
+                    </Typography>
+                )}
+            </Box>
+        </Container>
     );
 };
 

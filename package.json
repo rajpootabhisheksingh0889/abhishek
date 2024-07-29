@@ -19,6 +19,7 @@
     "axios": "^1.7.2",
     "bootstrap": "^5.3.3",
     "chance": "^1.1.9",
+    "crypto-js": "^4.2.0",
     "framer-motion": "^11.3.9",
     "lodash": "^4.17.21",
     "prop-types": "^15.7.2",
