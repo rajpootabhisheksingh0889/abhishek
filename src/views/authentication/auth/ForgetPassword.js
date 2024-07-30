@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, Typography, Container, CircularProgress, Avatar } from '@mui/material';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import CryptoJS from 'crypto-js';
 
 const ForgetPassword = () => {
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [passwordError, setPasswordError] = useState('');
     const [loading, setLoading] = useState(false);
     const { data1 } = useParams();
     const secretKey = 'itsmehere';
     const [decryptedData, setDecryptedData] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         try {
@@ -33,10 +36,12 @@ const ForgetPassword = () => {
 
     const handleNewPasswordChange = (e) => {
         setNewPassword(e.target.value);
+        setPasswordError('');
     };
 
     const handleConfirmPasswordChange = (e) => {
         setConfirmPassword(e.target.value);
+        setPasswordError('');
     };
 
     const handleSubmit = async (e) => {
@@ -45,27 +50,41 @@ const ForgetPassword = () => {
 
         if (newPassword !== confirmPassword) {
             setLoading(false);
-            toast.error('Passwords do not match');
+            setPasswordError('Passwords do not match');
+            return;
+        }
+
+        if (!/(?=.*[A-Za-z])(?=.*\W).{6,}/.test(newPassword)) {
+            setLoading(false);
+            setPasswordError('Password must contain at least one alphabet, one special character, and be at least 6 characters long');
             return;
         }
 
         try {
-            // Replace with your API call
             const response = await fetch('http://134.209.145.149:9999/api/resetPassword', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ newPassword, email: decryptedData[0].email}), // Include decrypted data in the request
+                body: JSON.stringify({ newPassword, email: decryptedData[0].email }), // Include decrypted data in the request
             });
 
             const result = await response.json();
             setLoading(false);
 
+            console.log('API response:', result); // Log the entire response
+
             if (response.ok) {
                 toast.success('Password reset successfully');
+                navigate('/auth/login');
             } else {
-                toast.error(result.message || 'Something went wrong');
+                // Log the errors if any
+                if (result.errors && result.errors.length > 0) {
+                    console.log('Errors:', result.errors);
+                    toast.error(result.errors[0].message);
+                } else {
+                    toast.error(result.message || 'Something went wrong');
+                }
             }
         } catch (error) {
             setLoading(false);
@@ -74,69 +93,76 @@ const ForgetPassword = () => {
     };
 
     return (
-        <Container component="main" maxWidth="xs">
-            <Box
-                sx={{
-                    marginTop: 8,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    padding: 3,
-                    backgroundColor: '#f7f7f7',
-                    borderRadius: 2,
-                    boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
-                }}
-            >
-                <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
-                    <LockOutlinedIcon />
-                </Avatar>
-                <Typography component="h1" variant="h5">
-                    Reset Password
-                </Typography>
-                {decryptedData ? (
-                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="newPassword"
-                            label="New Password"
-                            type="password"
-                            id="newPassword"
-                            value={newPassword}
-                            onChange={handleNewPasswordChange}
-                        />
-                        <TextField
-                            variant="outlined"
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="confirmPassword"
-                            label="Confirm New Password"
-                            type="password"
-                            id="confirmPassword"
-                            value={confirmPassword}
-                            onChange={handleConfirmPasswordChange}
-                        />
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            sx={{ mt: 3, mb: 2 }}
-                            disabled={loading}
-                        >
-                            {loading ? <CircularProgress size={24} /> : 'Reset Password'}
-                        </Button>
-                    </Box>
-                ) : (
-                    <Typography variant="body1" color="error">
-                        Invalid or corrupted reset link.
+        <>
+            <ToastContainer />
+            <Container component="main" maxWidth="xs">
+                <Box
+                    sx={{
+                        marginTop: 8,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        padding: 3,
+                        backgroundColor: '#f7f7f7',
+                        borderRadius: 2,
+                        boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
+                    }}
+                >
+                    <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+                        <LockOutlinedIcon />
+                    </Avatar>
+                    <Typography component="h1" variant="h5">
+                        Reset Password
                     </Typography>
-                )}
-            </Box>
-        </Container>
+                    {decryptedData ? (
+                        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="newPassword"
+                                label="New Password"
+                                type="password"
+                                id="newPassword"
+                                value={newPassword}
+                                onChange={handleNewPasswordChange}
+                                error={!!passwordError}
+                                helperText={passwordError && passwordError.includes('Passwords') ? passwordError : ''}
+                            />
+                            <TextField
+                                variant="outlined"
+                                margin="normal"
+                                required
+                                fullWidth
+                                name="confirmPassword"
+                                label="Confirm New Password"
+                                type="password"
+                                id="confirmPassword"
+                                value={confirmPassword}
+                                onChange={handleConfirmPasswordChange}
+                                error={!!passwordError}
+                                helperText={passwordError && !passwordError.includes('Passwords') ? passwordError : ''}
+                            />
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                                sx={{ mt: 3, mb: 2 }}
+                                disabled={loading}
+                            >
+                                {loading ? <CircularProgress size={24} /> : 'Reset Password'}
+                            </Button>
+                        </Box>
+                    ) : (
+                        <Typography variant="body1" color="error">
+                            Invalid or corrupted reset link.
+                        </Typography>
+                    )}
+                </Box>
+            </Container>
+        </>
     );
 };
 

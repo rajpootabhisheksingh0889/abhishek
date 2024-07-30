@@ -52,12 +52,18 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             errors.password = 'Password must contain at least one alphabet, one special character, and be at least 6 characters long';
             valid = false;
         }
-        if (otpSent) {
 
-            if (!formData.otp.trim()) {
-                errors.otp = 'OTP is required';
-                valid = false;
-            }
+        setFormErrors(errors);
+        return valid;
+    };
+
+    const validateOtp = () => {
+        let valid = true;
+        const errors = {};
+
+        if (!formData.otp.trim()) {
+            errors.otp = 'OTP is required';
+            valid = false;
         }
 
         setFormErrors(errors);
@@ -66,48 +72,43 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const action = e.nativeEvent.submitter.name;
 
-        if (!validateForm()) {
-            return;
-        }
-
-        if (!otpSent) {
-            handleSendOtp();
-        } else {
-            setLoading(true);
-            try {
-                const response = await axios.post('http://134.209.145.149:9999/api/register', formData);
-                console.log('Registration successful:', response.data);
-                navigate('/auth/login');
-            } catch (error) {
-                if (error.response) {
-                    const apiErrors = error.response.data.errors;
-                    if (apiErrors && apiErrors.length > 0) {
-                        const errorMessage = apiErrors[0].message || 'An error occurred. Please try again.';
-                        toast.error(errorMessage);
-                    } else {
-                        toast.error('An error occurred. Please try again.');
-                    }
-                } else if (error.request) {
-                    toast.error('No response from server. Please try again later.');
-                } else {
-                    toast.error('An error occurred. Please try again.');
-                }
-            } finally {
-                setLoading(false);
+        if (action === 'signUp') {
+            if (!validateForm()) {
+                return;
             }
+
+            if (!otpSent) {
+                handleSendOtp();
+            } else {
+                if (!validateOtp()) {
+                    return;
+                }
+                setLoading(true);
+                try {
+                    const response = await axios.post('http://134.209.145.149:9999/api/register', formData);
+                    console.log('Registration successful:', response.data);
+                    navigate('/auth/login');
+                } catch (error) {
+                    handleApiError(error);
+                } finally {
+                    setLoading(false);
+                }
+            }
+        } else if (action === 'forgetPassword') {
+            if (!formData.email.trim()) {
+                setFormErrors((prevErrors) => ({
+                    ...prevErrors,
+                    email: 'Email is required to send OTP',
+                }));
+                return;
+            }
+            handleSendOtp();
         }
     };
 
     const handleSendOtp = async () => {
-        if (!formData.email.trim()) {
-            setFormErrors((prevErrors) => ({
-                ...prevErrors,
-                email: 'Email is required to send OTP',
-            }));
-            return;
-        }
-
         setLoading(true);
         try {
             await axios.post('http://134.209.145.149:9999/api/otp', { email: formData.email });
@@ -115,22 +116,21 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             setOtpSent(true);
             setOpenModal(true);
         } catch (error) {
-            if (error.response) {
-                // Extract the specific error message from the API response
-                const apiErrors = error.response.data.errors;
-                const errorMessage = apiErrors.length > 0 ? apiErrors[0].message : 'Please try again.';
-                toast.error(`Failed to send OTP: ${errorMessage}`);
-            } else if (error.request) {
-                // The request was made but no response was received
-                console.error('Error request:', error.request);
-                toast.error('No response from the server. Please try again.');
-            } else {
-                // Something happened in setting up the request that triggered an Error
-                console.error('Error message:', error.message);
-                toast.error(`Error: ${error.message}`);
-            }
+            handleApiError(error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleApiError = (error) => {
+        if (error.response) {
+            const apiErrors = error.response.data.errors;
+            const errorMessage = apiErrors.length > 0 ? apiErrors[0].message : 'Please try again.';
+            toast.error(`Error: ${errorMessage}`);
+        } else if (error.request) {
+            toast.error('No response from the server. Please try again.');
+        } else {
+            toast.error(`Error: ${error.message}`);
         }
     };
 
@@ -179,20 +179,20 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                         />
                     </Grid>
                     <Grid item xs={12}>
-                    <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="password" mb="5px">
-                        Password
-                    </Typography>
-                    <CustomTextField
-                        id="password"
-                        variant="outlined"
-                        fullWidth
-                        type="text"
-                        value={formData.password}
-                        onChange={handleChange}
-                        error={!!formErrors.password}
-                        helperText={formErrors.password}
-                        autoComplete="new-password"
-                    />
+                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="password" mb="5px">
+                            Password
+                        </Typography>
+                        <CustomTextField
+                            id="password"
+                            variant="outlined"
+                            fullWidth
+                            type="text"
+                            value={formData.password}
+                            onChange={handleChange}
+                            error={!!formErrors.password}
+                            helperText={formErrors.password}
+                            autoComplete="new-password"
+                        />
                     </Grid>
                 </Grid>
                 <LoadingButton
@@ -202,8 +202,21 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                     fullWidth
                     type="submit"
                     loading={loading}
+                    name="signUp"
                 >
                     Sign Up
+                </LoadingButton>
+                <LoadingButton
+                    color="secondary"
+                    variant="contained"
+                    size="large"
+                    fullWidth
+                    onClick={handleSendOtp}
+                    loading={loading}
+                    name="forgetPassword"
+                    sx={{ mt: 2 }}
+                >
+                    Forget Password
                 </LoadingButton>
             </Box>
 
@@ -227,7 +240,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                     }}
                 >
                     <Typography id="otp-modal-title" variant="h6" component="h2">
-                        Enter OTP to Varify
+                        Enter OTP to Verify
                     </Typography>
                     <Box
                         component="form"
@@ -246,7 +259,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                             error={!!formErrors.otp}
                             helperText={formErrors.otp}
                         />
-                        
+
                         <LoadingButton
                             color="primary"
                             variant="contained"
