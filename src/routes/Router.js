@@ -25,6 +25,8 @@ const ProductList = Loadable(lazy(() => import('../views/Admin/ProductList')));
 const RecordingList = Loadable(lazy(() => import('../views/Admin/RecordingList')));
 const OrderList = Loadable(lazy(() => import('../views/Admin/OrderList')));
 const MyProfile = Loadable(lazy(() => import('../views/Admin/MyProfile')));
+const Permission = Loadable(lazy(() => import('../views/Admin/Permission')));
+
 
 const CustomerDashboard = Loadable(lazy(() => import('../views/Customer/CustomerDashboard')));
 const AgentDashboard = Loadable(lazy(() => import('../views/Agent/AgentDashboard')));
@@ -111,6 +113,15 @@ const Router = [
         element: (
           <PrivateRoute>
             <TransactionList />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/permission',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <Permission />
           </PrivateRoute>
         ),
       },

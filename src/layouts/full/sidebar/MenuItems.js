@@ -62,6 +62,13 @@ const Menuitems = [
     icon: IconLayoutDashboard,
     href: '/transactionrecords',
   },
+
+  {
+    id: uniqueId(),
+    title: 'Permission',
+    icon: IconLayoutDashboard,
+    href: '/permission',
+  },
 ];
 
 const Menuitems1 = [
