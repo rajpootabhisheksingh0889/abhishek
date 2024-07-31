@@ -363,11 +363,12 @@ const AgentList = () => {
                                 </TableRow>
                             ))
                         ) : (
-                            filteredAgents.map((agent) => (
+
+                            filteredAgents.map((agent, index) => (
                                 <TableRow key={agent.id}>
                                     <TableCell>
                                         <Typography variant="subtitle2">
-                                            {agent.id}
+                                            {index + 1}
                                         </Typography>
                                     </TableCell>
                                     <TableCell>
