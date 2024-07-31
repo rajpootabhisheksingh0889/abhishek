@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import {
     Container,
-    Card,
+    // Card,
     CardContent,
     Typography,
     Avatar,
@@ -133,17 +133,18 @@ const MyProfile = () => {
                 <CardContent>
                     <Grid container spacing={2} alignItems="center">
                         <Grid item>
-                            <Avatar
-                                src="/path/to/avatar.jpg" // Add path to your avatar image
-                                sx={{
-                                    width: 80,
-                                    height: 80,
-                                    bgcolor: 'primary.main',
-                                    fontSize: 40,
-                                }}
-                            >
-                                {profile.first_name.charAt(0)}
-                            </Avatar>
+                        <Avatar
+    src="/path/to/avatar.jpg" // Add path to your avatar image
+    sx={{
+        width: 80,
+        height: 80,
+        bgcolor: 'primary.main',
+        fontSize: 40,
+    }}
+>
+    {profile.first_name ? profile.first_name.charAt(0) : 'U'}
+</Avatar>
+
                         </Grid>
                         <Grid item xs={12} sm={8}>
                             {editMode ? (
