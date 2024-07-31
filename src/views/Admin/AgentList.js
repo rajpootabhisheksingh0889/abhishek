@@ -180,7 +180,7 @@ const AgentList = () => {
                 toast.success('New agent added successfully!');
             } catch (error) {
                 if (error.response) {
-                    const apiErrors = error.response.data.data.errors;
+                    const apiErrors = error.response.data.errors;
                     if (apiErrors && apiErrors.length > 0) {
                         const errorMessage = apiErrors[0].message || 'An error occurred. Please try again.';
                         toast.error(errorMessage);
@@ -216,7 +216,7 @@ const AgentList = () => {
             if (error.response) {
                 // Extract the specific error message from the API response
                 const apiErrors = error.response.data.errors;
-                const errorMessage = apiErrors.length > 0 ? apiErrors[0].message : 'Please try again.';
+                const errorMessage = apiErrors && apiErrors.length > 0 ? apiErrors[0].message : 'Please try again.';
                 toast.error(`Failed to send OTP: ${errorMessage}`);
             } else if (error.request) {
                 // The request was made but no response was received
@@ -231,6 +231,7 @@ const AgentList = () => {
             setLoading(false);
         }
     };
+
 
     const filteredAgents = agents.filter(agent =>
         (selectedOption === 12 || (selectedOption === 1 && agent.status) || (selectedOption === 0 && !agent.status)) && (
