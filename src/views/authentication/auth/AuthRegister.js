@@ -85,26 +85,13 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                 if (!validateOtp()) {
                     return;
                 }
-                setLoading(true);
-                try {
-                    const response = await axios.post('http://134.209.145.149:9999/api/register', formData);
-                    console.log('Registration successful:', response.data);
-                    navigate('/auth/login');
-                } catch (error) {
-                    handleApiError(error);
-                } finally {
-                    setLoading(false);
-                }
+                handleRegister();
             }
-        } else if (action === 'forgetPassword') {
-            if (!formData.email.trim()) {
-                setFormErrors((prevErrors) => ({
-                    ...prevErrors,
-                    email: 'Email is required to send OTP',
-                }));
+        } else if (action === 'confirmOtp') {
+            if (!validateOtp()) {
                 return;
             }
-            handleSendOtp();
+            handleRegister();
         }
     };
 
@@ -115,6 +102,19 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             toast.success('OTP sent to your email');
             setOtpSent(true);
             setOpenModal(true);
+        } catch (error) {
+            handleApiError(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleRegister = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.post('http://134.209.145.149:9999/api/register', formData);
+            console.log('Registration successful:', response.data);
+            navigate('/auth/login');
         } catch (error) {
             handleApiError(error);
         } finally {
@@ -206,18 +206,6 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                 >
                     Sign Up
                 </LoadingButton>
-                <LoadingButton
-                    color="secondary"
-                    variant="contained"
-                    size="large"
-                    fullWidth
-                    onClick={handleSendOtp}
-                    loading={loading}
-                    name="forgetPassword"
-                    sx={{ mt: 2 }}
-                >
-                    Forget Password
-                </LoadingButton>
             </Box>
 
             <Modal
@@ -267,6 +255,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                             fullWidth
                             type="submit"
                             loading={loading}
+                            name="confirmOtp"
                             sx={{ mt: 2 }}
                         >
                             Confirm Registration
