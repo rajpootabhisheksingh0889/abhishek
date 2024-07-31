@@ -114,13 +114,25 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
         try {
             const response = await axios.post('http://134.209.145.149:9999/api/register', formData);
             console.log('Registration successful:', response.data);
-            navigate('/auth/login');
+
+            // Show success toast notification
+            toast.success('Registration successful! Redirecting to login...', {
+                position: toast.POSITION.TOP_RIGHT,
+                autoClose: 3000, // Toast will close after 3 seconds
+            });
+
+            // Redirect after 3 seconds
+            setTimeout(() => {
+                navigate('/auth/login');
+            }, 3000);
         } catch (error) {
             handleApiError(error);
         } finally {
             setLoading(false);
         }
     };
+
+
 
     const handleApiError = (error) => {
         if (error.response) {
@@ -186,7 +198,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                             id="password"
                             variant="outlined"
                             fullWidth
-                            type="text"
+                            type="password"
                             value={formData.password}
                             onChange={handleChange}
                             error={!!formErrors.password}
