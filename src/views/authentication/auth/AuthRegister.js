@@ -148,6 +148,12 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
 
     const handleModalClose = () => {
         setOpenModal(false);
+        setFormData({
+            email: '',
+            password: '',
+            otp: '',
+        });
+
     };
 
     return (
