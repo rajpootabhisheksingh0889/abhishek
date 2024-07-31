@@ -1,17 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Grid, Card, CardContent, CardHeader, Checkbox, Button, FormControlLabel, Typography } from '@mui/material';
 
 const Permission = () => {
-  // State to keep track of checkbox selections
-  const [selections, setSelections] = useState(
-    Array(5).fill({
-      AD: false,
-      CU: false,
-      AG: false,
-    })
-  );
+  const [selections, setSelections] = useState([]);
+  const [names, setNames] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Handler for checkbox changes
+  useEffect(() => {
+    const fetchNames = async () => {
+      try {
+        const response = await fetch('http://134.209.145.149:9999/api/menuList');
+        const result = await response.json();
+
+        // Check if the response was successful
+        if (result.success) {
+          // Extract names from the response data
+          const namesList = result.data.map((item) => item.name);
+
+          setNames(namesList);
+          setSelections(namesList.map(() => ({
+            AD: false,
+            CU: false,
+            AG: false,
+          })));
+        } else {
+          console.error('Failed to fetch data:', result.success);
+        }
+      } catch (error) {
+        console.error('Error fetching names:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNames();
+  }, []);
+
   const handleCheckboxChange = (index, permission) => (event) => {
     const updatedSelections = [...selections];
     updatedSelections[index] = {
@@ -21,22 +45,19 @@ const Permission = () => {
     setSelections(updatedSelections);
   };
 
-  // Handler for form submission
   const handleSubmit = async () => {
-    // Construct the payload
-    const payload = selections.map((selection, index) => ({
-      name: `Name ${index + 1}`,
+    const payload = names.map((name, index) => ({
+      name,
       permissions: {
-        AD: selection.AD,
-        CU: selection.CU,
-        AG: selection.AG,
+        AD: selections[index].AD,
+        CU: selections[index].CU,
+        AG: selections[index].AG,
       },
     }));
 
-    // Log payload to console
     console.log('Payload:', payload);
 
-    // Example of sending the payload to an API (uncomment and adjust as needed)
+    // Example of sending the payload to an API
     /*
     try {
       const response = await fetch('https://your-api-endpoint.com/submit', {
@@ -54,6 +75,10 @@ const Permission = () => {
     */
   };
 
+  if (loading) {
+    return <Typography variant="body1">Loading...</Typography>;
+  }
+
   return (
     <div style={{ padding: '16px' }}>
       <Card variant="outlined" sx={{ boxShadow: 3 }}>
@@ -63,11 +88,11 @@ const Permission = () => {
         />
         <CardContent>
           <Grid container spacing={2}>
-            {Array.from({ length: 5 }, (_, index) => (
+            {names.map((name, index) => (
               <Grid item xs={12} key={index}>
                 <Grid container alignItems="center" spacing={2}>
                   <Grid item xs={3}>
-                    <Typography variant="body1">Name {index + 1}</Typography>
+                    <Typography variant="body1">{name}</Typography>
                   </Grid>
                   <Grid item xs={9}>
                     <Grid container spacing={1} justifyContent="flex-end">
@@ -75,7 +100,7 @@ const Permission = () => {
                         <FormControlLabel
                           control={
                             <Checkbox
-                              checked={selections[index].AD}
+                              checked={selections[index]?.AD || false}
                               onChange={handleCheckboxChange(index, 'AD')}
                               color="primary"
                             />
@@ -87,7 +112,7 @@ const Permission = () => {
                         <FormControlLabel
                           control={
                             <Checkbox
-                              checked={selections[index].CU}
+                              checked={selections[index]?.CU || false}
                               onChange={handleCheckboxChange(index, 'CU')}
                               color="primary"
                             />
@@ -99,7 +124,7 @@ const Permission = () => {
                         <FormControlLabel
                           control={
                             <Checkbox
-                              checked={selections[index].AG}
+                              checked={selections[index]?.AG || false}
                               onChange={handleCheckboxChange(index, 'AG')}
                               color="primary"
                             />
