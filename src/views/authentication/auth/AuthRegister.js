@@ -117,7 +117,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
 
             // Show success toast notification
             toast.success('Registration successful! Redirecting to login...', {
-                position: toast.POSITION.TOP_RIGHT,
+                // position: toast.POSITION.TOP_RIGHT,
                 autoClose: 3000, // Toast will close after 3 seconds
             });
 
