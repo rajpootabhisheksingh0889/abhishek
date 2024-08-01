@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Grid, Card, CardContent, CardHeader, Checkbox, Button, FormControlLabel, Typography } from '@mui/material';
-
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const Permission = () => {
   const [selections, setSelections] = useState([]);
   const [names, setNames] = useState([]);
@@ -55,25 +56,27 @@ const Permission = () => {
       },
     }));
 
-    console.log('Payload:', payload);
-
-    // Example of sending the payload to an API
-    /*
     try {
-      const response = await fetch('https://your-api-endpoint.com/submit', {
+      const response = await fetch('http://134.209.145.149:9999/api/dPermission', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(payload),
       });
+
       const result = await response.json();
-      console.log('API Response:', result);
+
+      if (response.ok) {
+        toast.success('Permissions updated successfully!');
+      } else {
+        toast.error(`Failed to update permissions: ${result.message}`);
+      }
     } catch (error) {
-      console.error('Error:', error);
+      toast.error('Error submitting permissions');
     }
-    */
   };
+
 
   if (loading) {
     return <Typography variant="body1">Loading...</Typography>;
@@ -81,6 +84,7 @@ const Permission = () => {
 
   return (
     <div style={{ padding: '16px' }}>
+      <ToastContainer />
       <Card variant="outlined" sx={{ boxShadow: 3 }}>
         <CardHeader
           title={<Typography variant="h5">Permissions</Typography>}
