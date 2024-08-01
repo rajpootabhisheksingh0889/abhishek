@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Grid, Card, CardContent, CardHeader, Checkbox, Button, FormControlLabel, Typography } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 const Permission = () => {
   const [selections, setSelections] = useState([]);
   const [names, setNames] = useState([]);
@@ -13,17 +14,18 @@ const Permission = () => {
         const response = await fetch('http://134.209.145.149:9999/api/menuList');
         const result = await response.json();
 
-        // Check if the response was successful
         if (result.success) {
-          // Extract names from the response data
           const namesList = result.data.map((item) => item.name);
 
-          setNames(namesList);
-          setSelections(namesList.map(() => ({
+          // Initialize selections state
+          const initialSelections = namesList.map(() => ({
             AD: false,
             CU: false,
             AG: false,
-          })));
+          }));
+
+          setNames(namesList);
+          setSelections(initialSelections);
         } else {
           console.error('Failed to fetch data:', result.success);
         }
@@ -36,6 +38,42 @@ const Permission = () => {
 
     fetchNames();
   }, []);
+
+  useEffect(() => {
+    const fetchPermissions = async () => {
+      try {
+        const response = await fetch('http://134.209.145.149:9999/api/getPermissions');
+        const permissions = await response.json();
+
+        if (permissions) {
+          // Map permissions to selections
+          const updatedSelections = selections.map((selection, index) => {
+            const name = names[index];
+            const relevantPermissions = permissions.filter(
+              (perm) => perm.menu_name === name
+            );
+            const newSelection = { AD: false, CU: false, AG: false };
+            
+            relevantPermissions.forEach((perm) => {
+              newSelection[perm.role_type] = true;
+            });
+
+            return newSelection;
+          });
+
+          setSelections(updatedSelections);
+        } else {
+          console.error('Failed to fetch permissions');
+        }
+      } catch (error) {
+        console.error('Error fetching permissions:', error);
+      }
+    };
+
+    if (names.length > 0) {
+      fetchPermissions();
+    }
+  }, [names]);
 
   const handleCheckboxChange = (index, permission) => (event) => {
     const updatedSelections = [...selections];
@@ -76,7 +114,6 @@ const Permission = () => {
       toast.error('Error submitting permissions');
     }
   };
-
 
   if (loading) {
     return <Typography variant="body1">Loading...</Typography>;
