@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
     Typography, Box, TextField,
-    Table, TableBody, TableCell, TableHead, TableRow, Chip, Skeleton
+    Table, TableBody, TableCell, TableHead, TableRow, Chip, Skeleton, Button
 } from '@mui/material';
 import DashboardCard from 'src/components/shared/DashboardCard';
-import NoData from "src/assets/images/products/NoData.jpg";// Replace with your actual path
-
+import NoData from "src/assets/images/products/NoData.jpg"; // Replace with your actual path
+import { useNavigate } from 'react-router-dom';
 const CustomerList = () => {
+    const navigate = useNavigate();
     const [customers, setCustomers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -17,8 +18,8 @@ const CustomerList = () => {
         const fetchCustomers = async () => {
             try {
                 const response = await axios.post('http://134.209.145.149:9999/api/userType', { user_type: "CU" });
-                console.log(response.data);  // Debugging: Check the structure of the API response
-                setCustomers(response.data.data);  // Adjust based on actual response structure
+                console.log(response.data); // Debugging: Check the structure of the API response
+                setCustomers(response.data.data); // Adjust based on actual response structure
             } catch (err) {
                 setError(err);
             } finally {
@@ -72,29 +73,34 @@ const CustomerList = () => {
                 >
                     <TableHead>
                         <TableRow>
-                            <TableCell sx={{ backgroundColor: '#f5f5f5', }}>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Id
                                 </Typography>
                             </TableCell>
-                            <TableCell sx={{ backgroundColor: '#f5f5f5', }}>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Name
                                 </Typography>
                             </TableCell>
-                            <TableCell sx={{ backgroundColor: '#f5f5f5', }}>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Email
                                 </Typography>
                             </TableCell>
-                            <TableCell sx={{ backgroundColor: '#f5f5f5', }}>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Phone
                                 </Typography>
                             </TableCell>
-                            <TableCell sx={{ backgroundColor: '#f5f5f5', }}>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Status
+                                </Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
+                                <Typography variant="subtitle2" fontWeight={600}>
+                                    Action
                                 </Typography>
                             </TableCell>
                         </TableRow>
@@ -117,6 +123,9 @@ const CustomerList = () => {
                                     </TableCell>
                                     <TableCell>
                                         <Skeleton variant="text" width={40} />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Skeleton variant="text" width={60} />
                                     </TableCell>
                                 </TableRow>
                             ))
@@ -156,7 +165,14 @@ const CustomerList = () => {
                                             }}
                                             size="small"
                                             label={customer.status ? 'Active' : 'Inactive'}
-                                        ></Chip>
+                                        />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Button variant="contained" color="primary" size="small"
+                                            onClick={() => navigate(`/custom-permissions/${customer.id}`)}
+                                        >
+                                            View
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             ))

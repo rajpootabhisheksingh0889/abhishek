@@ -6,6 +6,7 @@ import {
     Table, TableBody, TableCell, TableHead, TableRow, Chip, Skeleton, Switch, Button,
     Dialog, DialogTitle, DialogContent, DialogActions,
 } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 import { LoadingButton } from '@mui/lab';
 
@@ -15,6 +16,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import NoData from "src/assets/images/products/NoData.jpg";
 
 const AgentList = () => {
+    const navigate = useNavigate();
+
     const [agents, setAgents] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -332,6 +335,11 @@ const AgentList = () => {
                             </TableCell>
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
+                                    Toggle
+                                </Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
+                                <Typography variant="subtitle2" fontWeight={600}>
                                     Action
                                 </Typography>
                             </TableCell>
@@ -342,6 +350,9 @@ const AgentList = () => {
                             // Display skeletons when loading
                             Array.from({ length: 5 }).map((_, index) => (
                                 <TableRow key={index}>
+                                    <TableCell>
+                                        <Skeleton variant="text" />
+                                    </TableCell>
                                     <TableCell>
                                         <Skeleton variant="text" />
                                     </TableCell>
@@ -399,6 +410,14 @@ const AgentList = () => {
                                             onChange={() => handleToggleStatus(agent.id, agent.status)}
                                             color="primary"
                                         />
+                                    </TableCell>
+
+                                    <TableCell>
+                                        <Button variant="contained" color="primary" size="small"
+                                            onClick={() => navigate(`/custom-permissions/${agent.id}`)}
+                                        >
+                                            View
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             ))
