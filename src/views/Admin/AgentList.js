@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-    Typography, Box, TextField, Modal,
+    Typography, Box, TextField,
     FormControl, InputLabel, Select, MenuItem,
     Table, TableBody, TableCell, TableHead, TableRow, Chip, Skeleton, Switch, Button,
     Dialog, DialogTitle, DialogContent, DialogActions,
