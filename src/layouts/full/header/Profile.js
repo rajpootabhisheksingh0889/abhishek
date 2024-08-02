@@ -43,19 +43,35 @@ const Profile = () => {
       localStorage.removeItem('accessToken');
     };
 
-    // Attach event listener for beforeunload
+    // Handle beforeunload event
     const onBeforeUnload = (event) => {
-      clearLocalStorage();
+      // Only clear localStorage if the page is being unloaded, not reloaded
+      if (document.visibilityState === 'hidden') {
+        clearLocalStorage();
+      }
       // Show a confirmation dialog (optional)
       event.preventDefault();
       event.returnValue = ''; // Chrome requires returnValue to be set
     };
 
+    // Attach event listener for beforeunload
     window.addEventListener('beforeunload', onBeforeUnload);
 
-    // Cleanup event listener on component unmount
+    // Handle visibilitychange event
+    const onVisibilityChange = () => {
+      // If page visibility is hidden, consider it as a tab/browser close
+      if (document.visibilityState === 'hidden') {
+        clearLocalStorage();
+      }
+    };
+
+    // Attach event listener for visibilitychange
+    document.addEventListener('visibilitychange', onVisibilityChange);
+
+    // Cleanup event listeners on component unmount
     return () => {
       window.removeEventListener('beforeunload', onBeforeUnload);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
     };
   }, []);
 
