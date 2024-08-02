@@ -47,7 +47,7 @@ const MyProfile = () => {
         email: '',
         phone: '',
         gender: '',
-        zip: '',
+        zipcode: '',
         address: '',
     });
     const [error, setError] = useState(null);
@@ -72,7 +72,7 @@ const MyProfile = () => {
                         email: profileData.email,
                         phone: profileData.phone,
                         gender: profileData.gender,
-                        city: profileData.city,
+                        zipcode: profileData.zipcode,
                         address: profileData.address,
                     });
                 } else {
@@ -218,7 +218,7 @@ const MyProfile = () => {
                                             type='number'
                                                 label="Zip Code"
                                                 name="zip"
-                                                value={formValues.zip}
+                                                value={formValues.zipcode}
                                                 onChange={handleInputChange}
                                                 fullWidth
                                                 margin="normal"
@@ -266,17 +266,17 @@ const MyProfile = () => {
                                                 <Box sx={{ mb: 2 }}>
                                                     <Divider />
                                                 </Box>
-                                                <Typography variant="h6" sx={{ mb: 1 }}>
+                                                <Typography variant="body1" sx={{ mb: 1 }}>
                                                     <strong>Email:</strong> {profile.email}
                                                 </Typography>
-                                                <Typography variant="h6" sx={{ mb: 1 }}>
+                                                <Typography variant="body1" sx={{ mb: 1 }}>
                                                     <strong>Phone:</strong> {profile.phone}
                                                 </Typography>
                                                 <Typography variant="body1" sx={{ mb: 1 }}>
                                                     <strong>Gender:</strong> {profile.gender}
                                                 </Typography>
                                                 <Typography variant="body1" sx={{ mb: 1 }}>
-                                                    <strong>Zip Code:</strong> {profile.zip}
+                                                    <strong>Zip Code:</strong> {profile.zipcode}
                                                 </Typography>
                                                 <Typography variant="body1">
                                                     <strong>Address:</strong> {profile.address}

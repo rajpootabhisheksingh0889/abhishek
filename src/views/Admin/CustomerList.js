@@ -7,6 +7,7 @@ import {
 import DashboardCard from 'src/components/shared/DashboardCard';
 import NoData from "src/assets/images/products/NoData.jpg"; // Replace with your actual path
 import { useNavigate } from 'react-router-dom';
+
 const CustomerList = () => {
     const navigate = useNavigate();
     const [customers, setCustomers] = useState([]);
@@ -38,15 +39,6 @@ const CustomerList = () => {
             (customer?.email?.toLowerCase().includes(lowerCaseSearchTerm) || '')
         );
     });
-
-    if (error) {
-        return <Typography>Error: {error.message}</Typography>;
-    }
-
-    // Check if customers is an array before mapping
-    if (!Array.isArray(customers)) {
-        return <Typography>Error: Unexpected data format</Typography>;
-    }
 
     return (
         <DashboardCard>
@@ -179,9 +171,14 @@ const CustomerList = () => {
                         )}
                     </TableBody>
                 </Table>
-                {customers.length === 0 && !loading && (
+                {customers.length === 0 && !loading && !error && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '300px' }}>
                         <img src={NoData} alt="No data available" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+                    </Box>
+                )}
+                {error && (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '300px' }}>
+                        <img src={NoData} alt="Error fetching data" style={{ maxWidth: '100%', maxHeight: '100%' }} />
                     </Box>
                 )}
             </Box>
