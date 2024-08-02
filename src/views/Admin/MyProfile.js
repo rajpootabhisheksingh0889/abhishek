@@ -45,7 +45,10 @@ const MyProfile = () => {
         last_name: '',
         email: '',
         phone: '',
-        user_type: '',
+        gender: '',
+        city: '',
+        address: '',
+       
     });
     const [error, setError] = useState(null);
     const navigate = useNavigate(); // Initialize navigate
@@ -68,7 +71,9 @@ const MyProfile = () => {
                         last_name: profileData.last_name,
                         email: profileData.email,
                         phone: profileData.phone,
-                        user_type: profileData.user_type,
+                        gender: profileData.gender,
+                        city: profileData.city,
+                        address: profileData.address,
                     });
                 } else {
                     throw new Error('Failed to fetch profile data');
@@ -133,17 +138,17 @@ const MyProfile = () => {
                 <CardContent>
                     <Grid container spacing={2} alignItems="center">
                         <Grid item>
-                        <Avatar
-    src="/path/to/avatar.jpg" // Add path to your avatar image
-    sx={{
-        width: 80,
-        height: 80,
-        bgcolor: 'primary.main',
-        fontSize: 40,
-    }}
->
-    {profile.first_name ? profile.first_name.charAt(0) : 'U'}
-</Avatar>
+                            <Avatar
+                                src="/path/to/avatar.jpg" // Add path to your avatar image
+                                sx={{
+                                    width: 80,
+                                    height: 80,
+                                    bgcolor: 'primary.main',
+                                    fontSize: 40,
+                                }}
+                            >
+                                {profile.first_name ? profile.first_name.charAt(0) : 'U'}
+                            </Avatar>
 
                         </Grid>
                         <Grid item xs={12} sm={8}>
@@ -181,6 +186,7 @@ const MyProfile = () => {
                                                 fullWidth
                                                 margin="normal"
                                                 variant="outlined"
+                                                InputProps={{ readOnly: true }}
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
@@ -194,7 +200,7 @@ const MyProfile = () => {
                                                 variant="outlined"
                                             />
                                         </Grid>
-                                        <Grid item xs={12}>
+                                        {/* <Grid item xs={12}>
                                             <TextField
                                                 label="User Type"
                                                 name="user_type"
@@ -205,7 +211,44 @@ const MyProfile = () => {
                                                 variant="outlined"
                                                 InputProps={{ readOnly: true }}  // Make field read-only
                                             />
+                                        </Grid> */}
+
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                label="Gender"
+                                                name="gender"
+                                                value={formValues.gender}
+                                                onChange={handleInputChange}
+                                                fullWidth
+                                                margin="normal"
+                                                variant="outlined"
+                                            />
                                         </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                label="City"
+                                                name="city"
+                                                value={formValues.city}
+                                                onChange={handleInputChange}
+                                                fullWidth
+                                                margin="normal"
+                                                variant="outlined"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <TextField
+                                                label="Address"
+                                                name="address"
+                                                value={formValues.address}
+                                                onChange={handleInputChange}
+                                                fullWidth
+                                                margin="normal"
+                                                variant="outlined"
+                                                multiline
+                                                rows={4} // You can adjust the number of rows as needed
+                                            />
+                                        </Grid>
+
                                     </Grid>
                                     <Box sx={{ marginTop: 2 }}>
                                         <Button
@@ -230,8 +273,17 @@ const MyProfile = () => {
                                     <Typography variant="body1">{profile.email}</Typography>
                                     <Typography variant="body1">{profile.phone}</Typography>
                                     <Typography variant="body2">
-                                        User Type: {profile.user_type}
+                                        User Type: {profile?.user_type}
                                     </Typography>
+                                        <Typography variant="body2">
+                                            Gender: {profile?.gender}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                            City: {profile?.city}
+                                        </Typography>
+                                        <Typography variant="body2">
+                                            address: {profile?.address}
+                                        </Typography>
 
                                     <Button
                                         variant="contained"
