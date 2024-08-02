@@ -47,7 +47,7 @@ const MyProfile = () => {
         email: '',
         phone: '',
         gender: '',
-        city: '',
+        zip: '',
         address: '',
     });
     const [error, setError] = useState(null);
@@ -193,10 +193,12 @@ const MyProfile = () => {
                                             <TextField
                                                 label="Phone"
                                                 name="phone"
+                                                type='number'
                                                 value={formValues.phone}
                                                 onChange={handleInputChange}
                                                 fullWidth
                                                 margin="normal"
+                                               
                                                 variant="outlined"
                                             />
                                         </Grid>
@@ -213,9 +215,10 @@ const MyProfile = () => {
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
                                             <TextField
-                                                label="City"
-                                                name="city"
-                                                value={formValues.city}
+                                            type='number'
+                                                label="Zip Code"
+                                                name="zip"
+                                                value={formValues.zip}
                                                 onChange={handleInputChange}
                                                 fullWidth
                                                 margin="normal"
@@ -273,7 +276,7 @@ const MyProfile = () => {
                                                     <strong>Gender:</strong> {profile.gender}
                                                 </Typography>
                                                 <Typography variant="body1" sx={{ mb: 1 }}>
-                                                    <strong>City:</strong> {profile.city}
+                                                    <strong>Zip Code:</strong> {profile.zip}
                                                 </Typography>
                                                 <Typography variant="body1">
                                                     <strong>Address:</strong> {profile.address}
