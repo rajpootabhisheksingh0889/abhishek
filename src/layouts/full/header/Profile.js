@@ -36,21 +36,26 @@ const Profile = () => {
     navigate('/auth/login');
   };
 
-
   useEffect(() => {
-    // Define the logout function to be used with the event listeners
-    const onUnload = () => {
-      handleLogout();
+    // Function to clear localStorage
+    const clearLocalStorage = () => {
+      localStorage.removeItem('user_type');
+      localStorage.removeItem('accessToken');
     };
 
-    // Add event listeners for beforeunload and unload events
-    window.addEventListener('beforeunload', onUnload);
-    window.addEventListener('unload', onUnload);
+    // Attach event listener for beforeunload
+    const onBeforeUnload = (event) => {
+      clearLocalStorage();
+      // Show a confirmation dialog (optional)
+      event.preventDefault();
+      event.returnValue = ''; // Chrome requires returnValue to be set
+    };
 
-    // Cleanup the event listeners on component unmount
+    window.addEventListener('beforeunload', onBeforeUnload);
+
+    // Cleanup event listener on component unmount
     return () => {
-      window.removeEventListener('beforeunload', onUnload);
-      window.removeEventListener('unload', onUnload);
+      window.removeEventListener('beforeunload', onBeforeUnload);
     };
   }, []);
 
