@@ -65,6 +65,9 @@ const CustomPermission = () => {
             };
             await axios.post('http://134.209.145.149:9999/api/cPermission', payload);
             toast.success('Permissions updated successfully!');
+            setTimeout(() => {
+                window.location.reload();
+            }, 3000);
         } catch (err) {
             toast.error('Failed to update permissions.');
             console.error(err);

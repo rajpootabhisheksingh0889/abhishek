@@ -127,7 +127,7 @@ const CustomerList = () => {
                                 </TableRow>
                             ))
                         ) : (
-                            filteredCustomers.map((customer) => (
+                                filteredCustomers.map((customer, index) => (
                                 <TableRow key={customer.id} sx={{ '&:hover': { backgroundColor: '#f0f0f0' } }}>
                                     <TableCell>
                                         <Typography sx={{
@@ -135,7 +135,7 @@ const CustomerList = () => {
                                             fontWeight: "500",
                                         }}
                                         >
-                                            {customer.id}
+                                                {index + 1}
                                         </Typography>
                                     </TableCell>
                                     <TableCell>

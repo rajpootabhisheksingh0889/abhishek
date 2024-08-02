@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Grid, Card, CardContent, CardHeader, Checkbox, Button, FormControlLabel, Typography } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { useParams, useNavigate } from 'react-router-dom';
 const Permission = () => {
   const [selections, setSelections] = useState([]);
   const [names, setNames] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchNames = async () => {
       try {
@@ -107,6 +107,9 @@ const Permission = () => {
 
       if (response.ok) {
         toast.success('Permissions updated successfully!');
+        setTimeout(() => {
+          window.location.reload();
+        }, 3000);
       } else {
         toast.error(`Failed to update permissions: ${result.message}`);
       }
