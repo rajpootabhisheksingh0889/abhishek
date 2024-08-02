@@ -72,7 +72,7 @@ const MyProfile = () => {
                         email: profileData.email,
                         phone: profileData.phone,
                         gender: profileData.gender,
-                        city: profileData.city,
+                        zip: profileData.zipcode,
                         address: profileData.address,
                     });
                 } else {

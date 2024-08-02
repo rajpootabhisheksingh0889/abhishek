@@ -136,14 +136,14 @@ const Menuitems2 = [
 ];
 
 const GetMenuItems = () => {
-  const userType = localStorage.getItem('user_type');
+ const userType = localStorage.getItem('user_type');
   const [status, setStatus] = useState("");
   const uid = localStorage.getItem('uid');
   const loadData = async () => {
     const uid = localStorage.getItem('uid');
     try {
       const result = await axios.post('http://localhost:9999/api/checkSidebar', { uid: uid });
-      setStatus(result.data.data); // Assuming 'status' is the field you want from result
+      // Assuming 'status' is the field you want from result
       console.log(result.data, "result is ==>>>>");
     } catch (error) {
       console.error('Error loading data:', error);
@@ -154,30 +154,30 @@ const GetMenuItems = () => {
     loadData();
   }, );
 
-  useEffect(async()=>{
- if(status){
+//   useEffect(async()=>{
+//  if(status){
 
 
-  const result = await axios.post('http://localhost:9999/api/getCPermissions', { user_id: uid });
-  console.log(result,"result of the specific user is ==>>>")
+//   const result = await axios.post('http://localhost:9999/api/getCPermissions', { user_id: uid });
+//   console.log(result,"result of the specific user is ==>>>")
 
- }
+//  }
 
- else{
-
-
-  const result = await axios.get('http://localhost:9999/api/getPermissions');
-  console.log(result,"result of the user_type is ==>>>")
-
- }
+//  else{
 
 
+//   const result = await axios.get('http://localhost:9999/api/getPermissions');
+//   console.log(result,"result of the user_type is ==>>>")
+
+//  }
 
 
-  },status)
 
 
-  console.log(`User type: ${userType}`, status); // Debugging line
+//   },status)
+
+
+  // console.log(`User type: ${userType}`, status); // Debugging line
 
   switch (userType) {
     case 'AD':

@@ -36,44 +36,44 @@ const Profile = () => {
     navigate('/auth/login');
   };
 
-  useEffect(() => {
-    // Function to clear localStorage
-    const clearLocalStorage = () => {
-      localStorage.removeItem('user_type');
-      localStorage.removeItem('accessToken');
-    };
+  // useEffect(() => {
+  //   // Function to clear localStorage
+  //   const clearLocalStorage = () => {
+  //     localStorage.removeItem('user_type');
+  //     localStorage.removeItem('accessToken');
+  //   };
 
-    // Handle beforeunload event
-    const onBeforeUnload = (event) => {
-      // Only clear localStorage if the page is being unloaded, not reloaded
-      if (document.visibilityState === 'hidden') {
-        clearLocalStorage();
-      }
-      // Show a confirmation dialog (optional)
-      event.preventDefault();
-      event.returnValue = ''; // Chrome requires returnValue to be set
-    };
+  //   // Handle beforeunload event
+  //   const onBeforeUnload = (event) => {
+  //     // Only clear localStorage if the page is being unloaded, not reloaded
+  //     if (document.visibilityState === 'hidden') {
+  //       clearLocalStorage();
+  //     }
+  //     // Show a confirmation dialog (optional)
+  //     event.preventDefault();
+  //     event.returnValue = ''; // Chrome requires returnValue to be set
+  //   };
 
-    // Attach event listener for beforeunload
-    window.addEventListener('beforeunload', onBeforeUnload);
+  //   // Attach event listener for beforeunload
+  //   window.addEventListener('beforeunload', onBeforeUnload);
 
-    // Handle visibilitychange event
-    const onVisibilityChange = () => {
-      // If page visibility is hidden, consider it as a tab/browser close
-      if (document.visibilityState === 'hidden') {
-        clearLocalStorage();
-      }
-    };
+  //   // Handle visibilitychange event
+  //   const onVisibilityChange = () => {
+  //     // If page visibility is hidden, consider it as a tab/browser close
+  //     if (document.visibilityState === 'hidden') {
+  //       clearLocalStorage();
+  //     }
+  //   };
 
-    // Attach event listener for visibilitychange
-    document.addEventListener('visibilitychange', onVisibilityChange);
+  //   // Attach event listener for visibilitychange
+  //   document.addEventListener('visibilitychange', onVisibilityChange);
 
-    // Cleanup event listeners on component unmount
-    return () => {
-      window.removeEventListener('beforeunload', onBeforeUnload);
-      document.removeEventListener('visibilitychange', onVisibilityChange);
-    };
-  }, []);
+  //   // Cleanup event listeners on component unmount
+  //   return () => {
+  //     window.removeEventListener('beforeunload', onBeforeUnload);
+  //     document.removeEventListener('visibilitychange', onVisibilityChange);
+  //   };
+  // }, []);
 
   return (
     <Box>
