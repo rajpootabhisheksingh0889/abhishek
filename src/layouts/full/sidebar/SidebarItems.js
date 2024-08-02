@@ -13,7 +13,12 @@ const SidebarItems = () => {
   useEffect(() => {
     const fetchMenuItems = async () => {
       try {
-        const response = await axios.post('http://134.209.145.149:9999/api/checkSidebar', { uid: 1 });
+        const uid = localStorage.getItem('uid');
+        if (!uid) {
+          throw new Error('User ID not found in localStorage');
+        }
+
+        const response = await axios.post('http://134.209.145.149:9999/api/checkSidebar', { uid });
         setMenuItems(response.data);
       } catch (error) {
         console.error('Failed to fetch menu items:', error);
