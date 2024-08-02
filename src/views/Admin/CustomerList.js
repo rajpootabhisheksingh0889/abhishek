@@ -90,11 +90,11 @@ const CustomerList = () => {
                                     Phone
                                 </Typography>
                             </TableCell>
-                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
+                            {/* <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Status
                                 </Typography>
-                            </TableCell>
+                            </TableCell> */}
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Action
@@ -118,9 +118,9 @@ const CustomerList = () => {
                                     <TableCell>
                                         <Skeleton variant="text" width={60} />
                                     </TableCell>
-                                    <TableCell>
+                                    {/* <TableCell>
                                         <Skeleton variant="text" width={40} />
-                                    </TableCell>
+                                    </TableCell> */}
                                     <TableCell>
                                         <Skeleton variant="text" width={60} />
                                     </TableCell>
@@ -153,7 +153,7 @@ const CustomerList = () => {
                                             {customer.phone}
                                         </Typography>
                                     </TableCell>
-                                    <TableCell>
+                                    {/* <TableCell>
                                         <Chip
                                             sx={{
                                                 px: "4px",
@@ -163,7 +163,7 @@ const CustomerList = () => {
                                             size="small"
                                             label={customer.status ? 'Active' : 'Inactive'}
                                         />
-                                    </TableCell>
+                                    </TableCell> */}
                                     <TableCell>
                                         <Button variant="contained" color="primary" size="small"
                                             onClick={() => navigate(`/custom-permissions/${customer.id}`)}
