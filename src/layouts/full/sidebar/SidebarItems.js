@@ -1,14 +1,27 @@
-import React from 'react';
-import getMenuItems from './MenuItems'; // Ensure this path is correct
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router';
 import { Box, List } from '@mui/material';
 import NavItem from './NavItem';
 import NavGroup from './NavGroup/NavGroup';
+import axios from 'axios';
 
 const SidebarItems = () => {
   const { pathname } = useLocation();
   const pathDirect = pathname;
-  const menuItems = getMenuItems(); // Dynamically get the menu items based on user type
+  const [menuItems, setMenuItems] = useState([]);
+
+  useEffect(() => {
+    const fetchMenuItems = async () => {
+      try {
+        const response = await axios.post('http://134.209.145.149:9999/api/checkSidebar', { uid: 1 });
+        setMenuItems(response.data);
+      } catch (error) {
+        console.error('Failed to fetch menu items:', error);
+      }
+    };
+
+    fetchMenuItems();
+  }, []);
 
   return (
     <Box sx={{ px: 3 }}>
