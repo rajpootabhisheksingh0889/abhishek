@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Avatar,
@@ -26,11 +26,33 @@ const Profile = () => {
     setAnchorEl2(null);
   };
 
+
+
+
+
   const handleLogout = () => {
     localStorage.removeItem('user_type');
     localStorage.removeItem('accessToken');
     navigate('/auth/login');
   };
+
+
+  useEffect(() => {
+    // Define the logout function to be used with the event listeners
+    const onUnload = () => {
+      handleLogout();
+    };
+
+    // Add event listeners for beforeunload and unload events
+    window.addEventListener('beforeunload', onUnload);
+    window.addEventListener('unload', onUnload);
+
+    // Cleanup the event listeners on component unmount
+    return () => {
+      window.removeEventListener('beforeunload', onUnload);
+      window.removeEventListener('unload', onUnload);
+    };
+  }, []);
 
   return (
     <Box>
