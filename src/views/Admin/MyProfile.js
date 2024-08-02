@@ -11,7 +11,6 @@ import {
     TextField,
     Button,
     Box,
-    Paper,
     Divider,
 } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
@@ -50,6 +49,7 @@ const MyProfile = () => {
         zipcode: '',
         address: '',
     });
+    const [errors, setErrors] = useState({});
     const [error, setError] = useState(null);
     const navigate = useNavigate();
 
@@ -89,6 +89,25 @@ const MyProfile = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+
+        // Validation for phone number (10 digits only)
+        if (name === 'phone' && value.length > 10) {
+            return;
+        }
+
+        // Validate phone number is numeric and 10 digits long
+        if (name === 'phone' && (isNaN(value) || value.length !== 10)) {
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                [name]: 'Phone number must be 10 digits long',
+            }));
+        } else {
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                [name]: '',
+            }));
+        }
+
         setFormValues((prevValues) => ({
             ...prevValues,
             [name]: value,
@@ -193,13 +212,14 @@ const MyProfile = () => {
                                             <TextField
                                                 label="Phone"
                                                 name="phone"
-                                                type='number'
+                                                type='text'
                                                 value={formValues.phone}
                                                 onChange={handleInputChange}
                                                 fullWidth
                                                 margin="normal"
-                                               
                                                 variant="outlined"
+                                                error={!!errors.phone}
+                                                helperText={errors.phone}
                                             />
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
@@ -215,9 +235,9 @@ const MyProfile = () => {
                                         </Grid>
                                         <Grid item xs={12} sm={6}>
                                             <TextField
-                                            type='number'
+                                                type='text'
                                                 label="Zip Code"
-                                                name="zip"
+                                                name="zipcode"
                                                 value={formValues.zipcode}
                                                 onChange={handleInputChange}
                                                 fullWidth
@@ -257,42 +277,42 @@ const MyProfile = () => {
                                     </Box>
                                 </Box>
                             ) : (
-                                    <Card sx={{ maxWidth: 600, margin: 'auto', padding: 2 }}>
-                                        <CardContent>
-                                            <Box sx={{ textAlign: 'center' }}>
-                                                <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mb: 1 }}>
-                                                    {`${profile.first_name} ${profile.last_name}`}
-                                                </Typography>
-                                                <Box sx={{ mb: 2 }}>
-                                                    <Divider />
-                                                </Box>
-                                                <Typography variant="body1" sx={{ mb: 1 }}>
-                                                    <strong>Email:</strong> {profile.email}
-                                                </Typography>
-                                                <Typography variant="body1" sx={{ mb: 1 }}>
-                                                    <strong>Phone:</strong> {profile.phone}
-                                                </Typography>
-                                                <Typography variant="body1" sx={{ mb: 1 }}>
-                                                    <strong>Gender:</strong> {profile.gender}
-                                                </Typography>
-                                                <Typography variant="body1" sx={{ mb: 1 }}>
-                                                    <strong>Zip Code:</strong> {profile.zipcode}
-                                                </Typography>
-                                                <Typography variant="body1">
-                                                    <strong>Address:</strong> {profile.address}
-                                                </Typography>
-                                                <Box sx={{ marginTop: 3 }}>
-                                                    <Button
-                                                        variant="contained"
-                                                        onClick={() => setEditMode(true)}
-                                                        sx={{ fontSize: '1rem', padding: '10px 20px' }}
-                                                    >
-                                                        Edit
-                                                    </Button>
-                                                </Box>
+                                <Card sx={{ maxWidth: 600, margin: 'auto', padding: 2 }}>
+                                    <CardContent>
+                                        <Box sx={{ textAlign: 'center' }}>
+                                            <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mb: 1 }}>
+                                                {`${profile.first_name} ${profile.last_name}`}
+                                            </Typography>
+                                            <Box sx={{ mb: 2 }}>
+                                                <Divider />
                                             </Box>
-                                        </CardContent>
-                                    </Card>
+                                            <Typography variant="body1" sx={{ mb: 1 }}>
+                                                <strong>Email:</strong> {profile.email}
+                                            </Typography>
+                                            <Typography variant="body1" sx={{ mb: 1 }}>
+                                                <strong>Phone:</strong> {profile.phone}
+                                            </Typography>
+                                            <Typography variant="body1" sx={{ mb: 1 }}>
+                                                <strong>Gender:</strong> {profile.gender}
+                                            </Typography>
+                                            <Typography variant="body1" sx={{ mb: 1 }}>
+                                                <strong>Zip Code:</strong> {profile.zipcode}
+                                            </Typography>
+                                            <Typography variant="body1">
+                                                <strong>Address:</strong> {profile.address}
+                                            </Typography>
+                                            <Box sx={{ marginTop: 3 }}>
+                                                <Button
+                                                    variant="contained"
+                                                    onClick={() => setEditMode(true)}
+                                                    sx={{ fontSize: '1rem', padding: '10px 20px' }}
+                                                >
+                                                    Edit
+                                                </Button>
+                                            </Box>
+                                        </Box>
+                                    </CardContent>
+                                </Card>
                             )}
                         </Grid>
                     </Grid>
