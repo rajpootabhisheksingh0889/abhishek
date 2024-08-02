@@ -43,17 +43,22 @@ const CustomerList = () => {
     return (
         <DashboardCard>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h3" component="h2">
+                <Typography variant="h3" component="h2" sx={{ flex: 1 }}>
                     Customer List
                 </Typography>
-                {/* <TextField
-                    label="Search customers"
-                    variant="outlined"
-                    sx={{ width: '100%', maxWidth: 300, mt: 2 }}
-                    margin="normal"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                /> */}
+
+                <Box sx={{ display: 'flex', gap: 2 }}>
+
+
+                    <TextField
+                        size="medium"
+                        label="Search Customer"
+                        variant="outlined"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    
+                </Box>
             </Box>
             <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
                 <Table
