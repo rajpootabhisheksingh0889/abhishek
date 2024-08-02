@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import {
     Container,
-    // Card,
+    Card,
     CardContent,
     Typography,
     Avatar,
@@ -12,6 +12,7 @@ import {
     Button,
     Box,
     Paper,
+    Divider,
 } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import { styled } from '@mui/system';
@@ -32,7 +33,7 @@ const fadeIn = `
 `;
 
 // Styled component for the Card
-const AnimatedCard = styled(Paper)`
+const AnimatedCard = styled(Card)`
   animation: fadeIn 0.5s ease-in-out;
   ${fadeIn}
 `;
@@ -48,10 +49,9 @@ const MyProfile = () => {
         gender: '',
         city: '',
         address: '',
-       
     });
     const [error, setError] = useState(null);
-    const navigate = useNavigate(); // Initialize navigate
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -105,7 +105,6 @@ const MyProfile = () => {
                 uid,
                 ...formValues,
             });
-            console.log('Response data:', response.data); // Log response data
             if (response.data.success) {
                 setProfile(formValues);
                 setEditMode(false);
@@ -136,24 +135,25 @@ const MyProfile = () => {
             <ToastContainer />
             <AnimatedCard elevation={3} sx={{ padding: 4, marginTop: 4 }}>
                 <CardContent>
-                    <Grid container spacing={2} alignItems="center">
+                    <Grid container spacing={4} alignItems="center" direction="column">
                         <Grid item>
                             <Avatar
                                 src="/path/to/avatar.jpg" // Add path to your avatar image
                                 sx={{
-                                    width: 80,
-                                    height: 80,
+                                    width: 120,
+                                    height: 120,
                                     bgcolor: 'primary.main',
-                                    fontSize: 40,
+                                    fontSize: 50,
+                                    marginBottom: 2,
                                 }}
                             >
                                 {profile.first_name ? profile.first_name.charAt(0) : 'U'}
                             </Avatar>
-
                         </Grid>
                         <Grid item xs={12} sm={8}>
                             {editMode ? (
-                                <Box sx={{ animation: 'fadeIn 0.5s ease-in-out' }}>
+                                <Box>
+                                    <Typography variant="h5" gutterBottom>Edit Profile</Typography>
                                     <Grid container spacing={2}>
                                         <Grid item xs={12} sm={6}>
                                             <TextField
@@ -200,19 +200,6 @@ const MyProfile = () => {
                                                 variant="outlined"
                                             />
                                         </Grid>
-                                        {/* <Grid item xs={12}>
-                                            <TextField
-                                                label="User Type"
-                                                name="user_type"
-                                                value={formValues.user_type}
-                                                onChange={handleInputChange}
-                                                fullWidth
-                                                margin="normal"
-                                                variant="outlined"
-                                                InputProps={{ readOnly: true }}  // Make field read-only
-                                            />
-                                        </Grid> */}
-
                                         <Grid item xs={12} sm={6}>
                                             <TextField
                                                 label="Gender"
@@ -245,10 +232,9 @@ const MyProfile = () => {
                                                 margin="normal"
                                                 variant="outlined"
                                                 multiline
-                                                rows={4} // You can adjust the number of rows as needed
+                                                rows={4}
                                             />
                                         </Grid>
-
                                     </Grid>
                                     <Box sx={{ marginTop: 2 }}>
                                         <Button
@@ -268,31 +254,42 @@ const MyProfile = () => {
                                     </Box>
                                 </Box>
                             ) : (
-                                <Box>
-                                    <Typography variant="h5">{`${profile.first_name} ${profile.last_name}`}</Typography>
-                                    <Typography variant="body1">{profile.email}</Typography>
-                                    <Typography variant="body1">{profile.phone}</Typography>
-                                    <Typography variant="body2">
-                                        User Type: {profile?.user_type}
-                                    </Typography>
-                                        <Typography variant="body2">
-                                            Gender: {profile?.gender}
-                                        </Typography>
-                                        <Typography variant="body2">
-                                            City: {profile?.city}
-                                        </Typography>
-                                        <Typography variant="body2">
-                                            address: {profile?.address}
-                                        </Typography>
-
-                                    <Button
-                                        variant="contained"
-                                        onClick={() => setEditMode(true)}
-                                        sx={{ marginTop: 2 }}
-                                    >
-                                        Edit
-                                    </Button>
-                                </Box>
+                                    <Card sx={{ maxWidth: 600, margin: 'auto', padding: 2 }}>
+                                        <CardContent>
+                                            <Box sx={{ textAlign: 'center' }}>
+                                                <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mb: 1 }}>
+                                                    {`${profile.first_name} ${profile.last_name}`}
+                                                </Typography>
+                                                <Box sx={{ mb: 2 }}>
+                                                    <Divider />
+                                                </Box>
+                                                <Typography variant="h6" sx={{ mb: 1 }}>
+                                                    <strong>Email:</strong> {profile.email}
+                                                </Typography>
+                                                <Typography variant="h6" sx={{ mb: 1 }}>
+                                                    <strong>Phone:</strong> {profile.phone}
+                                                </Typography>
+                                                <Typography variant="body1" sx={{ mb: 1 }}>
+                                                    <strong>Gender:</strong> {profile.gender}
+                                                </Typography>
+                                                <Typography variant="body1" sx={{ mb: 1 }}>
+                                                    <strong>City:</strong> {profile.city}
+                                                </Typography>
+                                                <Typography variant="body1">
+                                                    <strong>Address:</strong> {profile.address}
+                                                </Typography>
+                                                <Box sx={{ marginTop: 3 }}>
+                                                    <Button
+                                                        variant="contained"
+                                                        onClick={() => setEditMode(true)}
+                                                        sx={{ fontSize: '1rem', padding: '10px 20px' }}
+                                                    >
+                                                        Edit
+                                                    </Button>
+                                                </Box>
+                                            </Box>
+                                        </CardContent>
+                                    </Card>
                             )}
                         </Grid>
                     </Grid>
