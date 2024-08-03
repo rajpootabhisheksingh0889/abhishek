@@ -14,7 +14,7 @@ const CustomerList = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
-
+    const userType = localStorage.getItem('user_type');
     useEffect(() => {
         const fetchCustomers = async () => {
             try {
@@ -95,11 +95,15 @@ const CustomerList = () => {
                                     Status
                                 </Typography>
                             </TableCell> */}
+                            {userType !== 'AG' && (
+
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Action
                                 </Typography>
                             </TableCell>
+                            )}
+
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -164,6 +168,8 @@ const CustomerList = () => {
                                             label={customer.status ? 'Active' : 'Inactive'}
                                         />
                                     </TableCell> */}
+                                        {userType !== 'AG' && (
+
                                     <TableCell>
                                         <Button variant="contained" color="primary" size="small"
                                             onClick={() => navigate(`/custom-permissions/${customer.id}`)}
@@ -171,6 +177,7 @@ const CustomerList = () => {
                                             View
                                         </Button>
                                     </TableCell>
+                                        )}
                                 </TableRow>
                             ))
                         )}
