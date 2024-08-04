@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -48,10 +48,13 @@ const MyProfile = () => {
         gender: '',
         zipcode: '',
         address: '',
+        image: '', // Add image field
     });
+    const [imageFile, setImageFile] = useState(null); // State for the image file
     const [errors, setErrors] = useState({});
     const [error, setError] = useState(null);
     const navigate = useNavigate();
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -74,6 +77,7 @@ const MyProfile = () => {
                         gender: profileData.gender,
                         zipcode: profileData.zipcode,
                         address: profileData.address,
+                        image: profileData.image, // Set image field
                     });
                 } else {
                     throw new Error('Failed to fetch profile data');
@@ -114,16 +118,47 @@ const MyProfile = () => {
         }));
     };
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImageFile(file); // Set the selected image file
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setFormValues((prevValues) => ({
+                    ...prevValues,
+                    image: reader.result, // Update the image preview
+                }));
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleSave = async () => {
         try {
             const uid = localStorage.getItem('uid');
             if (!uid) {
                 throw new Error('User ID not found');
             }
-            const response = await axios.put('http://134.209.145.149:9999/api/editProfile', {
-                uid,
-                ...formValues,
+
+            const formData = new FormData();
+            formData.append('uid', uid);
+            formData.append('first_name', formValues.first_name);
+            formData.append('last_name', formValues.last_name);
+            formData.append('email', formValues.email);
+            formData.append('phone', formValues.phone);
+            formData.append('gender', formValues.gender);
+            formData.append('zipcode', formValues.zipcode);
+            formData.append('address', formValues.address);
+            if (imageFile) {
+                formData.append('image', imageFile); // Append the image file if it exists
+            }
+
+            const response = await axios.put('http://134.209.145.149:9999/api/editProfile', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
             });
+
             if (response.data.success) {
                 setProfile(formValues);
                 setEditMode(false);
@@ -157,17 +192,27 @@ const MyProfile = () => {
                     <Grid container spacing={4} alignItems="center" direction="column">
                         <Grid item>
                             <Avatar
-                                src="/path/to/avatar.jpg" // Add path to your avatar image
+                                src={formValues.image || "/path/to/avatar.jpg"} // Use formValues.image
                                 sx={{
                                     width: 120,
                                     height: 120,
                                     bgcolor: 'primary.main',
                                     fontSize: 50,
                                     marginBottom: 2,
+                                    cursor: editMode ? 'pointer' : 'default', // Disable cursor pointer when not in edit mode
                                 }}
+                                onClick={editMode ? () => fileInputRef.current.click() : null} // Only trigger file input on click if in edit mode
                             >
                                 {profile.first_name ? profile.first_name.charAt(0) : 'U'}
                             </Avatar>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                ref={fileInputRef}
+                                style={{ display: 'none' }}
+                                onChange={handleImageChange}
+                                disabled={!editMode} // Disable file input if not in edit mode
+                            />
                         </Grid>
                         <Grid item xs={12} sm={8}>
                             {editMode ? (
@@ -259,60 +304,45 @@ const MyProfile = () => {
                                             />
                                         </Grid>
                                     </Grid>
-                                    <Box sx={{ marginTop: 2 }}>
+                                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2 }}>
                                         <Button
                                             variant="contained"
                                             color="primary"
                                             onClick={handleSave}
-                                            sx={{ marginRight: 1 }}
+                                            sx={{ marginRight: 2 }}
                                         >
                                             Save
                                         </Button>
-                                        <Button
-                                            variant="outlined"
-                                            onClick={() => setEditMode(false)}
-                                        >
+                                        <Button variant="outlined" onClick={() => setEditMode(false)}>
                                             Cancel
                                         </Button>
                                     </Box>
                                 </Box>
                             ) : (
-                                <Card sx={{ maxWidth: 600, margin: 'auto', padding: 2 }}>
-                                    <CardContent>
-                                        <Box sx={{ textAlign: 'center' }}>
-                                            <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mb: 1 }}>
-                                                {`${profile.first_name} ${profile.last_name}`}
-                                            </Typography>
-                                            <Box sx={{ mb: 2 }}>
-                                                <Divider />
-                                            </Box>
-                                            <Typography variant="body1" sx={{ mb: 1 }}>
-                                                <strong>Email:</strong> {profile.email}
-                                            </Typography>
-                                            <Typography variant="body1" sx={{ mb: 1 }}>
-                                                <strong>Phone:</strong> {profile.phone}
-                                            </Typography>
-                                            <Typography variant="body1" sx={{ mb: 1 }}>
-                                                <strong>Gender:</strong> {profile.gender}
-                                            </Typography>
-                                            <Typography variant="body1" sx={{ mb: 1 }}>
-                                                <strong>Zip Code:</strong> {profile.zipcode}
-                                            </Typography>
-                                            <Typography variant="body1">
-                                                <strong>Address:</strong> {profile.address}
-                                            </Typography>
-                                            <Box sx={{ marginTop: 3 }}>
-                                                <Button
-                                                    variant="contained"
-                                                    onClick={() => setEditMode(true)}
-                                                    sx={{ fontSize: '1rem', padding: '10px 20px' }}
-                                                >
-                                                    Edit
-                                                </Button>
-                                            </Box>
-                                        </Box>
-                                    </CardContent>
-                                </Card>
+                                <Box>
+                                    <Typography variant="h4" gutterBottom>
+                                        {profile.first_name} {profile.last_name}
+                                    </Typography>
+                                    <Typography variant="body1" gutterBottom>
+                                        <strong>Email:</strong> {profile.email}
+                                    </Typography>
+                                    <Typography variant="body1" gutterBottom>
+                                        <strong>Phone:</strong> {profile.phone}
+                                    </Typography>
+                                    <Typography variant="body1" gutterBottom>
+                                        <strong>Gender:</strong> {profile.gender}
+                                    </Typography>
+                                    <Typography variant="body1" gutterBottom>
+                                        <strong>Zip Code:</strong> {profile.zipcode}
+                                    </Typography>
+                                    <Typography variant="body1" gutterBottom>
+                                        <strong>Address:</strong> {profile.address}
+                                    </Typography>
+                                    <Divider sx={{ marginY: 2 }} />
+                                    <Button variant="contained" color="primary" onClick={() => setEditMode(true)}>
+                                        Edit Profile
+                                    </Button>
+                                </Box>
                             )}
                         </Grid>
                     </Grid>
