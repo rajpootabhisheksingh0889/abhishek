@@ -55,7 +55,20 @@ const MyProfile = () => {
     const [error, setError] = useState(null);
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
+    // Get the current date and calculate the date 18 years ago
+    const currentDate = new Date();
+    const maxDate = new Date(
+        currentDate.getFullYear() - 18,
+        currentDate.getMonth(),
+        currentDate.getDate()
+    ).toISOString().split('T')[0]; // Format as YYYY-MM-DD
 
+    const calculateAge = (dob) => {
+        const birthDate = new Date(dob);
+        const ageDifMs = Date.now() - birthDate.getTime();
+        const ageDate = new Date(ageDifMs);
+        return Math.abs(ageDate.getUTCFullYear() - 1970);
+    };
     useEffect(() => {
         const fetchProfile = async () => {
             try {
@@ -77,6 +90,11 @@ const MyProfile = () => {
                         gender: profileData.gender,
                         zipcode: profileData.zipcode,
                         address: profileData.address,
+                        state: profileData.state,
+                        description: profileData.description,
+                        dob: profileData.dob,
+                        language: profileData.language,
+                        age: calculateAge(profileData.dob),
                         image: profileData.image, // Set image field
                     });
                 } else {
@@ -112,11 +130,32 @@ const MyProfile = () => {
             }));
         }
 
+        // Auto-calculate age if date of birth is changed
+        if (name === 'dob') {
+            const age = calculateAge(value);
+            if (age < 18) {
+                setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    age: 'Age must be at least 18',
+                }));
+            } else {
+                setErrors((prevErrors) => ({
+                    ...prevErrors,
+                    age: '',
+                }));
+            }
+            setFormValues((prevValues) => ({
+                ...prevValues,
+                age,
+            }));
+        }
+
         setFormValues((prevValues) => ({
             ...prevValues,
             [name]: value,
         }));
     };
+
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -149,6 +188,12 @@ const MyProfile = () => {
             formData.append('gender', formValues.gender);
             formData.append('zipcode', formValues.zipcode);
             formData.append('address', formValues.address);
+            formData.append('state', formValues.state);
+            formData.append('age', formValues.age);
+            formData.append('dob', formValues.dob);
+            formData.append('language', formValues.language);
+            formData.append('description', formValues.description);
+
             if (imageFile) {
                 formData.append('image', imageFile); // Append the image file if it exists
             }
@@ -183,6 +228,7 @@ const MyProfile = () => {
     if (!profile) {
         return <Typography>Loading...</Typography>;
     }
+
 
     return (
         <Container>
@@ -281,6 +327,63 @@ const MyProfile = () => {
                                         <Grid item xs={12} sm={6}>
                                             <TextField
                                                 type='text'
+                                                label="Language Known"
+                                                name="language"
+                                                value={formValues.language}
+                                                onChange={handleInputChange}
+                                                fullWidth
+                                                margin="normal"
+                                                variant="outlined"
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                label="Date Of Birth"
+                                                name="dob"
+                                                type="date"
+                                                value={formValues.dob}
+                                                onChange={handleInputChange}
+                                                fullWidth
+                                                margin="normal"
+                                                variant="outlined"
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
+                                                inputProps={{
+                                                    max: maxDate, // Set max date to 18 years ago
+                                                }}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                label="Age"
+                                                name="age"
+                                                type="number"
+                                                value={formValues.age}
+                                                onChange={handleInputChange}
+                                                fullWidth
+                                                margin="normal"
+                                                variant="outlined"
+                                                InputProps={{ readOnly: true }}
+
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                type='text'
+                                                label="State"
+                                                name="State"
+                                                value={formValues.state}
+                                                onChange={handleInputChange}
+                                                fullWidth
+                                                margin="normal"
+                                                variant="outlined"
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                type='text'
                                                 label="Zip Code"
                                                 name="zipcode"
                                                 value={formValues.zipcode}
@@ -290,6 +393,7 @@ const MyProfile = () => {
                                                 variant="outlined"
                                             />
                                         </Grid>
+
                                         <Grid item xs={12}>
                                             <TextField
                                                 label="Address"
@@ -301,6 +405,19 @@ const MyProfile = () => {
                                                 variant="outlined"
                                                 multiline
                                                 rows={4}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <TextField
+                                                label="Description"
+                                                name="description"
+                                                value={formValues.description}
+                                                onChange={handleInputChange}
+                                                fullWidth
+                                                margin="normal"
+                                                variant="outlined"
+                                                multiline
+                                                rows={6}
                                             />
                                         </Grid>
                                     </Grid>
@@ -319,6 +436,7 @@ const MyProfile = () => {
                                     </Box>
                                 </Box>
                             ) : (
+
                                 <Box>
                                     <Typography variant="h4" gutterBottom>
                                         {profile.first_name} {profile.last_name}
@@ -343,6 +461,7 @@ const MyProfile = () => {
                                         Edit Profile
                                     </Button>
                                 </Box>
+
                             )}
                         </Grid>
                     </Grid>
