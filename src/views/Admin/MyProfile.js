@@ -150,7 +150,7 @@ const MyProfile = () => {
             formData.append('zipcode', formValues.zipcode);
             formData.append('address', formValues.address);
             if (imageFile) {
-                formData.append('image', imageFile); // Append the image file if it exists
+                formData.append('files', imageFile); // Append the image file if it exists
             }
 
             const response = await axios.put('http://134.209.145.149:9999/api/editProfile', formData, {
