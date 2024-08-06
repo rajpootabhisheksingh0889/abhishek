@@ -52,12 +52,16 @@ const MyProfile = () => {
         language: '',
         age: '',
         image: '',
+        gallery: []
     });
     const [imageFile, setImageFile] = useState(null);
+    const [galleryFiles, setGalleryFiles] = useState([]);
     const [errors, setErrors] = useState({});
     const [error, setError] = useState(null);
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
+    const galleryInputRef = useRef(null);
+
 
     const currentDate = new Date();
     const maxDate = new Date(
@@ -96,8 +100,9 @@ const MyProfile = () => {
                         description: profileData.description,
                         dob: profileData.dob,
                         language: profileData.language,
-                        age: calculateAge(profileData.dob),
+                        age: calculateAge(profileData.age),
                         image: profileData.image,
+                        gallery: profileData.gallery || []
                     });
                 } else {
                     throw new Error('Failed to fetch profile data');
@@ -170,6 +175,24 @@ const MyProfile = () => {
         }
     };
 
+    const handleGalleryChange = (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length > 0) {
+            setGalleryFiles(files);
+            const readers = files.map((file) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setFormValues((prevValues) => ({
+                        ...prevValues,
+                        gallery: [...prevValues.gallery, reader.result],
+                    }));
+                };
+                reader.readAsDataURL(file);
+                return reader;
+            });
+        }
+    };
+
     const handleSave = async () => {
         try {
             const uid = localStorage.getItem('uid');
@@ -196,6 +219,10 @@ const MyProfile = () => {
                 formData.append('image', imageFile);
             }
 
+            galleryFiles.forEach((file, index) => {
+                formData.append(`gallery[${index}]`, file);
+            });
+
             const response = await axios.put('http://134.209.145.149:9999/api/editProfile', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
@@ -203,7 +230,7 @@ const MyProfile = () => {
             });
 
             if (response.data.success) {
-                setProfile({ ...formValues, image: response.data.imagePath });
+                setProfile(formValues);
                 setEditMode(false);
                 toast.success('Profile updated successfully!');
                 setTimeout(() => {
@@ -226,7 +253,6 @@ const MyProfile = () => {
     if (!profile) {
         return <Typography>Loading...</Typography>;
     }
-
     return (
         <Container>
             <ToastContainer />
@@ -252,8 +278,9 @@ const MyProfile = () => {
                                 type="file"
                                 accept="image/*"
                                 ref={fileInputRef}
-                                onChange={handleImageChange}
                                 style={{ display: 'none' }}
+                                onChange={handleImageChange}
+                                disabled={!editMode}
                             />
                         </Grid>
                         {editMode ? (
@@ -381,7 +408,7 @@ const MyProfile = () => {
                                             // margin="normal"
                                             variant="outlined"
                                             InputProps={{ readOnly: true }}
-                                            
+
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
@@ -392,9 +419,26 @@ const MyProfile = () => {
                                             onChange={handleInputChange}
                                             fullWidth
                                             multiline
-                                            // rows={4}
+                                        // rows={4}
                                         />
                                     </Grid>
+                                </Grid>
+
+                                <Grid item container spacing={2}>
+                                    <Grid item xs={12} sm={6} md={12}>
+                                        <TextField
+                                            type="file"
+                                            name="gallery"
+                                            label="Gallery"
+                                            onChange={handleGalleryChange}
+                                            inputProps={{ multiple: true }}
+                                            InputLabelProps={{ shrink: true }}
+                                            fullWidth
+                                        />
+
+                                    </Grid>
+
+
                                 </Grid>
                                 <Box display="flex" justifyContent="center" mt={2}>
                                     <Button variant="contained" color="primary" onClick={handleSave}>
