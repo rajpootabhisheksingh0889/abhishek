@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 import Loadable from '../layouts/full/shared/loadable/Loadable';
 import PrivateRoute from './PrivateRoute'; // Import the PrivateRoute component
 import ForgetPassword from 'src/views/authentication/auth/ForgetPassword';
+import AddProduct from 'src/views/Admin/AddProduct';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -233,6 +234,15 @@ const Router = [
         element: (
           <PrivateRoute>
             <Reports />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/addproduct',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <AddProduct />
           </PrivateRoute>
         ),
       },

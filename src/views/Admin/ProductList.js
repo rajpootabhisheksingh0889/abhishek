@@ -22,8 +22,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DashboardCard from 'src/components/shared/DashboardCard';
 import NoData from "src/assets/images/products/NoData.jpg";
+import { useNavigate } from 'react-router-dom';
 
 const ProductList = () => {
+    const navigate = useNavigate();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -83,10 +85,27 @@ const ProductList = () => {
     if (!Array.isArray(products)) {
         return <Typography>Error: Unexpected data format</Typography>;
     }
-
+    const handleAddProduct = () => {
+        navigate("/addproduct");
+    };
     return (
-        <DashboardCard title="Product List">
+        <DashboardCard>
             <ToastContainer />
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h3" component="h2" sx={{ flex: 1 }}>
+                    Product List
+                </Typography>
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        size="large"
+                        onClick={handleAddProduct}
+                    >
+                        Add Product
+                    </Button>
+                </Box>
+            </Box>
             <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
                 <Table
                     aria-label="simple table"
