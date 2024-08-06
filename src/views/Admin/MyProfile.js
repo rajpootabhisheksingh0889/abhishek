@@ -17,7 +17,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import { styled } from '@mui/system';
 import 'react-toastify/dist/ReactToastify.css';
 
-// Define keyframes for animations
 const fadeIn = `
 @keyframes fadeIn {
   from {
@@ -31,7 +30,6 @@ const fadeIn = `
 }
 `;
 
-// Styled component for the Card
 const AnimatedCard = styled(Card)`
   animation: fadeIn 0.5s ease-in-out;
   ${fadeIn}
@@ -48,20 +46,25 @@ const MyProfile = () => {
         gender: '',
         zipcode: '',
         address: '',
-        image: '', // Add image field
+        state: '',
+        description: '',
+        dob: '',
+        language: '',
+        age: '',
+        image: '',
     });
-    const [imageFile, setImageFile] = useState(null); // State for the image file
+    const [imageFile, setImageFile] = useState(null);
     const [errors, setErrors] = useState({});
     const [error, setError] = useState(null);
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
-    // Get the current date and calculate the date 18 years ago
+
     const currentDate = new Date();
     const maxDate = new Date(
         currentDate.getFullYear() - 18,
         currentDate.getMonth(),
         currentDate.getDate()
-    ).toISOString().split('T')[0]; // Format as YYYY-MM-DD
+    ).toISOString().split('T')[0];
 
     const calculateAge = (dob) => {
         const birthDate = new Date(dob);
@@ -69,6 +72,7 @@ const MyProfile = () => {
         const ageDate = new Date(ageDifMs);
         return Math.abs(ageDate.getUTCFullYear() - 1970);
     };
+
     useEffect(() => {
         const fetchProfile = async () => {
             try {
@@ -76,9 +80,7 @@ const MyProfile = () => {
                 if (!uid) {
                     throw new Error('User ID not found');
                 }
-                const response = await axios.post('http://134.209.145.149:9999/api/profile', {
-                    uid,
-                });
+                const response = await axios.post('http://134.209.145.149:9999/api/profile', { uid });
                 if (response.data.Success) {
                     const profileData = response.data.data[0];
                     setProfile(profileData);
@@ -95,7 +97,7 @@ const MyProfile = () => {
                         dob: profileData.dob,
                         language: profileData.language,
                         age: calculateAge(profileData.dob),
-                        image: profileData.image, // Set image field
+                        image: profileData.image,
                     });
                 } else {
                     throw new Error('Failed to fetch profile data');
@@ -112,12 +114,10 @@ const MyProfile = () => {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
 
-        // Validation for phone number (10 digits only)
         if (name === 'phone' && value.length > 10) {
             return;
         }
 
-        // Validate phone number is numeric and 10 digits long
         if (name === 'phone' && (isNaN(value) || value.length !== 10)) {
             setErrors((prevErrors) => ({
                 ...prevErrors,
@@ -130,7 +130,6 @@ const MyProfile = () => {
             }));
         }
 
-        // Auto-calculate age if date of birth is changed
         if (name === 'dob') {
             const age = calculateAge(value);
             if (age < 18) {
@@ -156,16 +155,15 @@ const MyProfile = () => {
         }));
     };
 
-
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setImageFile(file); // Set the selected image file
+            setImageFile(file);
             const reader = new FileReader();
             reader.onloadend = () => {
                 setFormValues((prevValues) => ({
                     ...prevValues,
-                    image: reader.result, // Update the image preview
+                    image: reader.result,
                 }));
             };
             reader.readAsDataURL(file);
@@ -195,7 +193,7 @@ const MyProfile = () => {
             formData.append('description', formValues.description);
 
             if (imageFile) {
-                formData.append('files', imageFile); // Append the image file if it exists
+                formData.append('image', imageFile);
             }
 
             const response = await axios.put('http://134.209.145.149:9999/api/editProfile', formData, {
@@ -205,12 +203,12 @@ const MyProfile = () => {
             });
 
             if (response.data.success) {
-                setProfile(formValues);
+                setProfile({ ...formValues, image: response.data.imagePath });
                 setEditMode(false);
                 toast.success('Profile updated successfully!');
                 setTimeout(() => {
-                    navigate('/profile'); // Navigate after 3 seconds
-                }, 3000); // 3000 milliseconds = 3 seconds
+                    navigate('/profile');
+                }, 3000);
             } else {
                 throw new Error(response.data.Message || 'Failed to update profile');
             }
@@ -229,7 +227,6 @@ const MyProfile = () => {
         return <Typography>Loading...</Typography>;
     }
 
-
     return (
         <Container>
             <ToastContainer />
@@ -238,16 +235,16 @@ const MyProfile = () => {
                     <Grid container spacing={4} alignItems="center" direction="column">
                         <Grid item>
                             <Avatar
-                                src={formValues.image || "/path/to/avatar.jpg"} // Use formValues.image
+                                src={formValues.image || "/path/to/avatar.jpg"}
                                 sx={{
                                     width: 120,
                                     height: 120,
                                     bgcolor: 'primary.main',
                                     fontSize: 50,
                                     marginBottom: 2,
-                                    cursor: editMode ? 'pointer' : 'default', // Disable cursor pointer when not in edit mode
+                                    cursor: editMode ? 'pointer' : 'default',
                                 }}
-                                onClick={editMode ? () => fileInputRef.current.click() : null} // Only trigger file input on click if in edit mode
+                                onClick={editMode ? () => fileInputRef.current.click() : null}
                             >
                                 {profile.first_name ? profile.first_name.charAt(0) : 'U'}
                             </Avatar>
@@ -255,215 +252,231 @@ const MyProfile = () => {
                                 type="file"
                                 accept="image/*"
                                 ref={fileInputRef}
-                                style={{ display: 'none' }}
                                 onChange={handleImageChange}
-                                disabled={!editMode} // Disable file input if not in edit mode
+                                style={{ display: 'none' }}
                             />
                         </Grid>
-                        <Grid item xs={12} sm={8}>
-                            {editMode ? (
-                                <Box>
-                                    <Typography variant="h5" gutterBottom>Edit Profile</Typography>
-                                    <Grid container spacing={2}>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                label="First Name"
-                                                name="first_name"
-                                                value={formValues.first_name}
-                                                onChange={handleInputChange}
-                                                fullWidth
-                                                margin="normal"
-                                                variant="outlined"
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                label="Last Name"
-                                                name="last_name"
-                                                value={formValues.last_name}
-                                                onChange={handleInputChange}
-                                                fullWidth
-                                                margin="normal"
-                                                variant="outlined"
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                label="Email"
-                                                name="email"
-                                                value={formValues.email}
-                                                onChange={handleInputChange}
-                                                fullWidth
-                                                margin="normal"
-                                                variant="outlined"
-                                                InputProps={{ readOnly: true }}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                label="Phone"
-                                                name="phone"
-                                                type='text'
-                                                value={formValues.phone}
-                                                onChange={handleInputChange}
-                                                fullWidth
-                                                margin="normal"
-                                                variant="outlined"
-                                                error={!!errors.phone}
-                                                helperText={errors.phone}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                label="Gender"
-                                                name="gender"
-                                                value={formValues.gender}
-                                                onChange={handleInputChange}
-                                                fullWidth
-                                                margin="normal"
-                                                variant="outlined"
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                type='text'
-                                                label="Language Known"
-                                                name="language"
-                                                value={formValues.language}
-                                                onChange={handleInputChange}
-                                                fullWidth
-                                                margin="normal"
-                                                variant="outlined"
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                label="Date Of Birth"
-                                                name="dob"
-                                                type="date"
-                                                value={formValues.dob}
-                                                onChange={handleInputChange}
-                                                fullWidth
-                                                margin="normal"
-                                                variant="outlined"
-                                                InputLabelProps={{
-                                                    shrink: true,
-                                                }}
-                                                inputProps={{
-                                                    max: maxDate, // Set max date to 18 years ago
-                                                }}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                label="Age"
-                                                name="age"
-                                                type="number"
-                                                value={formValues.age}
-                                                onChange={handleInputChange}
-                                                fullWidth
-                                                margin="normal"
-                                                variant="outlined"
-                                                InputProps={{ readOnly: true }}
-
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                type='text'
-                                                label="State"
-                                                name="State"
-                                                value={formValues.state}
-                                                onChange={handleInputChange}
-                                                fullWidth
-                                                margin="normal"
-                                                variant="outlined"
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                type='text'
-                                                label="Zip Code"
-                                                name="zipcode"
-                                                value={formValues.zipcode}
-                                                onChange={handleInputChange}
-                                                fullWidth
-                                                margin="normal"
-                                                variant="outlined"
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12}>
-                                            <TextField
-                                                label="Address"
-                                                name="address"
-                                                value={formValues.address}
-                                                onChange={handleInputChange}
-                                                fullWidth
-                                                margin="normal"
-                                                variant="outlined"
-                                                multiline
-                                                rows={4}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12}>
-                                            <TextField
-                                                label="Description"
-                                                name="description"
-                                                value={formValues.description}
-                                                onChange={handleInputChange}
-                                                fullWidth
-                                                margin="normal"
-                                                variant="outlined"
-                                                multiline
-                                                rows={6}
-                                            />
-                                        </Grid>
+                        {editMode ? (
+                            <>
+                                <Grid item container spacing={2}>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <TextField
+                                            name="first_name"
+                                            label="First Name"
+                                            value={formValues.first_name}
+                                            onChange={handleInputChange}
+                                            fullWidth
+                                            required
+                                            error={!!errors.first_name}
+                                            helperText={errors.first_name}
+                                        />
                                     </Grid>
-                                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2 }}>
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            onClick={handleSave}
-                                            sx={{ marginRight: 2 }}
-                                        >
-                                            Save
-                                        </Button>
-                                        <Button variant="outlined" onClick={() => setEditMode(false)}>
-                                            Cancel
-                                        </Button>
-                                    </Box>
-                                </Box>
-                            ) : (
-
-                                <Box>
-                                    <Typography variant="h4" gutterBottom>
-                                        {profile.first_name} {profile.last_name}
-                                    </Typography>
-                                    <Typography variant="body1" gutterBottom>
-                                        <strong>Email:</strong> {profile.email}
-                                    </Typography>
-                                    <Typography variant="body1" gutterBottom>
-                                        <strong>Phone:</strong> {profile.phone}
-                                    </Typography>
-                                    <Typography variant="body1" gutterBottom>
-                                        <strong>Gender:</strong> {profile.gender}
-                                    </Typography>
-                                    <Typography variant="body1" gutterBottom>
-                                        <strong>Zip Code:</strong> {profile.zipcode}
-                                    </Typography>
-                                    <Typography variant="body1" gutterBottom>
-                                        <strong>Address:</strong> {profile.address}
-                                    </Typography>
-                                    <Divider sx={{ marginY: 2 }} />
-                                    <Button variant="contained" color="primary" onClick={() => setEditMode(true)}>
-                                        Edit Profile
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <TextField
+                                            name="last_name"
+                                            label="Last Name"
+                                            value={formValues.last_name}
+                                            onChange={handleInputChange}
+                                            fullWidth
+                                            required
+                                            error={!!errors.last_name}
+                                            helperText={errors.last_name}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <TextField
+                                            name="email"
+                                            label="Email"
+                                            value={formValues.email}
+                                            onChange={handleInputChange}
+                                            fullWidth
+                                            required
+                                            error={!!errors.email}
+                                            helperText={errors.email}
+                                        />
+                                    </Grid>
+                                </Grid>
+                                <Grid item container spacing={2}>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <TextField
+                                            name="phone"
+                                            label="Phone"
+                                            value={formValues.phone}
+                                            onChange={handleInputChange}
+                                            fullWidth
+                                            required
+                                            error={!!errors.phone}
+                                            helperText={errors.phone}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <TextField
+                                            name="gender"
+                                            label="Gender"
+                                            value={formValues.gender}
+                                            onChange={handleInputChange}
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <TextField
+                                            name="zipcode"
+                                            label="Zipcode"
+                                            value={formValues.zipcode}
+                                            onChange={handleInputChange}
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                </Grid>
+                                <Grid item container spacing={2}>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <TextField
+                                            name="address"
+                                            label="Address"
+                                            value={formValues.address}
+                                            onChange={handleInputChange}
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <TextField
+                                            name="state"
+                                            label="State"
+                                            value={formValues.state}
+                                            onChange={handleInputChange}
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <TextField
+                                            name="dob"
+                                            label="Date of Birth"
+                                            value={formValues.dob}
+                                            onChange={handleInputChange}
+                                            fullWidth
+                                            type="date"
+                                            InputLabelProps={{ shrink: true }}
+                                            inputProps={{ max: maxDate }}
+                                            error={!!errors.age}
+                                            helperText={errors.age}
+                                        />
+                                    </Grid>
+                                </Grid>
+                                <Grid item container spacing={2}>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <TextField
+                                            name="language"
+                                            label="Language"
+                                            value={formValues.language}
+                                            onChange={handleInputChange}
+                                            fullWidth
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <TextField
+                                            label="Age"
+                                            name="age"
+                                            value={formValues.age}
+                                            fullWidth
+                                            // margin="normal"
+                                            variant="outlined"
+                                            InputProps={{ readOnly: true }}
+                                            
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <TextField
+                                            name="description"
+                                            label="Description"
+                                            value={formValues.description}
+                                            onChange={handleInputChange}
+                                            fullWidth
+                                            multiline
+                                            // rows={4}
+                                        />
+                                    </Grid>
+                                </Grid>
+                                <Box display="flex" justifyContent="center" mt={2}>
+                                    <Button variant="contained" color="primary" onClick={handleSave}>
+                                        Save
+                                    </Button>
+                                    <Button variant="outlined" color="secondary" onClick={() => setEditMode(false)}>
+                                        Cancel
                                     </Button>
                                 </Box>
-
-                            )}
-                        </Grid>
+                            </>
+                        ) : (
+                            <>
+                                <Grid item container spacing={2}>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <Typography variant="body1">
+                                            <strong>First Name:</strong> {profile.first_name}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <Typography variant="body1">
+                                            <strong>Last Name:</strong> {profile.last_name}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <Typography variant="body1">
+                                            <strong>Email:</strong> {profile.email}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+                                <Grid item container spacing={2}>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <Typography variant="body1">
+                                            <strong>Phone:</strong> {profile.phone}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <Typography variant="body1">
+                                            <strong>Gender:</strong> {profile.gender}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <Typography variant="body1">
+                                            <strong>Zipcode:</strong> {profile.zipcode}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+                                <Grid item container spacing={2}>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <Typography variant="body1">
+                                            <strong>Address:</strong> {profile.address}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <Typography variant="body1">
+                                            <strong>State:</strong> {profile.state}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <Typography variant="body1">
+                                            <strong>Date of Birth:</strong> {profile.dob}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+                                <Grid item container spacing={2}>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <Typography variant="body1">
+                                            <strong>Language:</strong> {profile.language}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <Typography variant="body1">
+                                            <strong>Description:</strong> {profile.description}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+                                <Box display="flex" justifyContent="center" mt={2}>
+                                    <Button variant="contained" color="primary" onClick={() => setEditMode(true)}>
+                                        Edit
+                                    </Button>
+                                </Box>
+                            </>
+                        )}
                     </Grid>
                 </CardContent>
             </AnimatedCard>

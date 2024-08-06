@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Card, CardContent, CardHeader, Checkbox, Button, FormControlLabel, Typography } from '@mui/material';
+import {
+  Grid, Card, CardContent,
+  InputLabel, Select, MenuItem, Box, FormControl, CardHeader, Checkbox, Button, FormControlLabel, Typography
+} from '@mui/material';
+import DashboardCard from 'src/components/shared/DashboardCard';
+
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -53,7 +58,7 @@ const Permission = () => {
               (perm) => perm.menu_name === name
             );
             const newSelection = { AD: false, CU: false, AG: false };
-            
+
             relevantPermissions.forEach((perm) => {
               newSelection[perm.role_type] = true;
             });
@@ -123,76 +128,101 @@ const Permission = () => {
   }
 
   return (
-    <div style={{ padding: '16px' }}>
+    <DashboardCard>
+
+
       <ToastContainer />
-      <Card variant="outlined" sx={{ boxShadow: 3 }}>
-        <CardHeader
-          title={<Typography variant="h5">Permissions</Typography>}
-          sx={{ backgroundColor: '#f5f5f5' }}
-        />
-        <CardContent>
-          <Grid container spacing={2}>
-            {names.map((name, index) => (
-              <Grid item xs={12} key={index}>
-                <Grid container alignItems="center" spacing={2}>
-                  <Grid item xs={3}>
-                    <Typography variant="body1">{name}</Typography>
-                  </Grid>
-                  <Grid item xs={9}>
-                    <Grid container spacing={1} justifyContent="flex-end">
-                      <Grid item>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={selections[index]?.AD || false}
-                              onChange={handleCheckboxChange(index, 'AD')}
-                              color="primary"
-                            />
-                          }
-                          label="AD"
-                        />
-                      </Grid>
-                      <Grid item>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={selections[index]?.CU || false}
-                              onChange={handleCheckboxChange(index, 'CU')}
-                              color="primary"
-                            />
-                          }
-                          label="CU"
-                        />
-                      </Grid>
-                      <Grid item>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={selections[index]?.AG || false}
-                              onChange={handleCheckboxChange(index, 'AG')}
-                              color="primary"
-                            />
-                          }
-                          label="AG"
-                        />
-                      </Grid>
+
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+        <Typography variant="h3" component="h2" sx={{ flex: 1 }}>
+          Permission
+        </Typography>
+
+        <Box sx={{ display: 'flex', gap: 2 }}>
+
+
+
+          <FormControl variant="outlined" size="medium">
+            <InputLabel>Select User</InputLabel>
+            <Select
+              // value={selectedOption}
+              // onChange={handleChange1}
+              label="Select User"
+              sx={{ height: '100%', minWidth: '220px' }} // Adjust height and width as needed
+            >
+              <MenuItem value={12}>Admin</MenuItem>
+              <MenuItem value={1}>Agent</MenuItem>
+              <MenuItem value={0}>Customer</MenuItem>
+            </Select>
+          </FormControl>
+
+        </Box>
+      </Box>
+
+      <CardContent>
+        <Grid container spacing={2}>
+          {names.map((name, index) => (
+            <Grid item xs={12} key={index}>
+              <Grid container alignItems="center" spacing={2}>
+                <Grid item xs={3}>
+                  <Typography variant="body1">{name}</Typography>
+                </Grid>
+                <Grid item xs={9}>
+                  <Grid container spacing={1} justifyContent="flex-end">
+                    <Grid item>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={selections[index]?.AD || false}
+                            onChange={handleCheckboxChange(index, 'AD')}
+                            color="primary"
+                          />
+                        }
+                        label="AD"
+                      />
+                    </Grid>
+                    <Grid item>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={selections[index]?.CU || false}
+                            onChange={handleCheckboxChange(index, 'CU')}
+                            color="primary"
+                          />
+                        }
+                        label="CU"
+                      />
+                    </Grid>
+                    <Grid item>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={selections[index]?.AG || false}
+                            onChange={handleCheckboxChange(index, 'AG')}
+                            color="primary"
+                          />
+                        }
+                        label="AG"
+                      />
                     </Grid>
                   </Grid>
                 </Grid>
               </Grid>
-            ))}
-          </Grid>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSubmit}
-            sx={{ marginTop: '16px', float: 'right', marginBottom: '16px' }}
-          >
-            Submit
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
+            </Grid>
+          ))}
+        </Grid>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSubmit}
+          sx={{ marginTop: '16px', float: 'right', marginBottom: '16px' }}
+        >
+          Submit
+        </Button>
+      </CardContent>
+
+    </DashboardCard>
+
   );
 };
 
