@@ -9,11 +9,15 @@ import {
     Button,
     MenuItem,
     Box,
+    Avatar,
+    IconButton,
+    ImageList,
+    ImageListItem,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import DashboardCard from 'src/components/shared/DashboardCard';
-
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -28,9 +32,11 @@ const AddProduct = () => {
         quantity: '',
         brand: '',
         weight: '',
-        images: '',
+        images: [],
     });
+
     const navigate = useNavigate();
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
@@ -38,9 +44,27 @@ const AddProduct = () => {
             [name]: value,
         });
     };
+
     const handleGoBack = () => {
         navigate(-1); // Navigate back to the previous page
     };
+
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files);
+        const newImages = files.map(file => URL.createObjectURL(file));
+        setFormData({
+            ...formData,
+            images: [...formData.images, ...newImages],
+        });
+    };
+
+    const handleRemoveImage = (url) => {
+        setFormData({
+            ...formData,
+            images: formData.images.filter(image => image !== url),
+        });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
@@ -56,7 +80,7 @@ const AddProduct = () => {
                 quantity: '',
                 brand: '',
                 weight: '',
-                images: '',
+                images: [],
             });
         } catch (error) {
             toast.error('Failed to add product. Please try again.');
@@ -69,18 +93,12 @@ const AddProduct = () => {
                 <Typography variant="h3" component="h2" sx={{ flex: 1 }}>
                     Add Product
                 </Typography>
-
                 <Box sx={{ display: 'flex', gap: 2 }}>
-
-
-
-
                     <Button
                         variant="contained"
                         color="primary"
                         size="large"
                         onClick={handleGoBack}
-                    // sx={{ height: '100%', minWidth: '100px' }} // Adjust height and width as needed
                     >
                         Go back
                     </Button>
@@ -110,7 +128,6 @@ const AddProduct = () => {
                                     variant="outlined"
                                     fullWidth
                                     multiline
-                                    //   rows={4}
                                     required
                                 />
                             </Grid>
@@ -201,18 +218,44 @@ const AddProduct = () => {
                                 />
                             </Grid>
                             <Grid item xs={12}>
-                                <TextField
-                                    label="Images (comma-separated URLs)"
-                                    name="images"
-                                    value={formData.images}
-                                    onChange={handleChange}
-                                    variant="outlined"
+                                <Button
+                                    variant="contained"
+                                    component="label"
                                     fullWidth
-                                //   required
-                                />
+                                >
+                                    Upload Images
+                                    <input
+                                        type="file"
+                                        hidden
+                                        accept="image/*"
+                                        multiple
+                                        onChange={handleImageChange}
+                                    />
+                                </Button>
                             </Grid>
                             <Grid item xs={12}>
-                                <Button type="submit" variant="contained" color="primary">
+                                <ImageList cols={3}>
+                                    {formData.images.map((url, index) => (
+                                        <ImageListItem key={index}>
+                                            <img src={url} alt={`product image ${index}`} />
+                                            <IconButton
+                                                aria-label="delete"
+                                                onClick={() => handleRemoveImage(url)}
+                                                sx={{
+                                                    position: 'absolute',
+                                                    top: 8,
+                                                    right: 8,
+                                                    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+                                                }}
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </ImageListItem>
+                                    ))}
+                                </ImageList>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button type="submit" variant="contained" color="primary" fullWidth>
                                     Add Product
                                 </Button>
                             </Grid>
@@ -221,7 +264,6 @@ const AddProduct = () => {
                 </CardContent>
             </Card>
             <ToastContainer />
-
         </DashboardCard>
     );
 };

@@ -62,7 +62,6 @@ const MyProfile = () => {
     const fileInputRef = useRef(null);
     const galleryInputRef = useRef(null);
 
-
     const currentDate = new Date();
     const maxDate = new Date(
         currentDate.getFullYear() - 18,
@@ -100,7 +99,7 @@ const MyProfile = () => {
                         description: profileData.description,
                         dob: profileData.dob,
                         language: profileData.language,
-                        age: calculateAge(profileData.age),
+                        age: calculateAge(profileData.dob),
                         image: profileData.image,
                         gallery: profileData.gallery || []
                     });
@@ -179,16 +178,17 @@ const MyProfile = () => {
         const files = Array.from(e.target.files);
         if (files.length > 0) {
             setGalleryFiles(files);
-            const readers = files.map((file) => {
+            const newGallery = [...formValues.gallery];
+            files.forEach((file) => {
                 const reader = new FileReader();
                 reader.onloadend = () => {
+                    newGallery.push(reader.result);
                     setFormValues((prevValues) => ({
                         ...prevValues,
-                        gallery: [...prevValues.gallery, reader.result],
+                        gallery: newGallery,
                     }));
                 };
                 reader.readAsDataURL(file);
-                return reader;
             });
         }
     };
@@ -343,6 +343,9 @@ const MyProfile = () => {
                                             value={formValues.gender}
                                             onChange={handleInputChange}
                                             fullWidth
+                                            required
+                                            error={!!errors.gender}
+                                            helperText={errors.gender}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
@@ -352,6 +355,9 @@ const MyProfile = () => {
                                             value={formValues.zipcode}
                                             onChange={handleInputChange}
                                             fullWidth
+                                            required
+                                            error={!!errors.zipcode}
+                                            helperText={errors.zipcode}
                                         />
                                     </Grid>
                                 </Grid>
@@ -363,6 +369,9 @@ const MyProfile = () => {
                                             value={formValues.address}
                                             onChange={handleInputChange}
                                             fullWidth
+                                            required
+                                            error={!!errors.address}
+                                            helperText={errors.address}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
@@ -372,20 +381,28 @@ const MyProfile = () => {
                                             value={formValues.state}
                                             onChange={handleInputChange}
                                             fullWidth
+                                            required
+                                            error={!!errors.state}
+                                            helperText={errors.state}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <TextField
                                             name="dob"
                                             label="Date of Birth"
+                                            type="date"
                                             value={formValues.dob}
                                             onChange={handleInputChange}
                                             fullWidth
-                                            type="date"
-                                            InputLabelProps={{ shrink: true }}
-                                            inputProps={{ max: maxDate }}
-                                            error={!!errors.age}
-                                            helperText={errors.age}
+                                            required
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                            inputProps={{
+                                                max: maxDate,
+                                            }}
+                                            error={!!errors.dob}
+                                            helperText={errors.dob}
                                         />
                                     </Grid>
                                 </Grid>
@@ -397,18 +414,9 @@ const MyProfile = () => {
                                             value={formValues.language}
                                             onChange={handleInputChange}
                                             fullWidth
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={4}>
-                                        <TextField
-                                            label="Age"
-                                            name="age"
-                                            value={formValues.age}
-                                            fullWidth
-                                            // margin="normal"
-                                            variant="outlined"
-                                            InputProps={{ readOnly: true }}
-
+                                            required
+                                            error={!!errors.language}
+                                            helperText={errors.language}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
@@ -418,107 +426,155 @@ const MyProfile = () => {
                                             value={formValues.description}
                                             onChange={handleInputChange}
                                             fullWidth
-                                            multiline
-                                        // rows={4}
+                                            required
+                                            error={!!errors.description}
+                                            helperText={errors.description}
                                         />
                                     </Grid>
-                                </Grid>
-
-                                <Grid item container spacing={2}>
-                                    <Grid item xs={12} sm={6} md={12}>
+                                    <Grid item xs={12} sm={6} md={4}>
                                         <TextField
-                                            type="file"
-                                            name="gallery"
-                                            label="Gallery"
-                                            onChange={handleGalleryChange}
-                                            inputProps={{ multiple: true }}
-                                            InputLabelProps={{ shrink: true }}
+                                            name="age"
+                                            label="Age"
+                                            value={formValues.age}
+                                            onChange={handleInputChange}
                                             fullWidth
+                                            required
+                                            error={!!errors.age}
+                                            helperText={errors.age}
+                                            disabled
                                         />
-
                                     </Grid>
-
-
                                 </Grid>
-                                <Box display="flex" justifyContent="center" mt={2}>
+                                <Grid item container spacing={2}>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <Typography>Gallery</Typography>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            multiple
+                                            ref={galleryInputRef}
+                                            style={{ display: 'none' }}
+                                            onChange={handleGalleryChange}
+                                            disabled={!editMode}
+                                        />
+                                        <Button
+                                            variant="outlined"
+                                            onClick={() => galleryInputRef.current.click()}
+                                            disabled={!editMode}
+                                        >
+                                            Upload Gallery Images
+                                        </Button>
+                                        <Grid container spacing={2}>
+                                            {formValues.gallery.map((image, index) => (
+                                                <Grid item key={index}>
+                                                    <img
+                                                        src={image}
+                                                        alt={`gallery ${index}`}
+                                                        style={{ width: 100, height: 100 }}
+                                                    />
+                                                </Grid>
+                                            ))}
+                                        </Grid>
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={12} style={{ textAlign: 'center' }}>
                                     <Button variant="contained" color="primary" onClick={handleSave}>
                                         Save
                                     </Button>
-                                    <Button variant="outlined" color="secondary" onClick={() => setEditMode(false)}>
+                                    <Button
+                                        variant="outlined"
+                                        color="secondary"
+                                        onClick={() => setEditMode(false)}
+                                    >
                                         Cancel
                                     </Button>
-                                </Box>
+                                </Grid>
                             </>
                         ) : (
                             <>
+                                <Grid item>
+                                    <Typography variant="h5">
+                                        {profile.first_name} {profile.last_name}
+                                    </Typography>
+                                </Grid>
                                 <Grid item container spacing={2}>
-                                    <Grid item xs={12} sm={6} md={4}>
-                                        <Typography variant="body1">
-                                            <strong>First Name:</strong> {profile.first_name}
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={4}>
-                                        <Typography variant="body1">
-                                            <strong>Last Name:</strong> {profile.last_name}
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xs={12} sm={6} md={4}>
+                                    <Grid item xs={12} sm={6}>
                                         <Typography variant="body1">
                                             <strong>Email:</strong> {profile.email}
                                         </Typography>
                                     </Grid>
-                                </Grid>
-                                <Grid item container spacing={2}>
-                                    <Grid item xs={12} sm={6} md={4}>
+                                    <Grid item xs={12} sm={6}>
                                         <Typography variant="body1">
                                             <strong>Phone:</strong> {profile.phone}
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={12} sm={6} md={4}>
+                                    <Grid item xs={12} sm={6}>
                                         <Typography variant="body1">
                                             <strong>Gender:</strong> {profile.gender}
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={12} sm={6} md={4}>
+                                    <Grid item xs={12} sm={6}>
                                         <Typography variant="body1">
                                             <strong>Zipcode:</strong> {profile.zipcode}
                                         </Typography>
                                     </Grid>
-                                </Grid>
-                                <Grid item container spacing={2}>
-                                    <Grid item xs={12} sm={6} md={4}>
+                                    <Grid item xs={12} sm={6}>
                                         <Typography variant="body1">
                                             <strong>Address:</strong> {profile.address}
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={12} sm={6} md={4}>
+                                    <Grid item xs={12} sm={6}>
                                         <Typography variant="body1">
                                             <strong>State:</strong> {profile.state}
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={12} sm={6} md={4}>
+                                    <Grid item xs={12} sm={6}>
                                         <Typography variant="body1">
                                             <strong>Date of Birth:</strong> {profile.dob}
                                         </Typography>
                                     </Grid>
-                                </Grid>
-                                <Grid item container spacing={2}>
-                                    <Grid item xs={12} sm={6} md={4}>
+                                    <Grid item xs={12} sm={6}>
                                         <Typography variant="body1">
                                             <strong>Language:</strong> {profile.language}
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={12} sm={6} md={4}>
+                                    <Grid item xs={12} sm={6}>
                                         <Typography variant="body1">
                                             <strong>Description:</strong> {profile.description}
                                         </Typography>
                                     </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <Typography variant="body1">
+                                            <strong>Age:</strong> {profile.age}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Typography variant="body1">
+                                            <strong>Gallery:</strong>
+                                        </Typography>
+                                        <Grid container spacing={2}>
+                                            {profile.gallery &&
+                                                profile.gallery.map((image, index) => (
+                                                    <Grid item key={index}>
+                                                        <img
+                                                            src={image}
+                                                            alt={`gallery ${index}`}
+                                                            style={{ width: 100, height: 100 }}
+                                                        />
+                                                    </Grid>
+                                                ))}
+                                        </Grid>
+                                    </Grid>
                                 </Grid>
-                                <Box display="flex" justifyContent="center" mt={2}>
-                                    <Button variant="contained" color="primary" onClick={() => setEditMode(true)}>
-                                        Edit
+                                <Grid item xs={12} style={{ textAlign: 'center' }}>
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        onClick={() => setEditMode(true)}
+                                    >
+                                        Edit Profile
                                     </Button>
-                                </Box>
+                                </Grid>
                             </>
                         )}
                     </Grid>
