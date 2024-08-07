@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-    Typography, Box,
+    Typography,
+    Box,
     Table,
     TableBody,
     TableCell,
@@ -85,9 +86,11 @@ const ProductList = () => {
     if (!Array.isArray(products)) {
         return <Typography>Error: Unexpected data format</Typography>;
     }
+
     const handleAddProduct = () => {
         navigate("/addproduct");
     };
+
     return (
         <DashboardCard>
             <ToastContainer />
@@ -136,6 +139,11 @@ const ProductList = () => {
                                     Price
                                 </Typography>
                             </TableCell>
+                            <TableCell>
+                                <Typography variant="subtitle2" fontWeight={600}>
+                                    Images
+                                </Typography>
+                            </TableCell>
                             <TableCell align="right">
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Quantity
@@ -153,7 +161,7 @@ const ProductList = () => {
                             <SkeletonLoading />
                         ) : products.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={6}>
+                                <TableCell colSpan={7}>
                                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '300px' }}>
                                         <img src={NoData} alt="No data available" style={{ maxWidth: '100%', maxHeight: '100%' }} />
                                     </Box>
@@ -186,6 +194,18 @@ const ProductList = () => {
                                         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
                                             {product.price} {product.currency}
                                         </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Box sx={{ display: 'flex', gap: 1 }}>
+                                            {product.images && product.images.map((image, index) => (
+                                                <img
+                                                    key={index}
+                                                    src={image}
+                                                    alt={`product-img-${index}`}
+                                                    style={{ width: 50, height: 50, objectFit: 'cover' }}
+                                                />
+                                            ))}
+                                        </Box>
                                     </TableCell>
                                     <TableCell align="right">
                                         <Typography variant="h6">{product.quantity}</Typography>
@@ -276,9 +296,10 @@ const SkeletonLoading = () => (
         <TableHead>
             <TableRow>
                 <TableCell><Skeleton variant="text" width={40} /></TableCell>
-                <TableCell><Skeleton variant="text" width={100} /></TableCell>
-                <TableCell><Skeleton variant="text" width={150} /></TableCell>
+                <TableCell><Skeleton variant="text" width={80} /></TableCell>
+                <TableCell><Skeleton variant="text" width={120} /></TableCell>
                 <TableCell><Skeleton variant="text" width={60} /></TableCell>
+                <TableCell><Skeleton variant="text" width={80} /></TableCell>
                 <TableCell align="right"><Skeleton variant="text" width={40} /></TableCell>
                 <TableCell align="right"><Skeleton variant="text" width={60} /></TableCell>
             </TableRow>
@@ -287,9 +308,10 @@ const SkeletonLoading = () => (
             {Array.from(new Array(5)).map((_, index) => (
                 <TableRow key={index}>
                     <TableCell><Skeleton variant="text" width={40} /></TableCell>
-                    <TableCell><Skeleton variant="text" width={100} /></TableCell>
-                    <TableCell><Skeleton variant="text" width={150} /></TableCell>
+                    <TableCell><Skeleton variant="text" width={80} /></TableCell>
+                    <TableCell><Skeleton variant="text" width={120} /></TableCell>
                     <TableCell><Skeleton variant="text" width={60} /></TableCell>
+                    <TableCell><Skeleton variant="text" width={80} /></TableCell>
                     <TableCell align="right"><Skeleton variant="text" width={40} /></TableCell>
                     <TableCell align="right"><Skeleton variant="text" width={60} /></TableCell>
                 </TableRow>
