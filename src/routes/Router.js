@@ -247,6 +247,15 @@ const Router = [
         ),
       },
       {
+        path: '/addproduct/:productId',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <AddProduct />
+          </PrivateRoute>
+        ),
+      },
+      {
         path: '/orderhistory',
         exact: true,
         element: (

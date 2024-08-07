@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Container,
     Card,
@@ -9,12 +9,11 @@ import {
     Button,
     MenuItem,
     Box,
-    Avatar,
     IconButton,
     ImageList,
     ImageListItem,
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 import DashboardCard from 'src/components/shared/DashboardCard';
@@ -34,7 +33,25 @@ const AddProduct = () => {
         images: [],
     });
 
+    const [isEditMode, setIsEditMode] = useState(false);
     const navigate = useNavigate();
+    const { productId } = useParams(); // assuming route is like /add-product or /edit-product/:productId
+
+    useEffect(() => {
+        if (productId) {
+            setIsEditMode(true);
+            fetchProductDetails(productId);
+        }
+    }, [productId]);
+
+    const fetchProductDetails = async (id) => {
+        try {
+            const response = await axios.post(`http://134.209.145.149:9999/api/edit_product/${id}`);
+            setFormData(response.data.data);
+        } catch (error) {
+            toast.error('Failed to fetch product details.');
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -66,9 +83,18 @@ const AddProduct = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const apiUrl = isEditMode
+            ? `http://134.209.145.149:9999/api/update_product/${productId}`
+            : 'http://134.209.145.149:9999/api/create_product';
+
         try {
-            await axios.post('http://134.209.145.149:9999/api/create_product', formData);
-            toast.success('Product added successfully!');
+            if (isEditMode) {
+                await axios.put(apiUrl, formData);
+                toast.success('Product updated successfully!');
+            } else {
+                await axios.post(apiUrl, formData);
+                toast.success('Product added successfully!');
+            }
             setFormData({
                 name: '',
                 description: '',
@@ -80,8 +106,9 @@ const AddProduct = () => {
                 weight: '',
                 images: [],
             });
+            navigate(-1); // Navigate back to the previous page after successful submission
         } catch (error) {
-            toast.error('Failed to add product. Please try again.');
+            toast.error('Failed to save product. Please try again.');
         }
     };
 
@@ -89,7 +116,7 @@ const AddProduct = () => {
         <DashboardCard>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h3" component="h2" sx={{ flex: 1 }}>
-                    Add Product
+                    {isEditMode ? 'Edit Product' : 'Add Product'}
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 2 }}>
                     <Button
@@ -169,7 +196,6 @@ const AddProduct = () => {
                                     required
                                 />
                             </Grid>
-                            
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     label="Quantity"
@@ -241,7 +267,7 @@ const AddProduct = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <Button type="submit" variant="contained" color="primary" fullWidth>
-                                    Add Product
+                                    {isEditMode ? 'Update Product' : 'Add Product'}
                                 </Button>
                             </Grid>
                         </Grid>

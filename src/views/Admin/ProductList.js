@@ -39,7 +39,7 @@ const ProductList = () => {
         const fetchProducts = async () => {
             try {
                 const response = await axios.get('http://134.209.145.149:9999/api/prodList');
-                setProducts(response.data.data);  // Extract the 'data' array from the response
+                setProducts(response.data.data);
             } catch (err) {
                 setError(err);
             } finally {
@@ -76,13 +76,16 @@ const ProductList = () => {
         }
     };
 
+    const handleEdit = (productId) => {
+        navigate(`/addproduct/${productId}`);
+    };
+
     const open = Boolean(anchorEl);
 
     if (error) {
         return <Typography>Error: {error.message}</Typography>;
     }
 
-    // Check if products is an array before mapping
     if (!Array.isArray(products)) {
         return <Typography>Error: Unexpected data format</Typography>;
     }
@@ -216,6 +219,7 @@ const ProductList = () => {
                                             aria-haspopup="true"
                                             onMouseEnter={(event) => handlePopoverOpen(event, 'Edit')}
                                             onMouseLeave={handlePopoverClose}
+                                            onClick={() => handleEdit(product.id)}
                                         >
                                             <Edit />
                                         </IconButton>
@@ -292,32 +296,15 @@ const ProductList = () => {
 };
 
 const SkeletonLoading = () => (
-    <Table sx={{ whiteSpace: 'nowrap', mt: 2 }}>
-        <TableHead>
-            <TableRow>
-                <TableCell><Skeleton variant="text" width={40} /></TableCell>
-                <TableCell><Skeleton variant="text" width={80} /></TableCell>
-                <TableCell><Skeleton variant="text" width={120} /></TableCell>
-                <TableCell><Skeleton variant="text" width={60} /></TableCell>
-                <TableCell><Skeleton variant="text" width={80} /></TableCell>
-                <TableCell align="right"><Skeleton variant="text" width={40} /></TableCell>
-                <TableCell align="right"><Skeleton variant="text" width={60} /></TableCell>
+    <>
+        {Array.from({ length: 5 }).map((_, index) => (
+            <TableRow key={index}>
+                <TableCell colSpan={7}>
+                    <Skeleton height={40} />
+                </TableCell>
             </TableRow>
-        </TableHead>
-        <TableBody>
-            {Array.from(new Array(5)).map((_, index) => (
-                <TableRow key={index}>
-                    <TableCell><Skeleton variant="text" width={40} /></TableCell>
-                    <TableCell><Skeleton variant="text" width={80} /></TableCell>
-                    <TableCell><Skeleton variant="text" width={120} /></TableCell>
-                    <TableCell><Skeleton variant="text" width={60} /></TableCell>
-                    <TableCell><Skeleton variant="text" width={80} /></TableCell>
-                    <TableCell align="right"><Skeleton variant="text" width={40} /></TableCell>
-                    <TableCell align="right"><Skeleton variant="text" width={60} /></TableCell>
-                </TableRow>
-            ))}
-        </TableBody>
-    </Table>
+        ))}
+    </>
 );
 
 export default ProductList;
