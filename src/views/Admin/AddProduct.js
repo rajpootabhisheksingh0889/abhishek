@@ -28,7 +28,6 @@ const AddProduct = () => {
         category: '',
         sku: '',
         price: '',
-        currency: '',
         quantity: '',
         brand: '',
         weight: '',
@@ -76,7 +75,6 @@ const AddProduct = () => {
                 category: '',
                 sku: '',
                 price: '',
-                currency: '',
                 quantity: '',
                 brand: '',
                 weight: '',
@@ -171,17 +169,7 @@ const AddProduct = () => {
                                     required
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    label="Currency"
-                                    name="currency"
-                                    value={formData.currency}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                />
-                            </Grid>
+                            
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     label="Quantity"
@@ -217,21 +205,18 @@ const AddProduct = () => {
                                     required
                                 />
                             </Grid>
-                            <Grid item xs={12}>
-                                <Button
-                                    variant="contained"
-                                    component="label"
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    type="file"
                                     fullWidth
-                                >
-                                    Upload Images
-                                    <input
-                                        type="file"
-                                        hidden
-                                        accept="image/*"
-                                        multiple
-                                        onChange={handleImageChange}
-                                    />
-                                </Button>
+                                    inputProps={{ multiple: true, accept: "image/*" }}
+                                    onChange={handleImageChange}
+                                    variant="outlined"
+                                    label="Upload Images"
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                />
                             </Grid>
                             <Grid item xs={12}>
                                 <ImageList cols={3}>
