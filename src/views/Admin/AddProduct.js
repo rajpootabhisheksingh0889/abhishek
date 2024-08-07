@@ -27,10 +27,19 @@ const AddProduct = () => {
         category: '',
         sku: '',
         price: '',
+        currency: 'USD',
         quantity: '',
         brand: '',
         weight: '',
-        images: [],
+        dimensions: {
+            depth: '',
+            width: '',
+            height: '',
+        },
+        images: [], // Ensure this is initialized as an array
+        tags: [],
+        variations: [],
+        status: false,
     });
 
     const [isEditMode, setIsEditMode] = useState(false);
@@ -46,8 +55,17 @@ const AddProduct = () => {
 
     const fetchProductDetails = async (id) => {
         try {
-            const response = await axios.post(`http://134.209.145.149:9999/api/edit_product/${id}`);
-            setFormData(response.data.data);
+            const response = await axios.get(`http://134.209.145.149:9999/api/productById/${id}`);
+            if (response.data && response.data.data) {
+                const product = response.data.data[0];
+                setFormData({
+                    ...product,
+                    dimensions: product.dimensions || { depth: '', width: '', height: '' },
+                    images: Array.isArray(product.images) ? product.images : [], // Ensure it's an array
+                    tags: Array.isArray(product.tags) ? product.tags : [],
+                    variations: Array.isArray(product.variations) ? product.variations : [],
+                });
+            }
         } catch (error) {
             toast.error('Failed to fetch product details.');
         }
@@ -58,6 +76,17 @@ const AddProduct = () => {
         setFormData({
             ...formData,
             [name]: value,
+        });
+    };
+
+    const handleDimensionChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            dimensions: {
+                ...formData.dimensions,
+                [name]: value,
+            },
         });
     };
 
@@ -84,7 +113,7 @@ const AddProduct = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const apiUrl = isEditMode
-            ? `http://134.209.145.149:9999/api/update_product/${productId}`
+            ? `http://134.209.145.149:9999/api/edit_product/${productId}`
             : 'http://134.209.145.149:9999/api/create_product';
 
         try {
@@ -101,10 +130,19 @@ const AddProduct = () => {
                 category: '',
                 sku: '',
                 price: '',
+                currency: 'USD',
                 quantity: '',
                 brand: '',
                 weight: '',
-                images: [],
+                dimensions: {
+                    depth: '',
+                    width: '',
+                    height: '',
+                },
+                images: [], // Reset to an empty array
+                tags: [],
+                variations: [],
+                status: false,
             });
             navigate(-1); // Navigate back to the previous page after successful submission
         } catch (error) {
@@ -231,6 +269,42 @@ const AddProduct = () => {
                                     required
                                 />
                             </Grid>
+                            <Grid item xs={12} md={4}>
+                                <TextField
+                                    label="Depth (cm)"
+                                    name="depth"
+                                    value={formData.dimensions.depth}
+                                    onChange={handleDimensionChange}
+                                    variant="outlined"
+                                    type="number"
+                                    fullWidth
+                                    required
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <TextField
+                                    label="Width (cm)"
+                                    name="width"
+                                    value={formData.dimensions.width}
+                                    onChange={handleDimensionChange}
+                                    variant="outlined"
+                                    type="number"
+                                    fullWidth
+                                    required
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <TextField
+                                    label="Height (cm)"
+                                    name="height"
+                                    value={formData.dimensions.height}
+                                    onChange={handleDimensionChange}
+                                    variant="outlined"
+                                    type="number"
+                                    fullWidth
+                                    required
+                                />
+                            </Grid>
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     type="file"
@@ -246,7 +320,7 @@ const AddProduct = () => {
                             </Grid>
                             <Grid item xs={12}>
                                 <ImageList cols={3}>
-                                    {formData.images.map((url, index) => (
+                                    {Array.isArray(formData.images) && formData.images.map((url, index) => (
                                         <ImageListItem key={index}>
                                             <img src={url} alt={`product image ${index}`} />
                                             <IconButton

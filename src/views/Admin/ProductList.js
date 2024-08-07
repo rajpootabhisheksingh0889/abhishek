@@ -200,7 +200,7 @@ const ProductList = () => {
                                     </TableCell>
                                     <TableCell>
                                         <Box sx={{ display: 'flex', gap: 1 }}>
-                                            {product.images && product.images.map((image, index) => (
+                                            {Array.isArray(product.images) && product.images.map((image, index) => (
                                                 <img
                                                     key={index}
                                                     src={image}
