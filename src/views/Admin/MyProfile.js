@@ -200,34 +200,25 @@ const MyProfile = () => {
                 throw new Error('User ID not found');
             }
 
-            const formData = new FormData();
-            formData.append('uid', uid);
-            formData.append('first_name', formValues.first_name);
-            formData.append('last_name', formValues.last_name);
-            formData.append('email', formValues.email);
-            formData.append('phone', formValues.phone);
-            formData.append('gender', formValues.gender);
-            formData.append('zipcode', formValues.zipcode);
-            formData.append('address', formValues.address);
-            formData.append('state', formValues.state);
-            formData.append('age', formValues.age);
-            formData.append('dob', formValues.dob);
-            formData.append('language', formValues.language);
-            formData.append('description', formValues.description);
+            const formData = {
+                uid: uid,
+                first_name: formValues.first_name,
+                last_name: formValues.last_name,
+                email: formValues.email,
+                phone: formValues.phone,
+                gender: formValues.gender,
+                zipcode: formValues.zipcode,
+                address: formValues.address,
+                state: formValues.state,
+                age: formValues.age,
+                dob: formValues.dob,
+                language: formValues.language,
+                description: formValues.description,
+                image: formValues.image, // Send image URL
+                gallery: formValues.gallery.map(image => image), // Ensure gallery is an array of URLs
+            };
 
-            if (imageFile) {
-                formData.append('image', imageFile);
-            }
-
-            galleryFiles.forEach((file, index) => {
-                formData.append(`gallery[${index}]`, file);
-            });
-
-            const response = await axios.put('http://134.209.145.149:9999/api/editProfile', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+            const response = await axios.put('http://134.209.145.149:9999/api/editProfile', formData);
 
             if (response.data.success) {
                 setProfile(formValues);
@@ -245,6 +236,7 @@ const MyProfile = () => {
             toast.error(error.message || 'Failed to update profile');
         }
     };
+
 
     if (error) {
         return <Typography color="error">{error}</Typography>;
