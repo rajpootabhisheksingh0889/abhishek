@@ -79,7 +79,9 @@ const ProductList = () => {
     const handleEdit = (productId) => {
         navigate(`/addproduct/${productId}`);
     };
-
+    const handleView = (productId) => {
+        navigate(`/productdetails/${productId}`);
+    };
     const open = Boolean(anchorEl);
 
     if (error) {
@@ -142,11 +144,11 @@ const ProductList = () => {
                                     Price
                                 </Typography>
                             </TableCell>
-                            <TableCell>
+                            {/* <TableCell>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Images
                                 </Typography>
-                            </TableCell>
+                            </TableCell> */}
                             <TableCell align="right">
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Quantity
@@ -198,7 +200,7 @@ const ProductList = () => {
                                             {product.price} {product.currency}
                                         </Typography>
                                     </TableCell>
-                                    <TableCell>
+                                    {/* <TableCell>
                                         <Box sx={{ display: 'flex', gap: 1 }}>
                                             {Array.isArray(product.images) && product.images.map((image, index) => (
                                                 <img
@@ -209,7 +211,7 @@ const ProductList = () => {
                                                 />
                                             ))}
                                         </Box>
-                                    </TableCell>
+                                    </TableCell> */}
                                     <TableCell align="right">
                                         <Typography variant="h6">{product.quantity}</Typography>
                                     </TableCell>
@@ -232,14 +234,15 @@ const ProductList = () => {
                                         >
                                             <Delete />
                                         </IconButton>
-                                        <IconButton
+                                        {/* <IconButton
                                             aria-owns={open ? 'mouse-over-popover' : undefined}
                                             aria-haspopup="true"
                                             onMouseEnter={(event) => handlePopoverOpen(event, 'View Details')}
                                             onMouseLeave={handlePopoverClose}
+                                            onClick={() => handleView(product.id)}
                                         >
                                             <Visibility />
-                                        </IconButton>
+                                        </IconButton> */}
                                         <Popover
                                             id="mouse-over-popover"
                                             sx={{

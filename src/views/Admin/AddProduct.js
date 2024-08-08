@@ -392,16 +392,16 @@ const BASE_URL = 'http://134.209.145.149:9999/api';
         currency: 'USD',
         quantity: '',
         brand: '',
-        weight: '',
-        dimensions: {
-            depth: '',
-            width: '',
-            height: '',
-        },
+        // weight: '',
+        // dimensions: {
+        //     depth: '',
+        //     width: '',
+        //     height: '',
+        // },
         images: [],
-        tags: [],
-        variations: [],
-        status: false,
+        // tags: [],
+        // variations: [],
+        // status: false,
     });
 
     const [isEditMode, setIsEditMode] = useState(false);
@@ -422,10 +422,10 @@ const BASE_URL = 'http://134.209.145.149:9999/api';
                 const product = response.data.data[0];
                 setFormData({
                     ...product,
-                    dimensions: product.dimensions || { depth: '', width: '', height: '' },
+                    // dimensions: product.dimensions || { depth: '', width: '', height: '' },
                     images: Array.isArray(product.images) ? product.images : [],
-                    tags: Array.isArray(product.tags) ? product.tags : [],
-                    variations: Array.isArray(product.variations) ? product.variations : [],
+                    // tags: Array.isArray(product.tags) ? product.tags : [],
+                    // variations: Array.isArray(product.variations) ? product.variations : [],
                 });
             }
         } catch (error) {
@@ -637,55 +637,8 @@ const BASE_URL = 'http://134.209.145.149:9999/api';
                                     required
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    label="Weight (kg)"
-                                    name="weight"
-                                    value={formData.weight}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    type="number"
-                                    fullWidth
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={4}>
-                                <TextField
-                                    label="Depth (cm)"
-                                    name="depth"
-                                    value={formData.dimensions.depth}
-                                    onChange={handleDimensionChange}
-                                    variant="outlined"
-                                    type="number"
-                                    fullWidth
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={4}>
-                                <TextField
-                                    label="Width (cm)"
-                                    name="width"
-                                    value={formData.dimensions.width}
-                                    onChange={handleDimensionChange}
-                                    variant="outlined"
-                                    type="number"
-                                    fullWidth
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={4}>
-                                <TextField
-                                    label="Height (cm)"
-                                    name="height"
-                                    value={formData.dimensions.height}
-                                    onChange={handleDimensionChange}
-                                    variant="outlined"
-                                    type="number"
-                                    fullWidth
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
+                           
+                            {/* <Grid item xs={12} md={6}>
                                 <TextField
                                     type="file"
                                     fullWidth
@@ -721,7 +674,7 @@ const BASE_URL = 'http://134.209.145.149:9999/api';
                                         );
                                     })}
                                 </ImageList>
-                            </Grid>
+                            </Grid> */}
                             <Grid item xs={12}>
                                 <Button type="submit" variant="contained" color="primary" fullWidth>
                                     {isEditMode ? 'Update Product' : 'Add Product'}

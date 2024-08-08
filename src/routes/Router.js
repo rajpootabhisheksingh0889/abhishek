@@ -28,6 +28,7 @@ const OrderList = Loadable(lazy(() => import('../views/Admin/OrderList')));
 const MyProfile = Loadable(lazy(() => import('../views/Admin/MyProfile')));
 const Permission = Loadable(lazy(() => import('../views/Admin/Permission')));
 const CustomPermission = Loadable(lazy(() => import('../views/Admin/CustomPermission')));
+const ProductDetails = Loadable(lazy(() => import('../views/Admin/ProductDetails')));
 
 
 const CustomerDashboard = Loadable(lazy(() => import('../views/Customer/CustomerDashboard')));
@@ -252,6 +253,16 @@ const Router = [
         element: (
           <PrivateRoute>
             <AddProduct />
+          </PrivateRoute>
+        ),
+      },
+
+      {
+        path: '/productdetails/:productId',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <ProductDetails />
           </PrivateRoute>
         ),
       },
