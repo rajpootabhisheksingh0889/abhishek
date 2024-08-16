@@ -90,13 +90,17 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
         setLoading(true);
         try {
             const response = await axios.post('http://134.209.145.149:9999/api/login', formData);
-            const { user_type, accessToken, id } = response.data;
-            localStorage.setItem('user_type', user_type);
-            localStorage.setItem('accessToken', accessToken);
-            localStorage.setItem('uid', id);
+            const { token, user } = response.data;
 
-            if (user_type === 'AD' || user_type === 'CU' || user_type === 'AG') {
+            localStorage.setItem('accessToken', token);
+            localStorage.setItem('uid', user.id);
+            localStorage.setItem('email', user.email);
+            localStorage.setItem('role_id', user.role_id);
+
+            if (user.role_id === 1) {
                 navigate('/dashboard');
+            } else {
+                toast.error('Unauthorized access');
             }
         } catch (error) {
             if (error.response) {
@@ -116,6 +120,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             setLoading(false);
         }
     };
+
 
     const handleForgotPasswordSubmit = async () => {
         if (!validateForgotPasswordForm()) {

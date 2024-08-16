@@ -11,7 +11,7 @@ const BlankLayout = Loadable(lazy(() => import('../layouts/blank/BlankLayout')))
 
 /* ****Pages***** */
 const Dashboard = Loadable(lazy(() => import('../views/dashboard/Dashboard')))
-const SamplePage = Loadable(lazy(() => import('../views/sample-page/SamplePage')))
+const ItemDetails = Loadable(lazy(() => import('../views/sample-page/ItemDetails')))
 const Icons = Loadable(lazy(() => import('../views/icons/Icons')))
 const TypographyPage = Loadable(lazy(() => import('../views/utilities/TypographyPage')))
 const Shadow = Loadable(lazy(() => import('../views/utilities/Shadow')))
@@ -56,11 +56,11 @@ const Router = [
         ),
       },
       {
-        path: '/sample-page',
+        path: '/ItemDetails',
         exact: true,
         element: (
           <PrivateRoute>
-            <SamplePage />
+            <ItemDetails />
           </PrivateRoute>
         ),
       },
