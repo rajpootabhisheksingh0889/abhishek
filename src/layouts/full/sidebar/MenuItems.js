@@ -348,14 +348,14 @@ const Menuitems2 = [
 ];
 
 const getMenuItems = () => {
-    const userType = localStorage.getItem('user_type');
+    const userType = localStorage.getItem('role_id');
     console.log(`User type: ${userType}`); // Debugging line
     switch (userType) {
-        case 'AD':
+        case '1':
             return Menuitems;
-        case 'CU':
+        case '2':
             return Menuitems1;
-        case 'AG':
+        case '3':
             return Menuitems2;
         default:
             return []; // Always return an array
