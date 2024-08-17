@@ -84,25 +84,25 @@ const MyProfile = () => {
                 if (!uid) {
                     throw new Error('User ID not found');
                 }
-                const response = await axios.post('http://134.209.145.149:9999/api/profile', { uid });
-                if (response.data.Success) {
-                    const profileData = response.data.data[0];
+                const response = await axios.get(`http://134.209.145.149:9999/api/user-info?user_id=${uid}`);
+                if (response.data) {
+                    const profileData = response.data;
+
+                    // Handle null or undefined values
                     setProfile(profileData);
                     setFormValues({
-                        first_name: profileData.first_name,
-                        last_name: profileData.last_name,
-                        email: profileData.email,
-                        phone: profileData.phone,
-                        gender: profileData.gender,
-                        zipcode: profileData.zipcode,
-                        address: profileData.address,
-                        state: profileData.state,
-                        description: profileData.description,
-                        dob: profileData.dob,
-                        language: profileData.language,
-                        age: calculateAge(profileData.dob),
-                        // image: profileData.image,
-                        // gallery: profileData.gallery || []
+                        first_name: profileData.first_name || '',
+                        last_name: profileData.last_name || '',
+                        email: profileData.email || '',
+                        phone: profileData.phone || '',
+                        gender: profileData.gender || '',
+                        zipcode: profileData.zipcode || '',
+                        address: profileData.address || '',
+                        state: profileData.state || '',
+                        description: profileData.description || '',
+                        dob: profileData.dob || '',
+                        language: profileData.language || '',
+                        age: profileData.dob ? calculateAge(profileData.dob) : '',
                     });
                 } else {
                     throw new Error('Failed to fetch profile data');

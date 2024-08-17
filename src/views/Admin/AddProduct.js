@@ -23,13 +23,13 @@ import 'react-toastify/dist/ReactToastify.css';
 const AddProduct = () => {
     const [formData, setFormData] = useState({
         name: '',
-        description: '',
-        category: '',
-        sku: '',
+        desc: '',
+        category_id: '1',
+        SKU: '',
         price: '',
-        currency: 'USD',
-        quantity: '',
-        brand: '',
+        // currency: 'USD',
+        inventory: '',
+        // brand: '',
         // weight: '',
         // dimensions: {
         //     depth: '',
@@ -61,13 +61,13 @@ const AddProduct = () => {
                 const product = response.data;
                 setFormData({
                     name: product.name || '',
-                    description: product.description || '',
-                    category: product.category || '',
-                    sku: product.sku || '',
+                    desc: product.desc || '',
+                    category_id: product.category_id || '',
+                    SKU: product.SKU || '',
                     price: product.price || '',
-                    currency: product.currency || 'USD',
-                    quantity: product.quantity || '',
-                    brand: product.brand || '',
+                    // currency: product.currency || 'USD',
+                    inventory: product.inventory || '',
+                    // brand: product.brand || '',
                     // Other fields can be added here as needed
                 });
             }
@@ -138,13 +138,13 @@ const AddProduct = () => {
             }
             setFormData({
                 name: '',
-                description: '',
-                category: '',
-                sku: '',
+                desc: '',
+                // category: '',
+                SKU: '',
                 price: '',
-                currency: 'USD',
-                quantity: '',
-                brand: '',
+                // currency: 'USD',
+                inventory: '',
+                // brand: '',
                 // weight: '',
                 // dimensions: {
                 //     depth: '',
@@ -197,8 +197,8 @@ const AddProduct = () => {
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     label="Description"
-                                    name="description"
-                                    value={formData.description}
+                                    name="desc"
+                                    value={formData.desc}
                                     onChange={handleChange}
                                     variant="outlined"
                                     fullWidth
@@ -206,7 +206,7 @@ const AddProduct = () => {
                                     required
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            {/* <Grid item xs={12} md={6}>
                                 <TextField
                                     label="Category"
                                     name="category"
@@ -222,12 +222,12 @@ const AddProduct = () => {
                                     <MenuItem value="Home">Home</MenuItem>
                                     <MenuItem value="Books">Books</MenuItem>
                                 </TextField>
-                            </Grid>
+                            </Grid> */}
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     label="SKU"
-                                    name="sku"
-                                    value={formData.sku}
+                                    name="SKU"
+                                    value={formData.SKU}
                                     onChange={handleChange}
                                     variant="outlined"
                                     fullWidth
@@ -249,8 +249,8 @@ const AddProduct = () => {
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     label="Quantity"
-                                    name="quantity"
-                                    value={formData.quantity}
+                                    name="inventory"
+                                    value={formData.inventory}
                                     onChange={handleChange}
                                     variant="outlined"
                                     type="number"
@@ -258,7 +258,7 @@ const AddProduct = () => {
                                     required
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6}>
+                            {/* <Grid item xs={12} md={6}>
                                 <TextField
                                     label="Brand"
                                     name="brand"
@@ -268,7 +268,7 @@ const AddProduct = () => {
                                     fullWidth
                                     required
                                 />
-                            </Grid>
+                            </Grid> */}
                             {/* <Grid item xs={12} md={6}>
                                 <TextField
                                     label="Weight (kg)"

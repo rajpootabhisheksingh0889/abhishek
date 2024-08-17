@@ -19,7 +19,7 @@ const CustomerList = () => {
     useEffect(() => {
         const fetchCustomers = async () => {
             try {
-                const response = await axios.get('http://134.209.145.149:9999/api/listUser');
+                const response = await axios.get('http://134.209.145.149:9999/api/listUser?role_id=1');
                 // Ensure data is an array
                 if (Array.isArray(response.data)) {
                     setCustomers(response.data);
