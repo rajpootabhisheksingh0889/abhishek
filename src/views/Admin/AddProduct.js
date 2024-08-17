@@ -55,10 +55,10 @@ const AddProduct = () => {
 
     const fetchProductDetails = async (id) => {
         try {
-            const response = await axios.get(`http://134.209.145.149:9999/api/productById/${id}`);
-            if (response.data && response.data.data) {
+            const response = await axios.get(`http://134.209.145.149:9999/api/product/${id}`);
+            if (response.data && response.data) {
               
-                const product = response.data.data[0];
+                const product = response.data;
                 setFormData({
                     name: product.name || '',
                     description: product.description || '',
@@ -125,8 +125,8 @@ const AddProduct = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const apiUrl = isEditMode
-            ? `http://134.209.145.149:9999/api/edit_product/${productId}`
-            : 'http://134.209.145.149:9999/api/create_product';
+            ? `http://134.209.145.149:9999/api/product/${productId}`
+            : 'http://134.209.145.149:9999/api/product';
 
         try {
             if (isEditMode) {

@@ -38,8 +38,8 @@ const ProductList = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://134.209.145.149:9999/api/prodList');
-                setProducts(response.data.data);
+                const response = await axios.get('http://134.209.145.149:9999/api/product');
+                setProducts(response.data);
             } catch (err) {
                 setError(err);
             } finally {
@@ -68,7 +68,7 @@ const ProductList = () => {
     const confirmDelete = async () => {
         setOpenDialog(false);
         try {
-            await axios.delete(`http://134.209.145.149:9999/api/delete_product/${productToDelete.id}`);
+            await axios.delete(`http://134.209.145.149:9999/api/product/${productToDelete.id}`);
             setProducts(products.filter((p) => p.id !== productToDelete.id));
             toast.success('Product deleted successfully');
         } catch (error) {
