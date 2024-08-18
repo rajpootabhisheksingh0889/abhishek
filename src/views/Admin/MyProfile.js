@@ -45,9 +45,9 @@ const MyProfile = () => {
         email: '',
         phone: '',
         gender: '',
-        zipcode: '',
-        address: '',
-        state: '',
+        postal_code: '',
+        address_line_1: '',
+        city: '',
         description: '',
         dob: '',
         language: '',
@@ -96,9 +96,9 @@ const MyProfile = () => {
                         email: profileData.email || '',
                         phone: profileData.phone || '',
                         gender: profileData.gender || '',
-                        zipcode: profileData.zipcode || '',
-                        address: profileData.address || '',
-                        state: profileData.state || '',
+                        postal_code: profileData.postal_code || '',
+                        address_line_1: profileData.address_line_1 || '',
+                        city: profileData.city || '',
                         description: profileData.description || '',
                         dob: profileData.dob || '',
                         language: profileData.language || '',
@@ -208,9 +208,9 @@ const MyProfile = () => {
                 email: formValues.email,
                 phone: formValues.phone,
                 gender: formValues.gender,
-                zipcode: formValues.zipcode,
-                address: formValues.address,
-                state: formValues.state,
+                postal_code: formValues.postal_code,
+                address_line_1: formValues.address_line_1,
+                city: formValues.city,
                 age: formValues.age,
                 dob: formValues.dob,
                 language: formValues.language,
@@ -219,9 +219,9 @@ const MyProfile = () => {
                 // gallery: formValues.gallery.map(image => image), // Ensure gallery is an array of URLs
             };
 
-            const response = await axios.put('http://134.209.145.149:9999/api/editProfile', formData);
+            const response = await axios.put(`http://134.209.145.149:9999/api/users/${uid}`, formData);
 
-            if (response.data.success) {
+            if (response.data) {
                 setProfile(formValues);
                 setEditMode(false);
                 toast.success('Profile updated successfully!');
@@ -237,6 +237,7 @@ const MyProfile = () => {
             toast.error(error.message || 'Failed to update profile');
         }
     };
+
 
 
     if (error) {
@@ -351,40 +352,40 @@ const MyProfile = () => {
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <TextField
-                                            name="zipcode"
-                                            label="Zipcode"
-                                            value={formValues.zipcode}
+                                            name="postal_code"
+                                            label="Postal code"
+                                            value={formValues.postal_code}
                                             onChange={handleInputChange}
                                             fullWidth
                                             required
-                                            error={!!errors.zipcode}
-                                            helperText={errors.zipcode}
+                                            error={!!errors.postal_code}
+                                            helperText={errors.postal_code}
                                         />
                                     </Grid>
                                 </Grid>
                                 <Grid item container spacing={2}>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <TextField
-                                            name="address"
-                                            label="Address"
-                                            value={formValues.address}
+                                            name="address_line_1"
+                                            label="Address1"
+                                            value={formValues.address_line_1}
                                             onChange={handleInputChange}
                                             fullWidth
                                             required
-                                            error={!!errors.address}
-                                            helperText={errors.address}
+                                            error={!!errors.address_line_1}
+                                            helperText={errors.address_line_1}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <TextField
-                                            name="state"
-                                            label="State"
-                                            value={formValues.state}
+                                            name="city"
+                                            label="City"
+                                            value={formValues.city}
                                             onChange={handleInputChange}
                                             fullWidth
                                             required
-                                            error={!!errors.state}
-                                            helperText={errors.state}
+                                            error={!!errors.city}
+                                            helperText={errors.city}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
@@ -523,28 +524,34 @@ const MyProfile = () => {
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <Typography variant="body1">
-                                            <strong>Zipcode:</strong> {profile.zipcode}
+                                                <strong>Zipcode:</strong> {profile.postal_code}
                                         </Typography>
                                     </Grid>
                                 </Grid>
                                 <Grid item container spacing={2}>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <Typography variant="body1">
-                                            <strong>Address:</strong> {profile.address}
+                                                <strong>Address:</strong> {profile.address_line1}
                                         </Typography>
                                     </Grid>
+                                        <Grid item xs={12} sm={6} md={4}>
+                                            <Typography variant="body1">
+                                                <strong>Address 2:</strong> {profile.address_line2}
+                                            </Typography>
+                                        </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <Typography variant="body1">
-                                            <strong>State:</strong> {profile.state}
+                                                <strong>City:</strong> {profile.city}
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={12} sm={6} md={4}>
-                                        <Typography variant="body1">
-                                            <strong>Date of Birth:</strong> {profile.dob}
-                                        </Typography>
-                                    </Grid>
+                                   
                                 </Grid>
                                 <Grid item container spacing={2}>
+                                        <Grid item xs={12} sm={6} md={4}>
+                                            <Typography variant="body1">
+                                                <strong>Date of Birth:</strong> {profile.dob}
+                                            </Typography>
+                                        </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <Typography variant="body1">
                                             <strong>Age:</strong> {profile.age}
@@ -555,13 +562,15 @@ const MyProfile = () => {
                                             <strong>Language:</strong> {profile.language}
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={12} sm={6} md={4}>
-                                        <Typography variant="body1">
-                                            <strong>Description:</strong> {profile.description}
-                                        </Typography>
+                                   
                                     </Grid>
-                                    </Grid>
-                                        
+                                    <Grid item container spacing={2}>
+                                <Grid item xs={12} sm={6} md={4}>
+                                    <Typography variant="body1">
+                                        <strong>Description:</strong> {profile.description}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
                                
                                 <Box display="flex" justifyContent="center" mt={2}>
                                     <Button variant="contained" color="primary" onClick={() => setEditMode(true)}>
