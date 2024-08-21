@@ -11,11 +11,15 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
+        first_name: '',
+        last_name: '',
     });
 
     const [formErrors, setFormErrors] = useState({
         email: '',
         password: '',
+        first_name: '',
+        last_name: '',
     });
 
     const [loading, setLoading] = useState(false);
@@ -49,6 +53,16 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             valid = false;
         }
 
+        if (!formData.first_name.trim()) {
+            errors.first_name = 'First Name is required';
+            valid = false;
+        }
+
+        if (!formData.last_name.trim()) {
+            errors.last_name = 'Last Name is required';
+            valid = false;
+        }
+
         setFormErrors(errors);
         return valid;
     };
@@ -66,7 +80,10 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
     const handleRegister = async () => {
         setLoading(true);
         try {
-            const response = await axios.post('http://134.209.145.149:9999/api/register', formData);
+            const response = await axios.post('http://134.209.145.149:9999/api/register', {
+                ...formData,
+                role_id: 4, // Default role_id set to 4
+            });
             console.log('Registration successful:', response.data);
 
             // Show success toast notification
@@ -87,8 +104,8 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
 
     const handleApiError = (error) => {
         if (error.response) {
-            const apiErrors = error.response.data.errors;
-            const errorMessage = apiErrors.length > 0 ? apiErrors[0].message : 'Please try again.';
+            const apiErrors = error.response.data.message;
+            const errorMessage = apiErrors.length > 0 ? apiErrors?.message : 'Please try again.';
             toast.error(`Error: ${errorMessage}`);
         } else if (error.request) {
             toast.error('No response from the server. Please try again.');
@@ -123,6 +140,36 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             >
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
+                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="first_name" mb="5px">
+                            First Name
+                        </Typography>
+                        <CustomTextField
+                            id="first_name"
+                            variant="outlined"
+                            fullWidth
+                            value={formData.first_name}
+                            onChange={handleChange}
+                            error={!!formErrors.first_name}
+                            helperText={formErrors.first_name}
+                            autoComplete="given-name"
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="last_name" mb="5px">
+                            Last Name
+                        </Typography>
+                        <CustomTextField
+                            id="last_name"
+                            variant="outlined"
+                            fullWidth
+                            value={formData.last_name}
+                            onChange={handleChange}
+                            error={!!formErrors.last_name}
+                            helperText={formErrors.last_name}
+                            autoComplete="family-name"
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
                         <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="email" mb="5px">
                             Email Address
                         </Typography>
@@ -153,6 +200,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                             autoComplete="new-password"
                         />
                     </Grid>
+
                 </Grid>
                 <LoadingButton
                     color="primary"
