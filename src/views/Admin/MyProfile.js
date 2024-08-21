@@ -52,7 +52,7 @@ const MyProfile = () => {
         dob: '',
         language: '',
         age: '',
-        // image: '',
+        image: '',
         // gallery: []
     });
     const [imageFile, setImageFile] = useState(null);
@@ -215,7 +215,7 @@ const MyProfile = () => {
                 dob: formValues.dob,
                 language: formValues.language,
                 description: formValues.description,
-                // image: formValues.image, // Send image URL
+                image: formValues.image, // Send image URL
                 // gallery: formValues.gallery.map(image => image), // Ensure gallery is an array of URLs
             };
 
@@ -268,14 +268,14 @@ const MyProfile = () => {
                             >
                                 {profile.first_name ? profile.first_name.charAt(0) : 'U'}
                             </Avatar>
-                            {/* <input
+                            <input
                                 type="file"
                                 accept="image/*"
                                 ref={fileInputRef}
                                 style={{ display: 'none' }}
                                 onChange={handleImageChange}
                                 disabled={!editMode}
-                            /> */}
+                            />
                         </Grid>
                         <Grid container spacing={2} alignItems="center" direction="column">
                             <Grid item xs={12} sm={6} md={4}>
