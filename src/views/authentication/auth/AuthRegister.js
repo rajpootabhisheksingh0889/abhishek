@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Grid, Modal } from '@mui/material';
+import { Box, Typography, Grid } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -11,17 +11,13 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-        otp: '',
     });
 
     const [formErrors, setFormErrors] = useState({
         email: '',
         password: '',
-        otp: '',
     });
 
-    const [otpSent, setOtpSent] = useState(false);
-    const [openModal, setOpenModal] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -57,56 +53,14 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
         return valid;
     };
 
-    const validateOtp = () => {
-        let valid = true;
-        const errors = {};
-
-        if (!formData.otp.trim()) {
-            errors.otp = 'OTP is required';
-            valid = false;
-        }
-
-        setFormErrors(errors);
-        return valid;
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const action = e.nativeEvent.submitter.name;
 
-        if (action === 'signUp') {
-            if (!validateForm()) {
-                return;
-            }
-
-            if (!otpSent) {
-                handleSendOtp();
-            } else {
-                if (!validateOtp()) {
-                    return;
-                }
-                handleRegister();
-            }
-        } else if (action === 'confirmOtp') {
-            if (!validateOtp()) {
-                return;
-            }
-            handleRegister();
+        if (!validateForm()) {
+            return;
         }
-    };
 
-    const handleSendOtp = async () => {
-        setLoading(true);
-        try {
-            await axios.post('http://134.209.145.149:9999/api/otp', { email: formData.email });
-            toast.success('OTP sent to your email');
-            setOtpSent(true);
-            setOpenModal(true);
-        } catch (error) {
-            handleApiError(error);
-        } finally {
-            setLoading(false);
-        }
+        handleRegister();
     };
 
     const handleRegister = async () => {
@@ -117,7 +71,6 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
 
             // Show success toast notification
             toast.success('Registration successful! Redirecting to login...', {
-                // position: toast.POSITION.TOP_RIGHT,
                 autoClose: 3000, // Toast will close after 3 seconds
             });
 
@@ -132,8 +85,6 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
         }
     };
 
-
-
     const handleApiError = (error) => {
         if (error.response) {
             const apiErrors = error.response.data.errors;
@@ -144,16 +95,6 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
         } else {
             toast.error(`Error: ${error.message}`);
         }
-    };
-
-    const handleModalClose = () => {
-        setOpenModal(false);
-        setFormData({
-            email: '',
-            password: '',
-            otp: '',
-        });
-
     };
 
     return (
@@ -226,61 +167,6 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                 </LoadingButton>
             </Box>
 
-            <Modal
-                open={openModal}
-                onClose={handleModalClose}
-                aria-labelledby="otp-modal-title"
-                aria-describedby="otp-modal-description"
-            >
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: 400,
-                        bgcolor: 'background.paper',
-                        border: '2px solid #000',
-                        boxShadow: 24,
-                        p: 4,
-                    }}
-                >
-                    <Typography id="otp-modal-title" variant="h6" component="h2">
-                        Enter OTP to Verify
-                    </Typography>
-                    <Box
-                        component="form"
-                        onSubmit={handleSubmit}
-                        sx={{ mt: 2 }}
-                    >
-                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="otp" mb="5px">
-                            OTP
-                        </Typography>
-                        <CustomTextField
-                            id="otp"
-                            variant="outlined"
-                            fullWidth
-                            value={formData.otp}
-                            onChange={handleChange}
-                            error={!!formErrors.otp}
-                            helperText={formErrors.otp}
-                        />
-
-                        <LoadingButton
-                            color="primary"
-                            variant="contained"
-                            size="large"
-                            fullWidth
-                            type="submit"
-                            loading={loading}
-                            name="confirmOtp"
-                            sx={{ mt: 2 }}
-                        >
-                            Confirm Registration
-                        </LoadingButton>
-                    </Box>
-                </Box>
-            </Modal>
             {subtitle}
         </>
     );
