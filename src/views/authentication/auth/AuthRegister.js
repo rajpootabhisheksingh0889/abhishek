@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Grid } from '@mui/material';
+import { Box, Typography, Grid, Modal, Button, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -23,6 +23,9 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
     });
 
     const [loading, setLoading] = useState(false);
+    const [otp, setOtp] = useState('');
+    const [userId, setUserId] = useState(null);
+    const [otpModalOpen, setOtpModalOpen] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -84,17 +87,16 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                 ...formData,
                 role_id: 4, // Default role_id set to 4
             });
-            console.log('Registration successful:', response.data);
 
-            // Show success toast notification
-            toast.success('Registration successful! Redirecting to login...', {
-                autoClose: 3000, // Toast will close after 3 seconds
+            console.log('Registration successful:', response.data);
+            setUserId(response.data.uid);
+
+            toast.success('Registration successful! Please verify the OTP sent to your email.', {
+                autoClose: 3000,
             });
 
-            // Redirect after 3 seconds
-            setTimeout(() => {
-                navigate('/auth/login');
-            }, 3000);
+            setOtpModalOpen(true); // Open OTP Modal
+
         } catch (error) {
             handleApiError(error);
         } finally {
@@ -112,6 +114,71 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
         } else {
             toast.error(`Error: ${error.message}`);
         }
+    };
+
+    const handleVerifyOtp = async () => {
+        try {
+            const response = await axios.post('http://134.209.145.149:9999/api/verify-otp', {
+                user_id: userId,
+                otp_code: otp,
+            });
+
+            toast.success('OTP verified successfully! Redirecting to login...', {
+                autoClose: 3000,
+            });
+
+            setTimeout(() => {
+                navigate('/auth/login');
+            }, 3000);
+
+        } catch (error) {
+            toast.error('OTP verification failed. Please try again.');
+        }
+    };
+
+    const OtpModal = ({ open, onClose, onVerify, otp, setOtp }) => {
+        return (
+            <Modal
+                open={open}
+                onClose={onClose}
+                aria-labelledby="otp-modal-title"
+                aria-describedby="otp-modal-description"
+            >
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: 400,
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 4,
+                        borderRadius: 2,
+                    }}
+                >
+                    <Typography id="otp-modal-title" variant="h6" component="h2">
+                        Enter OTP
+                    </Typography>
+                    <TextField
+                        fullWidth
+                        margin="normal"
+                        label="6-digit OTP"
+                        variant="outlined"
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
+                    />
+                    <Box mt={2} display="flex" justifyContent="space-between">
+                        <Button variant="contained" onClick={onVerify}>
+                            Verify
+                        </Button>
+                        <Button variant="outlined" onClick={onClose}>
+                            Cancel
+                        </Button>
+                    </Box>
+                </Box>
+            </Modal>
+        );
     };
 
     return (
@@ -200,7 +267,6 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                             autoComplete="new-password"
                         />
                     </Grid>
-
                 </Grid>
                 <LoadingButton
                     color="primary"
@@ -214,6 +280,14 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                     Sign Up
                 </LoadingButton>
             </Box>
+
+            <OtpModal
+                open={otpModalOpen}
+                onClose={() => setOtpModalOpen(false)}
+                onVerify={handleVerifyOtp}
+                otp={otp}
+                setOtp={setOtp}
+            />
 
             {subtitle}
         </>

@@ -19,8 +19,7 @@ import {
     Button
 } from '@mui/material';
 import { Edit, Delete, Visibility } from '@mui/icons-material';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import Swal from 'sweetalert2';
 import DashboardCard from 'src/components/shared/DashboardCard';
 import NoData from "src/assets/images/products/NoData.jpg";
 import { useNavigate } from 'react-router-dom';
@@ -70,18 +69,30 @@ const ProductList = () => {
         try {
             await axios.delete(`http://134.209.145.149:9999/api/product/${productToDelete.id}`);
             setProducts(products.filter((p) => p.id !== productToDelete.id));
-            toast.success('Product deleted successfully');
+            Swal.fire({
+                icon: 'success',
+                title: 'Deleted!',
+                text: 'Product deleted successfully',
+                confirmButtonText: 'OK'
+            });
         } catch (error) {
-            toast.error('Failed to delete product');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Failed to delete product',
+                confirmButtonText: 'OK'
+            });
         }
     };
 
     const handleEdit = (productId) => {
         navigate(`/addproduct/${productId}`);
     };
+
     const handleView = (productId) => {
         navigate(`/productdetails/${productId}`);
     };
+
     const open = Boolean(anchorEl);
 
     if (error) {
@@ -98,7 +109,6 @@ const ProductList = () => {
 
     return (
         <DashboardCard>
-            <ToastContainer />
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h3" component="h2" sx={{ flex: 1 }}>
                     Product List
@@ -136,6 +146,11 @@ const ProductList = () => {
                             </TableCell>
                             <TableCell>
                                 <Typography variant="subtitle2" fontWeight={600}>
+                                    SKU
+                                </Typography>
+                            </TableCell>
+                            <TableCell>
+                                <Typography variant="subtitle2" fontWeight={600}>
                                     Description
                                 </Typography>
                             </TableCell>
@@ -144,11 +159,6 @@ const ProductList = () => {
                                     Price
                                 </Typography>
                             </TableCell>
-                            {/* <TableCell>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Images
-                                </Typography>
-                            </TableCell> */}
                             <TableCell align="right">
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Quantity
@@ -191,8 +201,13 @@ const ProductList = () => {
                                         </Typography>
                                     </TableCell>
                                     <TableCell>
+                                        <Typography variant="subtitle2" fontWeight={600}>
+                                            {product.SKU}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
                                         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-                                            {product.description}
+                                            {product.desc}
                                         </Typography>
                                     </TableCell>
                                     <TableCell>
@@ -200,20 +215,8 @@ const ProductList = () => {
                                             {product.price} {product.currency}
                                         </Typography>
                                     </TableCell>
-                                    {/* <TableCell>
-                                        <Box sx={{ display: 'flex', gap: 1 }}>
-                                            {Array.isArray(product.images) && product.images.map((image, index) => (
-                                                <img
-                                                    key={index}
-                                                    src={image}
-                                                    alt={`product-img-${index}`}
-                                                    style={{ width: 50, height: 50, objectFit: 'cover' }}
-                                                />
-                                            ))}
-                                        </Box>
-                                    </TableCell> */}
                                     <TableCell align="right">
-                                        <Typography variant="h6">{product.quantity}</Typography>
+                                        <Typography variant="h6">{product.inventory}</Typography>
                                     </TableCell>
                                     <TableCell align="right">
                                         <IconButton
@@ -234,15 +237,6 @@ const ProductList = () => {
                                         >
                                             <Delete />
                                         </IconButton>
-                                        {/* <IconButton
-                                            aria-owns={open ? 'mouse-over-popover' : undefined}
-                                            aria-haspopup="true"
-                                            onMouseEnter={(event) => handlePopoverOpen(event, 'View Details')}
-                                            onMouseLeave={handlePopoverClose}
-                                            onClick={() => handleView(product.id)}
-                                        >
-                                            <Visibility />
-                                        </IconButton> */}
                                         <Popover
                                             id="mouse-over-popover"
                                             sx={{
@@ -302,8 +296,29 @@ const SkeletonLoading = () => (
     <>
         {Array.from({ length: 5 }).map((_, index) => (
             <TableRow key={index}>
-                <TableCell colSpan={7}>
-                    <Skeleton height={40} />
+                <TableCell>
+                    <Skeleton variant="rectangular" height={20} width={50} />
+                </TableCell>
+                <TableCell>
+                    <Skeleton variant="rectangular" height={20} width={100} />
+                </TableCell>
+                <TableCell>
+                    <Skeleton variant="rectangular" height={20} width={100} />
+                </TableCell>
+                <TableCell>
+                    <Skeleton variant="rectangular" height={20} width={200} />
+                </TableCell>
+                <TableCell>
+                    <Skeleton variant="rectangular" height={20} width={50} />
+                </TableCell>
+                <TableCell>
+                    <Skeleton variant="rectangular" height={20} width={50} />
+                </TableCell>
+                <TableCell>
+                    <Box sx={{ display: 'flex', gap: 2 }}>
+                        <Skeleton variant="circular" width={24} height={24} />
+                        <Skeleton variant="circular" width={24} height={24} />
+                    </Box>
                 </TableCell>
             </TableRow>
         ))}
