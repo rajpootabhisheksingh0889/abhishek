@@ -53,7 +53,7 @@ const MyProfile = () => {
         language: '',
         age: '',
         image: '',
-        // gallery: []
+        gallery: []
     });
     const [imageFile, setImageFile] = useState(null);
     const [galleryFiles, setGalleryFiles] = useState([]);
@@ -103,6 +103,8 @@ const MyProfile = () => {
                         dob: profileData.dob || '',
                         language: profileData.language || '',
                         age: profileData.dob ? calculateAge(profileData.dob) : '',
+                        image: profileData.image || '',
+                        gallery: profileData.gallery || []
                     });
                 } else {
                     throw new Error('Failed to fetch profile data');
@@ -194,6 +196,14 @@ const MyProfile = () => {
         }
     };
 
+    const handleImageDelete = (index) => {
+        const updatedGallery = formValues.gallery.filter((_, i) => i !== index);
+        setFormValues((prevValues) => ({
+            ...prevValues,
+            gallery: updatedGallery,
+        }));
+    };
+
     const handleSave = async () => {
         try {
             const uid = localStorage.getItem('uid');
@@ -215,8 +225,8 @@ const MyProfile = () => {
                 dob: formValues.dob,
                 language: formValues.language,
                 description: formValues.description,
-                image: formValues.image, // Send image URL
-                // gallery: formValues.gallery.map(image => image), // Ensure gallery is an array of URLs
+                image: formValues.image,
+                gallery: formValues.gallery, // Include gallery URLs
             };
 
             const response = await axios.put(`http://134.209.145.149:9999/api/users/${uid}`, formData);
@@ -238,8 +248,6 @@ const MyProfile = () => {
         }
     };
 
-
-
     if (error) {
         return <Typography color="error">{error}</Typography>;
     }
@@ -247,6 +255,7 @@ const MyProfile = () => {
     if (!profile) {
         return <Typography>Loading...</Typography>;
     }
+
     return (
         <Container>
             <ToastContainer />
@@ -447,7 +456,7 @@ const MyProfile = () => {
                                         />
                                     </Grid>
                                 </Grid>
-                                {/* <Grid item container spacing={2}>
+                                <Grid item container spacing={2}>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <Typography>Gallery</Typography>
                                         <input
@@ -468,17 +477,26 @@ const MyProfile = () => {
                                         </Button>
                                         <Grid container spacing={2}>
                                             {formValues.gallery.map((image, index) => (
-                                                <Grid item key={index}>
+                                                <Grid item key={index} xs={12} sm={6} md={4} position="relative">
                                                     <img
                                                         src={image}
                                                         alt={`gallery ${index}`}
-                                                        style={{ width: 100, height: 100 }}
+                                                        style={{ width: '100%', height: 'auto', borderRadius: '8px' }}
                                                     />
+                                                    <Button
+                                                        variant="contained"
+                                                        color="error"
+                                                        size="small"
+                                                        sx={{ position: 'absolute', top: 0, right: 0, borderRadius: '50%' }}
+                                                        onClick={() => handleImageDelete(index)}
+                                                    >
+                                                        ×
+                                                    </Button>
                                                 </Grid>
                                             ))}
                                         </Grid>
                                     </Grid>
-                                </Grid> */}
+                                </Grid>
                                 <Grid item xs={12} style={{ textAlign: 'center' }}>
                                     <Button variant="contained" color="primary" onClick={handleSave}>
                                         Save
@@ -531,27 +549,19 @@ const MyProfile = () => {
                                 <Grid item container spacing={2}>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <Typography variant="body1">
-                                                <strong>Address:</strong> {profile.address_line1}
+                                                <strong>Address:</strong> {profile.address_line_1}
                                         </Typography>
                                     </Grid>
-                                        <Grid item xs={12} sm={6} md={4}>
-                                            <Typography variant="body1">
-                                                <strong>Address 2:</strong> {profile.address_line2}
-                                            </Typography>
-                                        </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <Typography variant="body1">
                                                 <strong>City:</strong> {profile.city}
                                         </Typography>
                                     </Grid>
-                                   
-                                </Grid>
-                                <Grid item container spacing={2}>
-                                        <Grid item xs={12} sm={6} md={4}>
-                                            <Typography variant="body1">
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <Typography variant="body1">
                                                 <strong>Date of Birth:</strong> {profile.dob}
-                                            </Typography>
-                                        </Grid>
+                                        </Typography>
+                                    </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <Typography variant="body1">
                                             <strong>Age:</strong> {profile.age}
@@ -562,16 +572,14 @@ const MyProfile = () => {
                                             <strong>Language:</strong> {profile.language}
                                         </Typography>
                                     </Grid>
-                                   
-                                    </Grid>
-                                    <Grid item container spacing={2}>
+                                </Grid>
+                                <Grid item container spacing={2}>
                                 <Grid item xs={12} sm={6} md={4}>
                                     <Typography variant="body1">
                                         <strong>Description:</strong> {profile.description}
                                     </Typography>
                                 </Grid>
                             </Grid>
-                               
                                 <Box display="flex" justifyContent="center" mt={2}>
                                     <Button variant="contained" color="primary" onClick={() => setEditMode(true)}>
                                         Edit
@@ -587,7 +595,3 @@ const MyProfile = () => {
 };
 
 export default MyProfile;
-
-
-
-

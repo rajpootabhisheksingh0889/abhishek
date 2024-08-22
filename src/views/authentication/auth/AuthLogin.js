@@ -103,24 +103,11 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                 toast.error('Unauthorized access');
             }
         } catch (error) {
-            if (error.response) {
-                const apiErrors = error.response.data.errors;
-                if (apiErrors && apiErrors.length > 0) {
-                    const errorMessage = apiErrors[0].message || 'An error occurred. Please try again.';
-                    toast.error(errorMessage);
-                } else {
-                    toast.error('An error occurred. Please try again.');
-                }
-            } else if (error.request) {
-                toast.error('No response from server. Please try again later.');
-            } else {
-                toast.error('An error occurred. Please try again.');
-            }
+            handleError(error, 'login');
         } finally {
             setLoading(false);
         }
     };
-
 
     const handleForgotPasswordSubmit = async () => {
         if (!validateForgotPasswordForm()) {
@@ -133,22 +120,32 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             toast.success('Password reset link sent to your email');
             setOpenForgotPassword(false);
         } catch (error) {
-            if (error.response) {
-                const apiErrors = error.response.data.errors;
-                if (apiErrors && apiErrors.length > 0) {
-                    const errorMessage = apiErrors[0].message || 'An error occurred. Please try again.';
-                    toast.error(errorMessage);
-                } else {
-                    toast.error('An error occurred. Please try again.');
-                }
-            } else if (error.request) {
-                toast.error('No response from server. Please try again later.');
-            } else {
-                toast.error('An error occurred. Please try again.');
-            }
+            handleError(error, 'forgotPassword');
         } finally {
             setForgotPasswordLoading(false);
         }
+    };
+
+    const handleError = (error, context) => {
+        let errorMessage = 'An error occurred. Please try again.';
+        if (error.response) {
+            const apiErrors = error.response.data.errors;
+            if (apiErrors) {
+                // If apiErrors is an array of error objects
+                if (Array.isArray(apiErrors)) {
+                    errorMessage = apiErrors.map(err => err.message).join(' ') || errorMessage;
+                } else if (typeof apiErrors === 'object') {
+                    errorMessage = Object.values(apiErrors).join(' ') || errorMessage;
+                } else {
+                    errorMessage = 'An error occurred. Please try again.';
+                }
+            } else {
+                errorMessage = error.response.data.message || errorMessage;
+            }
+        } else if (error.request) {
+            errorMessage = 'No response from server. Please try again later.';
+        }
+        toast.error(errorMessage);
     };
 
     return (
