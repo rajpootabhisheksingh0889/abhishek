@@ -4,6 +4,7 @@ import Loadable from '../layouts/full/shared/loadable/Loadable';
 import PrivateRoute from './PrivateRoute'; // Import the PrivateRoute component
 import ForgetPassword from 'src/views/authentication/auth/ForgetPassword';
 import AddProduct from 'src/views/Admin/AddProduct';
+import Forget from 'src/views/authentication/auth/Forget';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -304,6 +305,7 @@ const Router = [
       { path: '404', element: <Error /> },
       { path: '/auth/forgetpassword/:data1', element: <ForgetPassword /> },
       { path: '/auth/register', element: <Register /> },
+      { path: '/auth/forget', element: <Forget /> },
       { path: '/auth/login', element: <Login /> },
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],

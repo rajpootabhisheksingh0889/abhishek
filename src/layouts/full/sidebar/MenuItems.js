@@ -350,10 +350,11 @@ const Menuitems2 = [
 const getMenuItems = () => {
     const userType = localStorage.getItem('role_id');
     console.log(`User type: ${userType}`); // Debugging line
+
     switch (userType) {
         case '1':
             return Menuitems;
-        case '2':
+        case '4':
             return Menuitems1;
         case '3':
             return Menuitems2;

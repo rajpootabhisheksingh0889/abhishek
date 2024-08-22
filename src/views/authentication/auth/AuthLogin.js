@@ -8,27 +8,16 @@ import {
     Stack,
     Checkbox,
     CircularProgress,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    IconButton,
 } from '@mui/material';
-import { Close as CloseIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import Swal from 'sweetalert2';
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
 
 const AuthLogin = ({ title, subtitle, subtext }) => {
     const [formData, setFormData] = useState({ email: '', password: '' });
     const [loading, setLoading] = useState(false);
-    const [formErrors, setFormErrors] = useState({ email: '', password: '' });
-    const [openForgotPassword, setOpenForgotPassword] = useState(false);
-    const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
-    const [forgotPasswordErrors, setForgotPasswordErrors] = useState({ email: '' });
-    const [forgotPasswordLoading, setForgotPasswordLoading] = useState(false);
+    const [formErrors, setFormErrors] = useState({});
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -37,11 +26,6 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             ...prevData,
             [id]: value,
         }));
-    };
-
-    const handleForgotPasswordChange = (e) => {
-        const { value } = e.target;
-        setForgotPasswordEmail(value);
     };
 
     const validateForm = () => {
@@ -64,22 +48,6 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
         return valid;
     };
 
-    const validateForgotPasswordForm = () => {
-        let valid = true;
-        const errors = {};
-
-        if (!forgotPasswordEmail.trim()) {
-            errors.email = 'Email is required';
-            valid = false;
-        } else if (!/\S+@\S+\.\S+/.test(forgotPasswordEmail)) {
-            errors.email = 'Email is not valid';
-            valid = false;
-        }
-
-        setForgotPasswordErrors(errors);
-        return valid;
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -97,65 +65,64 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             localStorage.setItem('email', user.email);
             localStorage.setItem('role_id', user.role_id);
 
-            if (user.role_id === 1) {
-                navigate('/dashboard');
-            } else {
-                toast.error('Unauthorized access');
+            // Navigate based on the role_id
+            switch (user.role_id) {
+                case 1:
+                    navigate('/dashboard');
+                    break;
+                case 2:
+                    navigate('/dashboard');
+                    break;
+                case 3:
+                    navigate('/dashboard');
+                    break;
+                case 4:
+                    navigate('/dashboard');
+                    break;
+                default:
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Unauthorized Access',
+                        text: 'You do not have permission to access this page.',
+                    });
+                    break;
             }
         } catch (error) {
-            handleError(error, 'login');
+            let errorMessage = 'An error occurred. Please try again.';
+            if (error.response) {
+                const apiErrors = error.response.data.errors;
+                if (apiErrors) {
+                    // If apiErrors is an array of error objects
+                    if (Array.isArray(apiErrors)) {
+                        errorMessage = apiErrors.map(err => err.message).join(' ') || errorMessage;
+                    } else if (typeof apiErrors === 'object') {
+                        errorMessage = Object.values(apiErrors).join(' ') || errorMessage;
+                    } else {
+                        errorMessage = 'An error occurred. Please try again.';
+                    }
+                } else {
+                    errorMessage = error.response.data.message || errorMessage;
+                }
+            } else if (error.request) {
+                errorMessage = 'No response from server. Please try again later.';
+            }
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: errorMessage,
+            });
         } finally {
             setLoading(false);
         }
     };
 
-    const handleForgotPasswordSubmit = async () => {
-        if (!validateForgotPasswordForm()) {
-            return;
-        }
-
-        setForgotPasswordLoading(true);
-        try {
-            await axios.post('http://134.209.145.149:9999/api/resetLink', { email: forgotPasswordEmail });
-            toast.success('Password reset link sent to your email');
-            setOpenForgotPassword(false);
-        } catch (error) {
-            handleError(error, 'forgotPassword');
-        } finally {
-            setForgotPasswordLoading(false);
-        }
-    };
-
-    const handleError = (error, context) => {
-        let errorMessage = 'An error occurred. Please try again.';
-        if (error.response) {
-            const apiErrors = error.response.data.errors;
-            if (apiErrors) {
-                // If apiErrors is an array of error objects
-                if (Array.isArray(apiErrors)) {
-                    errorMessage = apiErrors.map(err => err.message).join(' ') || errorMessage;
-                } else if (typeof apiErrors === 'object') {
-                    errorMessage = Object.values(apiErrors).join(' ') || errorMessage;
-                } else {
-                    errorMessage = 'An error occurred. Please try again.';
-                }
-            } else {
-                errorMessage = error.response.data.message || errorMessage;
-            }
-        } else if (error.request) {
-            errorMessage = 'No response from server. Please try again later.';
-        }
-        toast.error(errorMessage);
-    };
-
     return (
         <>
-            <ToastContainer />
-            {title ? (
+            {title && (
                 <Typography fontWeight="700" variant="h2" mb={1}>
                     {title}
                 </Typography>
-            ) : null}
+            )}
 
             {subtext}
 
@@ -201,7 +168,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                         </FormGroup>
                         <Typography
                             component="button"
-                            onClick={() => setOpenForgotPassword(true)}
+                            onClick={() => navigate('/auth/forget')}
                             fontWeight="500"
                             sx={{
                                 textDecoration: 'none',
@@ -229,55 +196,6 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             </form>
 
             {subtitle}
-
-            <Dialog
-                open={openForgotPassword}
-                onClose={() => setOpenForgotPassword(false)}
-                maxWidth="sm"
-                fullWidth
-                PaperProps={{
-                    sx: { borderRadius: 3, p: 2 },
-                }}
-            >
-                <DialogTitle>
-                    Forgot Password
-                    <IconButton
-                        aria-label="close"
-                        onClick={() => setOpenForgotPassword(false)}
-                        sx={{
-                            position: 'absolute',
-                            right: 8,
-                            top: 8,
-                            color: (theme) => theme.palette.grey[500],
-                        }}
-                    >
-                        <CloseIcon />
-                    </IconButton>
-                </DialogTitle>
-                <DialogContent dividers>
-                    <Box>
-                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor='forgotPasswordEmail' mb="5px">
-                            Email
-                        </Typography>
-                        <CustomTextField
-                            id="forgotPasswordEmail"
-                            variant="outlined"
-                            fullWidth
-                            value={forgotPasswordEmail}
-                            error={!!forgotPasswordErrors.email}
-                            helperText={forgotPasswordErrors.email}
-                            autoComplete="email"
-                            onChange={handleForgotPasswordChange}
-                        />
-                    </Box>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setOpenForgotPassword(false)}>Cancel</Button>
-                    <Button onClick={handleForgotPasswordSubmit} color="primary" disabled={forgotPasswordLoading}>
-                        {forgotPasswordLoading ? <CircularProgress size={24} /> : 'Send Reset Link'}
-                    </Button>
-                </DialogActions>
-            </Dialog>
         </>
     );
 };
