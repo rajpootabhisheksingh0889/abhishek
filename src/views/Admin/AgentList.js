@@ -7,9 +7,7 @@ import {
     Dialog, DialogTitle, DialogContent, DialogActions,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
 import { LoadingButton } from '@mui/lab';
-
 import DashboardCard from 'src/components/shared/DashboardCard';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -24,6 +22,8 @@ const AgentList = () => {
     const [open, setOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [otpSent, setOtpSent] = useState(false);
+    const [userId, setUserId] = useState(null); // Track the user ID for OTP verification
+    const [otp, setOtp] = useState(''); // Track OTP input
 
     const [newAgent, setNewAgent] = useState({
         first_name: '',
@@ -31,8 +31,8 @@ const AgentList = () => {
         email: '',
         password: '',
         phone: '',
-        otp: '',
     });
+
     const [formErrors, setFormErrors] = useState({
         first_name: '',
         last_name: '',
@@ -42,24 +42,25 @@ const AgentList = () => {
         otp: '',
     });
 
-    const [selectedOption, setSelectedOption] = useState(12); // Default to 'All'
+    const [selectedOption, setSelectedOption] = useState('all');
 
     useEffect(() => {
-        const fetchAgents = async () => {
-            setLoading(true); // Set loading to true when fetching new data
-            try {
-                const response = await axios.post('http://134.209.145.149:9999/api/statusFilter', { status: selectedOption });
-                console.log('API Response:', response.data);  // Debugging: Check the structure of the API response
-                setAgents(response.data.data);  // Adjust based on actual response structure
-            } catch (err) {
-                setError(err);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchAgents();
-    }, [selectedOption]); // Re-fetch agents when selectedOption changes
+    }, [selectedOption]);
+
+    const fetchAgents = async () => {
+        setLoading(true);
+        try {
+            const response = await axios.get('http://134.209.145.149:9999/api/listUser?role_id=3', {
+                params: { status: selectedOption }
+            });
+            setAgents(response.data);
+        } catch (err) {
+            setError(err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleChange1 = (event) => {
         setSelectedOption(event.target.value);
@@ -67,19 +68,14 @@ const AgentList = () => {
 
     const handleToggleStatus = async (agentId, currentStatus) => {
         try {
-            // Toggle the status locally first for responsiveness
             const updatedAgents = agents.map(agent =>
                 agent.id === agentId ? { ...agent, status: !currentStatus } : agent
             );
             setAgents(updatedAgents);
 
-            // Update status on the server
             await axios.put(`http://134.209.145.149:9999/api/toggle/${agentId}`);
-
-            // Show toast notification
             toast.success(`${updatedAgents.find(agent => agent.id === agentId).first_name} is now ${!currentStatus ? 'active' : 'inactive'}.`);
         } catch (err) {
-            console.error('Error toggling status:', err);
             toast.error('Failed to update agent status.');
         }
     };
@@ -93,7 +89,7 @@ const AgentList = () => {
             password: '',
             phone: '',
             otp: '',
-        }); // Clear form validation errors on open
+        });
     };
 
     const handleClose = () => {
@@ -104,9 +100,9 @@ const AgentList = () => {
             email: '',
             password: '',
             phone: '',
-            otp: '',
-        }); // Reset form data
-        setOtpSent(false); // Reset OTP sent state
+        });
+        setOtpSent(false);
+        setOtp('');
     };
 
     const handleChange = (e) => {
@@ -131,7 +127,6 @@ const AgentList = () => {
             errors.email = 'Email is not valid';
             valid = false;
         }
-
         if (!newAgent.password.trim()) {
             errors.password = 'Password is required';
             valid = false;
@@ -142,12 +137,12 @@ const AgentList = () => {
         if (!newAgent.phone.trim()) {
             errors.phone = 'Phone is required';
             valid = false;
-        } else if (!/^\d{10}$/.test(newAgent.phone)) {  // Adjust regex based on the required phone number format
+        } else if (!/^\d{10}$/.test(newAgent.phone)) {
             errors.phone = 'Invalid phone number format';
             valid = false;
         }
         if (otpSent) {
-            if (!newAgent.otp.trim()) {
+            if (!otp.trim()) {
                 errors.otp = 'OTP is required';
                 valid = false;
             }
@@ -157,47 +152,22 @@ const AgentList = () => {
         return valid;
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
+        if (!validateForm()) return;
 
-        if (!validateForm()) {
-            return;
-        }
-
-        if (!otpSent) {
-            handleSendOtp();
-        } else {
-            setLoading(true);
-            try {
-                const response = await axios.post('http://134.209.145.149:9999/api/createAgent', newAgent);
-                setAgents([...agents, response.data.data]);
-                setNewAgent({
-                    first_name: '',
-                    last_name: '',
-                    email: '',
-                    password: '',
-                    phone: '',
-                    otp: '',
-                }); // Reset form data
-                handleClose();
-                toast.success('New agent added successfully!');
-            } catch (error) {
-                if (error.response) {
-                    const apiErrors = error.response.data.errors;
-                    if (apiErrors && apiErrors.length > 0) {
-                        const errorMessage = apiErrors[0].message || 'An error occurred. Please try again.';
-                        toast.error(errorMessage);
-                    } else {
-                        toast.error('An error occurred. Please try again.');
-                    }
-                } else if (error.request) {
-                    toast.error('No response from server. Please try again later.');
-                } else {
-                    toast.error('An error occurred. Please try again.');
-                }
-            } finally {
-                setLoading(false);
-            }
+        setLoading(true);
+        try {
+            const response = await axios.post('http://134.209.145.149:9999/api/register', {
+                ...newAgent,
+                role_id: 3,
+            });
+            setUserId(response.data.uid);
+            toast.success('Agent created successfully! Please verify the OTP sent to your email.');
+            setOtpSent(true);
+        } catch (error) {
+            toast.error('Failed to create agent.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -214,34 +184,44 @@ const AgentList = () => {
         try {
             await axios.post('http://134.209.145.149:9999/api/otp', { email: newAgent.email });
             toast.success('OTP sent to your email');
-            setOtpSent(true);
         } catch (error) {
-            if (error.response) {
-                // Extract the specific error message from the API response
-                const apiErrors = error.response.data.errors;
-                const errorMessage = apiErrors && apiErrors.length > 0 ? apiErrors[0].message : 'Please try again.';
-                toast.error(`Failed to send OTP: ${errorMessage}`);
-            } else if (error.request) {
-                // The request was made but no response was received
-                console.error('Error request:', error.request);
-                toast.error('No response from the server. Please try again.');
-            } else {
-                // Something happened in setting up the request that triggered an Error
-                console.error('Error message:', error.message);
-                toast.error(`Error: ${error.message}`);
-            }
+            toast.error('Failed to send OTP.');
         } finally {
             setLoading(false);
         }
     };
 
+    const handleVerifyOtp = async () => {
+        if (!otp.trim()) {
+            setFormErrors((prevErrors) => ({
+                ...prevErrors,
+                otp: 'OTP is required',
+            }));
+            return;
+        }
+
+        setLoading(true);
+        try {
+            await axios.post('http://134.209.145.149:9999/api/verify-otp', {
+                user_id: userId,
+                otp_code: otp,
+            });
+            toast.success('OTP verified successfully');
+            handleClose(); // Close the modal upon successful verification
+            fetchAgents(); // Refresh the agents list after successful OTP verification
+        } catch (error) {
+            toast.error('Failed to verify OTP.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const filteredAgents = agents.filter(agent =>
-        (selectedOption === 12 || (selectedOption === 1 && agent.status) || (selectedOption === 0 && !agent.status)) && (
-            agent.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            agent.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            agent.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            agent.phone.toLowerCase().includes(searchTerm.toLowerCase())
+        (selectedOption === 'all' || (selectedOption === 1 && agent?.status) || (selectedOption === 0 && !agent.status)) && (
+            agent?.first_name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+            agent?.last_name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+            agent?.email?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
+            agent?.phone?.toLowerCase()?.includes(searchTerm?.toLowerCase())
         )
     );
 
@@ -249,23 +229,19 @@ const AgentList = () => {
         return <Typography>Error: {error.message}</Typography>;
     }
 
-    // Check if agents is an array before mapping
     if (!Array.isArray(agents)) {
         return <Typography>Error: Unexpected data format</Typography>;
     }
 
-
     return (
         <DashboardCard>
-            <ToastContainer /> {/* ToastContainer to display notifications */}
+            <ToastContainer />
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h3" component="h2" sx={{ flex: 1 }}>
                     Agent List
                 </Typography>
 
                 <Box sx={{ display: 'flex', gap: 2 }}>
-
-
                     <TextField
                         size="medium"
                         label="Search Agents"
@@ -279,9 +255,9 @@ const AgentList = () => {
                             value={selectedOption}
                             onChange={handleChange1}
                             label="Select"
-                            sx={{ height: '100%', minWidth: '120px' }} // Adjust height and width as needed
+                            sx={{ height: '100%', minWidth: '120px' }}
                         >
-                            <MenuItem value={12}>All</MenuItem>
+                            <MenuItem value={'all'}>All</MenuItem>
                             <MenuItem value={1}>Active</MenuItem>
                             <MenuItem value={0}>Inactive</MenuItem>
                         </Select>
@@ -291,7 +267,6 @@ const AgentList = () => {
                         color="primary"
                         size="large"
                         onClick={handleOpen}
-                    // sx={{ height: '100%', minWidth: '100px' }} // Adjust height and width as needed
                     >
                         Add Agent
                     </Button>
@@ -347,7 +322,6 @@ const AgentList = () => {
                     </TableHead>
                     <TableBody>
                         {loading ? (
-                            // Display skeletons when loading
                             Array.from({ length: 5 }).map((_, index) => (
                                 <TableRow key={index}>
                                     <TableCell>
@@ -374,7 +348,6 @@ const AgentList = () => {
                                 </TableRow>
                             ))
                         ) : (
-
                             filteredAgents.map((agent, index) => (
                                 <TableRow key={agent.id}>
                                     <TableCell>
@@ -411,7 +384,6 @@ const AgentList = () => {
                                             color="primary"
                                         />
                                     </TableCell>
-
                                     <TableCell>
                                         <Button variant="contained" color="primary" size="small"
                                             onClick={() => navigate(`/custom-permissions/${agent.id}`)}
@@ -435,7 +407,7 @@ const AgentList = () => {
             <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
                 <DialogTitle>Add New Agent</DialogTitle>
                 <DialogContent>
-                    <Box component="form" noValidate onSubmit={handleSubmit}>
+                    <Box component="form" noValidate>
                         <TextField
                             margin="dense"
                             name="first_name"
@@ -473,7 +445,7 @@ const AgentList = () => {
                             margin="dense"
                             name="password"
                             label="Password"
-                            type="text"
+                            type="password"
                             fullWidth
                             value={newAgent.password}
                             onChange={handleChange}
@@ -498,8 +470,8 @@ const AgentList = () => {
                                 label="OTP"
                                 type="text"
                                 fullWidth
-                                value={newAgent.otp}
-                                onChange={handleChange}
+                                value={otp}
+                                onChange={(e) => setOtp(e.target.value)}
                                 error={Boolean(formErrors.otp)}
                                 helperText={formErrors.otp}
                             />
@@ -508,14 +480,25 @@ const AgentList = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose}>Cancel</Button>
-                    <LoadingButton
-                        onClick={handleSubmit}
-                        loading={loading}
-                        variant="contained"
-                        color="primary"
-                    >
-                        {otpSent ? 'Add Agent' : 'Send OTP'}
-                    </LoadingButton>
+                    {otpSent ? (
+                        <LoadingButton
+                            onClick={handleVerifyOtp}
+                            loading={loading}
+                            variant="contained"
+                            color="primary"
+                        >
+                            Verify OTP
+                        </LoadingButton>
+                    ) : (
+                        <LoadingButton
+                            onClick={handleSubmit}
+                            loading={loading}
+                            variant="contained"
+                            color="primary"
+                        >
+                            Create Ajent
+                        </LoadingButton>
+                    )}
                 </DialogActions>
             </Dialog>
         </DashboardCard>

@@ -475,6 +475,7 @@ const MyProfile = () => {
                                         >
                                             Upload Gallery Images
                                         </Button>
+                                        <br/>
                                         <Grid container spacing={2}>
                                             {formValues.gallery.map((image, index) => (
                                                 <Grid item key={index} xs={12} sm={6} md={4} position="relative">
