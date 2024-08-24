@@ -7,6 +7,7 @@ import {
     Dialog, DialogTitle, DialogContent, DialogActions,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import { LoadingButton } from '@mui/lab';
 import DashboardCard from 'src/components/shared/DashboardCard';
 import { ToastContainer, toast } from 'react-toastify';
@@ -73,10 +74,20 @@ const AgentList = () => {
             );
             setAgents(updatedAgents);
 
-            await axios.put(`http://134.209.145.149:9999/api/toggle/${agentId}`);
-            toast.success(`${updatedAgents.find(agent => agent.id === agentId).first_name} is now ${!currentStatus ? 'active' : 'inactive'}.`);
+            await axios.put(`http://134.209.145.149:9999/api/toggle_user_status/${agentId}`);
+            Swal.fire({
+                icon: 'success',
+                title: 'Status Updated',
+                text: `${updatedAgents.find(agent => agent.id === agentId).first_name} is now ${!currentStatus ? 'active' : 'inactive'}.`,
+            });
+            fetchAgents(); 
         } catch (err) {
-            toast.error('Failed to update agent status.');
+            fetchAgents(); 
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to update agent status.',
+            });
         }
     };
 
@@ -313,11 +324,11 @@ const AgentList = () => {
                                     Toggle
                                 </Typography>
                             </TableCell>
-                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
+                            {/* <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Action
                                 </Typography>
-                            </TableCell>
+                            </TableCell> */}
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -342,9 +353,9 @@ const AgentList = () => {
                                     <TableCell>
                                         <Skeleton variant="text" />
                                     </TableCell>
-                                    <TableCell>
+                                    {/* <TableCell>
                                         <Skeleton variant="text" />
-                                    </TableCell>
+                                    </TableCell> */}
                                 </TableRow>
                             ))
                         ) : (
@@ -384,13 +395,13 @@ const AgentList = () => {
                                             color="primary"
                                         />
                                     </TableCell>
-                                    <TableCell>
+                                    {/* <TableCell>
                                         <Button variant="contained" color="primary" size="small"
                                             onClick={() => navigate(`/custom-permissions/${agent.id}`)}
                                         >
                                             View
                                         </Button>
-                                    </TableCell>
+                                    </TableCell> */}
                                 </TableRow>
                             ))
                         )}

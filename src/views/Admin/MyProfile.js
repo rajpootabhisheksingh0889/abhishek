@@ -46,9 +46,9 @@ const MyProfile = () => {
         phone: '',
         gender: '',
         postal_code: '',
-        address_line_1: '',
+        address_line1: '',
         city: '',
-        description: '',
+        desc: '',
         dob: '',
         language: '',
         age: '',
@@ -97,9 +97,9 @@ const MyProfile = () => {
                         phone: profileData.phone || '',
                         gender: profileData.gender || '',
                         postal_code: profileData.postal_code || '',
-                        address_line_1: profileData.address_line_1 || '',
+                        address_line1: profileData.address_line1 || '',
                         city: profileData.city || '',
-                        description: profileData.description || '',
+                        desc: profileData.desc || '',
                         dob: profileData.dob || '',
                         language: profileData.language || '',
                         age: profileData.dob ? calculateAge(profileData.dob) : '',
@@ -219,14 +219,14 @@ const MyProfile = () => {
                 phone: formValues.phone,
                 gender: formValues.gender,
                 postal_code: formValues.postal_code,
-                address_line_1: formValues.address_line_1,
+                address_line1: formValues.address_line1,
                 city: formValues.city,
                 age: formValues.age,
                 dob: formValues.dob,
                 language: formValues.language,
-                description: formValues.description,
+                desc: formValues.desc,
                 image: formValues.image,
-                gallery: formValues.gallery, // Include gallery URLs
+                // gallery: formValues.gallery, // Include gallery URLs
             };
 
             const response = await axios.put(`http://134.209.145.149:9999/api/users/${uid}`, formData);
@@ -375,14 +375,14 @@ const MyProfile = () => {
                                 <Grid item container spacing={2}>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <TextField
-                                            name="address_line_1"
+                                            name="address_line1"
                                             label="Address1"
-                                            value={formValues.address_line_1}
+                                            value={formValues.address_line1}
                                             onChange={handleInputChange}
                                             fullWidth
                                             required
-                                            error={!!errors.address_line_1}
-                                            helperText={errors.address_line_1}
+                                            error={!!errors.address_line1}
+                                            helperText={errors.address_line1}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
@@ -432,14 +432,14 @@ const MyProfile = () => {
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <TextField
-                                            name="description"
+                                            name="desc"
                                             label="Description"
-                                            value={formValues.description}
+                                            value={formValues.desc}
                                             onChange={handleInputChange}
                                             fullWidth
                                             required
-                                            error={!!errors.description}
-                                            helperText={errors.description}
+                                            error={!!errors.desc}
+                                            helperText={errors.desc}
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
@@ -550,7 +550,7 @@ const MyProfile = () => {
                                 <Grid item container spacing={2}>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <Typography variant="body1">
-                                                <strong>Address:</strong> {profile.address_line_1}
+                                                <strong>Address:</strong> {profile.address_line1}
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
@@ -577,7 +577,7 @@ const MyProfile = () => {
                                 <Grid item container spacing={2}>
                                 <Grid item xs={12} sm={6} md={4}>
                                     <Typography variant="body1">
-                                        <strong>Description:</strong> {profile.description}
+                                                <strong>Description:</strong> {profile.desc}
                                     </Typography>
                                 </Grid>
                             </Grid>

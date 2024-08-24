@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
     Typography, Box, TextField,
-    Table, TableBody, TableCell, TableHead, TableRow, Button, Skeleton
+    Table, TableBody, TableCell, TableHead, TableRow, Chip, Button, Skeleton
 } from '@mui/material';
 import DashboardCard from 'src/components/shared/DashboardCard';
 import NoData from "src/assets/images/products/NoData.jpg"; // Replace with your actual path
@@ -89,18 +89,18 @@ const CustomerList = () => {
                                     Email
                                 </Typography>
                             </TableCell>
-                            {/* <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    Phone
+                                    Status
                                 </Typography>
-                            </TableCell> */}
-                            {userType !== 'AG' && (
+                            </TableCell>
+                            {/* {userType !== 'AG' && (
                                 <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                     <Typography variant="subtitle2" fontWeight={600}>
                                         Action
                                     </Typography>
                                 </TableCell>
-                            )}
+                            )} */}
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -116,12 +116,12 @@ const CustomerList = () => {
                                     <TableCell>
                                         <Skeleton variant="text" width={150} />
                                     </TableCell>
-                                    {/* <TableCell>
-                                        <Skeleton variant="text" width={60} />
-                                    </TableCell> */}
                                     <TableCell>
                                         <Skeleton variant="text" width={60} />
                                     </TableCell>
+                                    {/* <TableCell>
+                                        <Skeleton variant="text" width={60} />
+                                    </TableCell> */}
                                 </TableRow>
                             ))
                         ) : (
@@ -134,21 +134,28 @@ const CustomerList = () => {
                                             </Typography>
                                         </TableCell>
                                         <TableCell>
-                                            <Typography variant="subtitle2" fontWeight={600}>
+                                            <Typography fontWeight={600}>
                                                 {customer.first_name} {customer.last_name}
                                             </Typography>
                                         </TableCell>
                                         <TableCell>
-                                            <Typography color="textSecondary">
+                                            <Typography  >
                                                 {customer.email}
                                             </Typography>
                                         </TableCell>
+                                        <TableCell>
+                                            <Chip
+                                                label={customer.status ? 'Active' : 'Inactive'}
+                                                color={customer.status ? 'success' : 'error'}
+                                                sx={{ borderRadius: '4px', fontSize: '0.8rem' }}
+                                            />
+                                        </TableCell>
                                         {/* <TableCell>
-                                            <Typography color="textSecondary">
+                                            <Typography  >
                                                 {customer.phone}
                                             </Typography>
                                         </TableCell> */}
-                                        {userType !== 'AG' && (
+                                        {/* {userType !== 'AG' && (
                                             <TableCell>
                                                 <Button variant="contained" color="primary" size="small"
                                                     onClick={() => navigate(`/custom-permissions/${customer.id}`)}
@@ -156,7 +163,7 @@ const CustomerList = () => {
                                                     View
                                                 </Button>
                                             </TableCell>
-                                        )}
+                                        )} */}
                                     </TableRow>
                                 ))
                             ) : (
