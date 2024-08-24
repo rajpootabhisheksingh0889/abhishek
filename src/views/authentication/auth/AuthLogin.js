@@ -114,7 +114,58 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             setLoading(false);
         }
     };
+    const resendOtp = async () => {
+        if (!formData.email.trim()) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Email is required to resend OTP.',
+            });
+            return;
+        }
 
+        setLoading(true);
+        try {
+            const response = await axios.post('http://134.209.145.149:9999/api/resend-otp', {
+                email: formData.email,
+            });
+
+            console.log('OTP resend response:', response);
+
+            Swal.fire({
+                icon: 'success',
+                title: 'OTP Resent',
+                text: 'An OTP has been sent to your email.',
+            });
+        } catch (error) {
+            console.error('Error in OTP resend:', error);
+            let errorMessage = 'An error occurred. Please try again.';
+            if (error.response) {
+                const statusCode = error.response.status;
+                const apiMessage = error.response.data.message;
+
+                if (statusCode >= 400 && statusCode < 500) {
+                    errorMessage = `Client error: ${apiMessage || 'An error occurred on your request. Please check and try again.'}`;
+                } else if (statusCode >= 500) {
+                    errorMessage = `Server error: ${apiMessage || 'An error occurred on the server. Please try again later.'}`;
+                } else {
+                    errorMessage = apiMessage || errorMessage;
+                }
+            } else if (error.request) {
+                errorMessage = 'No response from server. Please check your internet connection and try again.';
+            } else {
+                errorMessage = `Unexpected error: ${error.message}`;
+            }
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: errorMessage,
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -128,7 +179,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
             const { token, user, error, status, message, user_id } = response.data;
 
             if (error === 'otp' && status === 0) {
-                
+
                 // Ensure user_id is properly set
                 if (user_id) {
                     setUserId(user_id);
@@ -290,16 +341,29 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                             >
                                 {loading ? <CircularProgress size={24} /> : 'Verify'}
                             </Button>
+                            
                         </>
                     )}
 
                     <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}>
-                        <FormGroup>
-                            <FormControlLabel
-                                control={<Checkbox defaultChecked />}
-                                label="Remember this Device"
-                            />
-                        </FormGroup>
+                        {otpRequired && (
+                        <Typography
+                            component="button"
+                            onClick={resendOtp}
+                            fontWeight="500"
+                            sx={{
+                                textDecoration: 'none',
+                                color: 'primary.main',
+                                background: 'none',
+                                border: 'none',
+                                cursor: 'pointer',
+                                padding: 0,
+                            }}
+                        >
+                            Resend OTP?
+                        </Typography>
+                        )}
+                        
                         <Typography
                             component="button"
                             onClick={() => navigate('/auth/forget')}
@@ -315,6 +379,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                         >
                             Forgot Password?
                         </Typography>
+                       
                     </Stack>
                     {!otpRequired && (
                         <Button

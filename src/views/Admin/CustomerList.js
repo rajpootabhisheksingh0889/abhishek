@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
-    Typography, Box, TextField,
+    Typography, Box, TextField, FormControl, InputLabel, Select, MenuItem,
     Table, TableBody, TableCell, TableHead, TableRow, Chip, Button, Skeleton
 } from '@mui/material';
 import DashboardCard from 'src/components/shared/DashboardCard';
@@ -15,12 +15,18 @@ const CustomerList = () => {
     const [error, setError] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const userType = localStorage.getItem('user_type');
-
+    const [selectedOption, setSelectedOption] = useState('all');
+    const handleChange1 = (event) => {
+        setSelectedOption(event.target.value);
+    };
     useEffect(() => {
         const fetchCustomers = async () => {
             try {
-                const response = await axios.get('http://134.209.145.149:9999/api/listUser?role_id=4');
+                const response = await axios.get('http://134.209.145.149:9999/api/listUser?role_id=4', {
+                    params: { status: selectedOption }
+                });
                 // Ensure data is an array
+                
                 if (Array.isArray(response.data)) {
                     setCustomers(response.data);
                 } else {
@@ -36,7 +42,7 @@ const CustomerList = () => {
         };
 
         fetchCustomers();
-    }, []);
+    }, [selectedOption]);
 
     const filteredCustomers = customers?.filter(customer => {
         const lowerCaseSearchTerm = searchTerm.toLowerCase();
@@ -55,6 +61,19 @@ const CustomerList = () => {
                 </Typography>
 
                 <Box sx={{ display: 'flex', gap: 2 }}>
+                    <FormControl variant="outlined" size="medium">
+                        <InputLabel>Select</InputLabel>
+                        <Select
+                            value={selectedOption}
+                            onChange={handleChange1}
+                            label="Select"
+                            sx={{ height: '100%', minWidth: '120px' }}
+                        >
+                            <MenuItem value={'all'}>All</MenuItem>
+                            <MenuItem value={1}>Active</MenuItem>
+                            <MenuItem value={0}>Inactive</MenuItem>
+                        </Select>
+                    </FormControl>
                     <TextField
                         size="medium"
                         label="Search Customer"
@@ -62,6 +81,8 @@ const CustomerList = () => {
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
+
+                    
                 </Box>
             </Box>
             <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>

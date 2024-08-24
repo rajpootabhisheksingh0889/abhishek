@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
+import Swal from 'sweetalert2';
+
 import { useNavigate } from 'react-router-dom';
 import {
     Container,
@@ -12,7 +14,12 @@ import {
     Button,
     Box,
     Divider,
-    Rating
+    Rating,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    FormHelperText,
 } from '@mui/material';
 import { ToastContainer, toast } from 'react-toastify';
 import { styled } from '@mui/system';
@@ -53,6 +60,7 @@ const MyProfile = () => {
         language: '',
         age: '',
         image: '',
+        role_id: null,
         gallery: []
     });
     const [imageFile, setImageFile] = useState(null);
@@ -177,24 +185,51 @@ const MyProfile = () => {
         }
     };
 
-    const handleGalleryChange = (e) => {
-        const files = Array.from(e.target.files);
-        if (files.length > 0) {
-            setGalleryFiles(files);
-            const newGallery = [...formValues.gallery];
-            files.forEach((file) => {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    newGallery.push(reader.result);
-                    setFormValues((prevValues) => ({
-                        ...prevValues,
-                        gallery: newGallery,
-                    }));
-                };
-                reader.readAsDataURL(file);
+    const handleGalleryChange = async (event) => {
+        const files = event.target.files;
+        const uid = localStorage.getItem('uid');
+        if (!uid) {
+            alert('User ID not found');
+            return;
+        }
+
+        const formData = new FormData();
+        for (let i = 0; i < files.length; i++) {
+            formData.append('files', files[i]);
+        }
+        formData.append('user_id', uid);
+
+        try {
+            const response = await axios.post('http://134.209.145.149:9999/api/gallery', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if (response.data) {
+                Swal.fire({
+                    icon: 'success',
+                    title:  'Images Uploaded successfully!',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+                // Handle success response
+                console.log('Gallery images uploaded successfully');
+                // Optionally refresh or update gallery list
+                // fetchProfile(); // Fetch profile again if needed to update gallery state
+            } else {
+                throw new Error(response.data.message || 'Failed to upload images');
+            }
+        } catch (error) {
+            console.error('Error uploading images:', error);
+            Swal.fire({
+                title: 'Error',
+                text: error.message || 'Failed to upload images',
+                icon: 'error',
             });
         }
     };
+
 
     const handleImageDelete = (index) => {
         const updatedGallery = formValues.gallery.filter((_, i) => i !== index);
@@ -205,6 +240,39 @@ const MyProfile = () => {
     };
 
     const handleSave = async () => {
+        const newErrors = {};
+
+        // Check required fields
+        if (!formValues.first_name) newErrors.first_name = 'First name is required';
+        if (!formValues.last_name) newErrors.last_name = 'Last name is required';
+        if (!formValues.email) newErrors.email = 'Email is required';
+        if (!formValues.phone) newErrors.phone = 'Phone number is required';
+        if (!formValues.gender) newErrors.gender = 'Gender is required';
+        if (!formValues.postal_code) newErrors.postal_code = 'Postal code is required';
+        if (!formValues.address_line1) newErrors.address_line1 = 'Address is required';
+        if (!formValues.city) newErrors.city = 'City is required';
+        if (!formValues.age) newErrors.age = 'Age is required';
+        if (!formValues.dob) newErrors.dob = 'Date of birth is required';
+        if (!formValues.language) newErrors.language = 'Language is required';
+        if (!formValues.desc) newErrors.desc = 'Description is required';
+        // if (!formValues.image) newErrors.image = 'Image is required';
+        // Validate 'gallery' if needed
+
+        // Check if there are errors
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors); // Set errors to state
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text:  'Please fill in all required fields.',
+                showConfirmButton: true,
+                timer: 3000
+            });
+            // toast.error('Please fill in all required fields.');
+            return; // Stop the function from proceeding
+        }
+
+        // Proceed with saving data if there are no errors
         try {
             const uid = localStorage.getItem('uid');
             if (!uid) {
@@ -226,7 +294,7 @@ const MyProfile = () => {
                 language: formValues.language,
                 desc: formValues.desc,
                 image: formValues.image,
-                // gallery: formValues.gallery, // Include gallery URLs
+                // gallery: formValues.gallery, // Include gallery URLs if necessary
             };
 
             const response = await axios.put(`http://134.209.145.149:9999/api/users/${uid}`, formData);
@@ -234,7 +302,12 @@ const MyProfile = () => {
             if (response.data) {
                 setProfile(formValues);
                 setEditMode(false);
-                toast.success('Profile updated successfully!');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Profile updated successfully!',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
                 setTimeout(() => {
                     navigate('/profile');
                 }, 3000);
@@ -244,9 +317,15 @@ const MyProfile = () => {
         } catch (error) {
             console.error('Error updating profile:', error);
             setError(error.message || 'Failed to update profile');
-            toast.error(error.message || 'Failed to update profile');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message || 'Failed to update profile',
+            });
         }
     };
+
+
 
     if (error) {
         return <Typography color="error">{error}</Typography>;
@@ -286,14 +365,18 @@ const MyProfile = () => {
                                 disabled={!editMode}
                             />
                         </Grid>
-                        <Grid container spacing={2} alignItems="center" direction="column">
-                            <Grid item xs={12} sm={6} md={4}>
-                                <Typography variant="body1">
-                                    <strong>Rating:</strong>
-                                </Typography>
-                                <Rating value={4} readOnly />
+                        {profile?.role_id === 3 && (
+                            <Grid container spacing={2} alignItems="center" direction="column">
+                                <Grid item xs={12} sm={6} md={4}>
+                                    <Typography variant="body1">
+                                        <strong>Rating:</strong>
+                                    </Typography>
+                                    <Rating value={4} readOnly />
+                                </Grid>
                             </Grid>
-                        </Grid>
+                        )}
+
+
                         {editMode ? (
                             <>
                                 <Grid item container spacing={2}>
@@ -307,6 +390,7 @@ const MyProfile = () => {
                                             required
                                             error={!!errors.first_name}
                                             helperText={errors.first_name}
+                                          
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
@@ -319,6 +403,7 @@ const MyProfile = () => {
                                             required
                                             error={!!errors.last_name}
                                             helperText={errors.last_name}
+                                          
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
@@ -332,6 +417,7 @@ const MyProfile = () => {
                                             error={!!errors.email}
                                             disabled
                                             helperText={errors.email}
+                                            
                                         />
                                     </Grid>
                                 </Grid>
@@ -346,20 +432,27 @@ const MyProfile = () => {
                                             required
                                             error={!!errors.phone}
                                             helperText={errors.phone}
+                                        
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
-                                        <TextField
-                                            name="gender"
-                                            label="Gender"
-                                            value={formValues.gender}
-                                            onChange={handleInputChange}
-                                            fullWidth
-                                            required
-                                            error={!!errors.gender}
-                                            helperText={errors.gender}
-                                        />
+                                        <FormControl fullWidth required error={!!errors.gender}>
+                                            <InputLabel>Gender</InputLabel>
+                                            <Select
+                                                name="gender"
+                                                value={formValues.gender}
+                                                onChange={handleInputChange}
+                                                label="Gender"
+                                            >
+                                               
+                                                <MenuItem value="male">Male</MenuItem>
+                                                <MenuItem value="female">Female</MenuItem>
+                                                <MenuItem value="other">Other</MenuItem>
+                                            </Select>
+                                            {errors.gender && <FormHelperText>{errors.gender}</FormHelperText>}
+                                        </FormControl>
                                     </Grid>
+
                                     <Grid item xs={12} sm={6} md={4}>
                                         <TextField
                                             name="postal_code"
@@ -370,6 +463,7 @@ const MyProfile = () => {
                                             required
                                             error={!!errors.postal_code}
                                             helperText={errors.postal_code}
+                                           
                                         />
                                     </Grid>
                                 </Grid>
@@ -384,6 +478,7 @@ const MyProfile = () => {
                                             required
                                             error={!!errors.address_line1}
                                             helperText={errors.address_line1}
+                                           
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
@@ -406,7 +501,7 @@ const MyProfile = () => {
                                             value={formValues.dob}
                                             onChange={handleInputChange}
                                             fullWidth
-                                            required
+                                         
                                             InputLabelProps={{
                                                 shrink: true,
                                             }}
@@ -415,22 +510,32 @@ const MyProfile = () => {
                                             }}
                                             error={!!errors.dob}
                                             helperText={errors.dob}
+                                            required
                                         />
                                     </Grid>
                                 </Grid>
                                 <Grid item container spacing={2}>
                                     <Grid item xs={12} sm={6} md={4}>
-                                        <TextField
-                                            name="language"
-                                            label="Language"
-                                            value={formValues.language}
-                                            onChange={handleInputChange}
-                                            fullWidth
-                                            required
-                                            error={!!errors.language}
-                                            helperText={errors.language}
-                                        />
+                                        <FormControl fullWidth required error={!!errors.language}>
+                                            <InputLabel>Language</InputLabel>
+                                            <Select
+                                                name="language"
+                                                value={formValues.language}
+                                                onChange={handleInputChange}
+                                                label="Language"
+                                            >
+                                                
+                                                <MenuItem value="english">English</MenuItem>
+                                                <MenuItem value="spanish">Hindi</MenuItem>
+                                                <MenuItem value="french">French</MenuItem>
+                                                <MenuItem value="german">German</MenuItem>
+                                                <MenuItem value="other">other</MenuItem>
+                                                {/* Add more languages as needed */}
+                                            </Select>
+                                            {errors.language && <FormHelperText>{errors.language}</FormHelperText>}
+                                        </FormControl>
                                     </Grid>
+
                                     <Grid item xs={12} sm={6} md={4}>
                                         <TextField
                                             name="desc"
@@ -441,6 +546,7 @@ const MyProfile = () => {
                                             required
                                             error={!!errors.desc}
                                             helperText={errors.desc}
+                                       
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
@@ -454,6 +560,7 @@ const MyProfile = () => {
                                             error={!!errors.age}
                                             helperText={errors.age}
                                             disabled
+                                        
                                         />
                                     </Grid>
                                 </Grid>
@@ -476,41 +583,26 @@ const MyProfile = () => {
                                         >
                                             Upload Gallery Images
                                         </Button>
-                                        <br/>
-                                        <Grid container spacing={2}>
-                                            {formValues.gallery.map((image, index) => (
-                                                <Grid item key={index} xs={12} sm={6} md={4} position="relative">
-                                                    <img
-                                                        src={image}
-                                                        alt={`gallery ${index}`}
-                                                        style={{ width: '100%', height: 'auto', borderRadius: '8px' }}
-                                                    />
-                                                    <Button
-                                                        variant="contained"
-                                                        color="error"
-                                                        size="small"
-                                                        sx={{ position: 'absolute', top: 0, right: 0, borderRadius: '50%' }}
-                                                        onClick={() => handleImageDelete(index)}
-                                                    >
-                                                        ×
-                                                    </Button>
-                                                </Grid>
-                                            ))}
-                                        </Grid>
                                     </Grid>
                                 </Grid>
-                                <Grid item xs={12} style={{ textAlign: 'center' }}>
-                                    <Button variant="contained" color="primary" onClick={handleSave}>
-                                        Save
-                                    </Button>
-                                    <Button
-                                        variant="outlined"
-                                        color="secondary"
-                                        onClick={() => setEditMode(false)}
-                                    >
-                                        Cancel
-                                    </Button>
+
+                                <Grid container spacing={2} justifyContent="center">
+                                    <Grid item>
+                                        <Button variant="contained" color="primary" onClick={handleSave}>
+                                            Save
+                                        </Button>
+                                    </Grid>
+                                    <Grid item>
+                                        <Button
+                                            variant="outlined"
+                                            color="secondary"
+                                            onClick={() => setEditMode(false)}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </Grid>
                                 </Grid>
+
                             </>
                         ) : (
                             <>
@@ -564,23 +656,33 @@ const MyProfile = () => {
                                                 <strong>Date of Birth:</strong> {profile.dob}
                                         </Typography>
                                     </Grid>
-                                    <Grid item xs={12} sm={6} md={4}>
+                                        <Grid item xs={12} sm={6} md={4}>
+                                        <Typography variant="body1">
+                                                <strong>Gender:</strong> {profile.gender}
+                                        </Typography>
+                                    </Grid>
+                                    {/* <Grid item xs={12} sm={6} md={4}>
                                         <Typography variant="body1">
                                             <strong>Age:</strong> {profile.age}
                                         </Typography>
-                                    </Grid>
+                                    </Grid> */}
                                     <Grid item xs={12} sm={6} md={4}>
                                         <Typography variant="body1">
                                             <strong>Language:</strong> {profile.language}
                                         </Typography>
                                     </Grid>
+                                        <Grid item xs={12} sm={6} md={4}>
+                                            <Typography variant="body1">
+                                                <strong>Description:</strong> {profile.desc}
+                                            </Typography>
+                                        </Grid>
                                 </Grid>
                                 <Grid item container spacing={2}>
-                                <Grid item xs={12} sm={6} md={4}>
+                                {/* <Grid item xs={12} sm={6} md={4}>
                                     <Typography variant="body1">
                                                 <strong>Description:</strong> {profile.desc}
                                     </Typography>
-                                </Grid>
+                                </Grid> */}
                             </Grid>
                                 <Box display="flex" justifyContent="center" mt={2}>
                                     <Button variant="contained" color="primary" onClick={() => setEditMode(true)}>
