@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Box, Typography, Grid, Modal, Button, TextField } from '@mui/material';
+import { Box, Typography, Grid, Button, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+import Swal from 'sweetalert2'; // Import SweetAlert
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -91,11 +91,16 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             console.log('Registration successful:', response.data);
             setUserId(response.data.uid);
 
-            toast.success('Registration successful! Please verify the OTP sent to your email.', {
-                autoClose: 3000,
+            // Show SweetAlert success message
+            Swal.fire({
+                title: 'Registration Successful!',
+                text: 'Please verify the OTP sent to your email.',
+                icon: 'success',
+                confirmButtonText: 'OK',
+                timer: 3000,
             });
 
-            setOtpModalOpen(true); // Open OTP Modal
+            setOtpModalOpen(true); // Set state to show OTP input
 
         } catch (error) {
             handleApiError(error);
@@ -108,11 +113,11 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
         if (error.response) {
             const apiErrors = error.response.data.message;
             const errorMessage = apiErrors.length > 0 ? apiErrors?.message : 'Please try again.';
-            toast.error(`Error: ${errorMessage}`);
+            Swal.fire('Error', errorMessage, 'error'); // Use SweetAlert for error
         } else if (error.request) {
-            toast.error('No response from the server. Please try again.');
+            Swal.fire('Error', 'No response from the server. Please try again.', 'error'); // Use SweetAlert for error
         } else {
-            toast.error(`Error: ${error.message}`);
+            Swal.fire('Error', `Error: ${error.message}`, 'error'); // Use SweetAlert for error
         }
     };
 
@@ -123,8 +128,12 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                 otp_code: otp,
             });
 
-            toast.success('OTP verified successfully! Redirecting to login...', {
-                autoClose: 3000,
+            Swal.fire({
+                title: 'OTP Verified!',
+                text: 'Redirecting to login...',
+                icon: 'success',
+                timer: 3000,
+                showConfirmButton: false,
             });
 
             setTimeout(() => {
@@ -132,32 +141,122 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
             }, 3000);
 
         } catch (error) {
-            toast.error('OTP verification failed. Please try again.');
+            Swal.fire('Error', 'OTP verification failed. Please try again.', 'error'); // Use SweetAlert for error
         }
     };
 
-    const OtpModal = ({ open, onClose, onVerify, otp, setOtp }) => {
-        return (
-            <Modal
-                open={open}
-                onClose={onClose}
-                aria-labelledby="otp-modal-title"
-                aria-describedby="otp-modal-description"
-            >
+    return (
+        <>
+            {title ? (
+                <Typography fontWeight="700" variant="h2" mb={1}>
+                    {title}
+                </Typography>
+            ) : null}
+
+            {subtext}
+
+            {!otpModalOpen ? (
                 <Box
+                    component="form"
+                    onSubmit={handleSubmit}
                     sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: 400,
-                        bgcolor: 'background.paper',
-                        boxShadow: 24,
-                        p: 4,
-                        borderRadius: 2,
+                        maxWidth: '800px',
+                        mx: 'auto',
+                        p: 2,
+                        borderRadius: 4,
+                        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                        backgroundColor: '#ffffff',
+                        '& > :not(style)': { mb: 3 },
                     }}
                 >
-                    <Typography id="otp-modal-title" variant="h6" component="h2">
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="first_name" mb="5px">
+                                First Name
+                            </Typography>
+                            <CustomTextField
+                                id="first_name"
+                                variant="outlined"
+                                fullWidth
+                                value={formData.first_name}
+                                onChange={handleChange}
+                                error={!!formErrors.first_name}
+                                helperText={formErrors.first_name}
+                                autoComplete="given-name"
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="last_name" mb="5px">
+                                Last Name
+                            </Typography>
+                            <CustomTextField
+                                id="last_name"
+                                variant="outlined"
+                                fullWidth
+                                value={formData.last_name}
+                                onChange={handleChange}
+                                error={!!formErrors.last_name}
+                                helperText={formErrors.last_name}
+                                autoComplete="family-name"
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="email" mb="5px">
+                                Email Address
+                            </Typography>
+                            <CustomTextField
+                                id="email"
+                                variant="outlined"
+                                fullWidth
+                                value={formData.email}
+                                onChange={handleChange}
+                                error={!!formErrors.email}
+                                helperText={formErrors.email}
+                                autoComplete="email"
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="password" mb="5px">
+                                Password
+                            </Typography>
+                            <CustomTextField
+                                id="password"
+                                variant="outlined"
+                                fullWidth
+                                type="password"
+                                value={formData.password}
+                                onChange={handleChange}
+                                error={!!formErrors.password}
+                                helperText={formErrors.password}
+                                autoComplete="new-password"
+                            />
+                        </Grid>
+                    </Grid>
+                    <LoadingButton
+                        color="primary"
+                        variant="contained"
+                        size="large"
+                        fullWidth
+                        type="submit"
+                        loading={loading}
+                        name="signUp"
+                    >
+                        Sign Up
+                    </LoadingButton>
+                </Box>
+            ) : (
+                <Box
+                    sx={{
+                        maxWidth: '400px',
+                        mx: 'auto',
+                        p: 2,
+                        borderRadius: 4,
+                        boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
+                        backgroundColor: '#ffffff',
+                        mt: 4,
+                    }}
+                >
+                    <Typography id="otp-input-title" variant="h6" component="h2" mb={2}>
                         Enter OTP
                     </Typography>
                     <TextField
@@ -167,129 +266,18 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
                         variant="outlined"
                         value={otp}
                         onChange={(e) => setOtp(e.target.value)}
+                        autoFocus
                     />
                     <Box mt={2} display="flex" justifyContent="space-between">
-                        <Button variant="contained" onClick={onVerify}>
+                        <Button variant="contained" onClick={handleVerifyOtp}>
                             Verify
                         </Button>
-                        <Button variant="outlined" onClick={onClose}>
+                        <Button variant="outlined" onClick={() => setOtpModalOpen(false)}>
                             Cancel
                         </Button>
                     </Box>
                 </Box>
-            </Modal>
-        );
-    };
-
-    return (
-        <>
-            <ToastContainer />
-            {title ? (
-                <Typography fontWeight="700" variant="h2" mb={1}>
-                    {title}
-                </Typography>
-            ) : null}
-
-            {subtext}
-
-            <Box
-                component="form"
-                onSubmit={handleSubmit}
-                sx={{
-                    maxWidth: '800px',
-                    mx: 'auto',
-                    p: 2,
-                    borderRadius: 4,
-                    boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)',
-                    backgroundColor: '#ffffff',
-                    '& > :not(style)': { mb: 3 },
-                }}
-            >
-                <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="first_name" mb="5px">
-                            First Name
-                        </Typography>
-                        <CustomTextField
-                            id="first_name"
-                            variant="outlined"
-                            fullWidth
-                            value={formData.first_name}
-                            onChange={handleChange}
-                            error={!!formErrors.first_name}
-                            helperText={formErrors.first_name}
-                            autoComplete="given-name"
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="last_name" mb="5px">
-                            Last Name
-                        </Typography>
-                        <CustomTextField
-                            id="last_name"
-                            variant="outlined"
-                            fullWidth
-                            value={formData.last_name}
-                            onChange={handleChange}
-                            error={!!formErrors.last_name}
-                            helperText={formErrors.last_name}
-                            autoComplete="family-name"
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="email" mb="5px">
-                            Email Address
-                        </Typography>
-                        <CustomTextField
-                            id="email"
-                            variant="outlined"
-                            fullWidth
-                            value={formData.email}
-                            onChange={handleChange}
-                            error={!!formErrors.email}
-                            helperText={formErrors.email}
-                            autoComplete="email"
-                        />
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="password" mb="5px">
-                            Password
-                        </Typography>
-                        <CustomTextField
-                            id="password"
-                            variant="outlined"
-                            fullWidth
-                            type="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            error={!!formErrors.password}
-                            helperText={formErrors.password}
-                            autoComplete="new-password"
-                        />
-                    </Grid>
-                </Grid>
-                <LoadingButton
-                    color="primary"
-                    variant="contained"
-                    size="large"
-                    fullWidth
-                    type="submit"
-                    loading={loading}
-                    name="signUp"
-                >
-                    Sign Up
-                </LoadingButton>
-            </Box>
-
-            <OtpModal
-                open={otpModalOpen}
-                onClose={() => setOtpModalOpen(false)}
-                onVerify={handleVerifyOtp}
-                otp={otp}
-                setOtp={setOtp}
-            />
-
-            {subtitle}
+            )}
         </>
     );
 };

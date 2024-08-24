@@ -127,19 +127,19 @@ const CustomerList = () => {
                         ) : (
                             filteredCustomers.length > 0 ? (
                                 filteredCustomers.map((customer, index) => (
-                                    <TableRow key={customer.id} sx={{ '&:hover': { backgroundColor: '#f0f0f0' } }}>
+                                    <TableRow key={customer.id} >
                                         <TableCell>
-                                            <Typography sx={{ fontSize: "15px", fontWeight: "500" }}>
+                                            <Typography variant="subtitle2">
                                                 {index + 1}
                                             </Typography>
                                         </TableCell>
                                         <TableCell>
-                                            <Typography fontWeight={600}>
+                                            <Typography variant="subtitle2">
                                                 {customer.first_name} {customer.last_name}
                                             </Typography>
                                         </TableCell>
                                         <TableCell>
-                                            <Typography  >
+                                            <Typography color="textSecondary" variant="subtitle2" >
                                                 {customer.email}
                                             </Typography>
                                         </TableCell>

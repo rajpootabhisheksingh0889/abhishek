@@ -330,6 +330,7 @@ const MyProfile = () => {
                                             fullWidth
                                             required
                                             error={!!errors.email}
+                                            disabled
                                             helperText={errors.email}
                                         />
                                     </Grid>
