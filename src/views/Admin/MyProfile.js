@@ -145,6 +145,22 @@ const MyProfile = () => {
             }));
         }
 
+        if (name === 'postal_code' && value.length > 6) {
+            return;
+        }
+
+        if (name === 'postal_code' && (isNaN(value) || value.length !== 6)) {
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                [name]: 'Postal Code must be 6 digits long',
+            }));
+        } else {
+            setErrors((prevErrors) => ({
+                ...prevErrors,
+                [name]: '',
+            }));
+        }
+
         if (name === 'dob') {
             const age = calculateAge(value);
             if (age < 18) {
@@ -246,9 +262,19 @@ const MyProfile = () => {
         if (!formValues.first_name) newErrors.first_name = 'First name is required';
         if (!formValues.last_name) newErrors.last_name = 'Last name is required';
         if (!formValues.email) newErrors.email = 'Email is required';
-        if (!formValues.phone) newErrors.phone = 'Phone number is required';
+        // Validate phone number
+        if (!formValues.phone) {
+            newErrors.phone = 'Phone number is required';
+        } else if (formValues.phone.length !== 10 || isNaN(formValues.phone)) {
+            newErrors.phone = 'Phone number must be exactly 10 digits';
+        }
         if (!formValues.gender) newErrors.gender = 'Gender is required';
-        if (!formValues.postal_code) newErrors.postal_code = 'Postal code is required';
+        // Validate postal code
+        if (!formValues.postal_code) {
+            newErrors.postal_code = 'Postal code is required';
+        } else if (formValues.postal_code.length !== 6 || isNaN(formValues.postal_code)) {
+            newErrors.postal_code = 'Postal code must be exactly 6 digits';
+        }
         if (!formValues.address_line1) newErrors.address_line1 = 'Address is required';
         if (!formValues.city) newErrors.city = 'City is required';
         if (!formValues.age) newErrors.age = 'Age is required';
@@ -442,6 +468,7 @@ const MyProfile = () => {
                                 <Grid item container spacing={2}>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <TextField
+                                        type='number'
                                             name="phone"
                                             label="Phone"
                                             value={formValues.phone}
@@ -473,6 +500,7 @@ const MyProfile = () => {
 
                                     <Grid item xs={12} sm={6} md={4}>
                                         <TextField
+                                            type='number'
                                             name="postal_code"
                                             label="Postal code"
                                             value={formValues.postal_code}

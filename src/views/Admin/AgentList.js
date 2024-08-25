@@ -321,7 +321,7 @@ const AgentList = () => {
                             </TableCell>
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    Toggle
+                                    Action
                                 </Typography>
                             </TableCell>
                             {/* <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
@@ -507,7 +507,7 @@ const AgentList = () => {
                             variant="contained"
                             color="primary"
                         >
-                            Create Ajent
+                            Create Agent
                         </LoadingButton>
                     )}
                 </DialogActions>
