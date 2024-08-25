@@ -209,7 +209,7 @@ const MyProfile = () => {
             if (response.data) {
                 Swal.fire({
                     icon: 'success',
-                    title:  'Images Uploaded successfully!',
+                    title: 'Images Uploaded successfully!',
                     showConfirmButton: false,
                     timer: 3000
                 });
@@ -255,8 +255,6 @@ const MyProfile = () => {
         if (!formValues.dob) newErrors.dob = 'Date of birth is required';
         if (!formValues.language) newErrors.language = 'Language is required';
         if (!formValues.desc) newErrors.desc = 'Description is required';
-        // if (!formValues.image) newErrors.image = 'Image is required';
-        // Validate 'gallery' if needed
 
         // Check if there are errors
         if (Object.keys(newErrors).length > 0) {
@@ -264,11 +262,10 @@ const MyProfile = () => {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text:  'Please fill in all required fields.',
+                text: 'Please fill in all required fields.',
                 showConfirmButton: true,
                 timer: 3000
             });
-            // toast.error('Please fill in all required fields.');
             return; // Stop the function from proceeding
         }
 
@@ -279,25 +276,37 @@ const MyProfile = () => {
                 throw new Error('User ID not found');
             }
 
-            const formData = {
-                uid: uid,
-                first_name: formValues.first_name,
-                last_name: formValues.last_name,
-                email: formValues.email,
-                phone: formValues.phone,
-                gender: formValues.gender,
-                postal_code: formValues.postal_code,
-                address_line1: formValues.address_line1,
-                city: formValues.city,
-                age: formValues.age,
-                dob: formValues.dob,
-                language: formValues.language,
-                desc: formValues.desc,
-                image: formValues.image,
-                // gallery: formValues.gallery, // Include gallery URLs if necessary
-            };
+            // Create a FormData object
+            const formData = new FormData();
+            formData.append('uid', uid);
+            formData.append('first_name', formValues.first_name);
+            formData.append('last_name', formValues.last_name);
+            formData.append('email', formValues.email);
+            formData.append('phone', formValues.phone);
+            formData.append('gender', formValues.gender);
+            formData.append('postal_code', formValues.postal_code);
+            formData.append('address_line1', formValues.address_line1);
+            formData.append('city', formValues.city);
+            formData.append('age', formValues.age);
+            formData.append('dob', formValues.dob);
+            formData.append('language', formValues.language);
+            formData.append('desc', formValues.desc);
 
-            const response = await axios.put(`http://134.209.145.149:9999/api/users/${uid}`, formData);
+            // Append the image file to the formData if it's selected
+            if (imageFile) {
+                formData.append('image', imageFile);
+            }
+
+            // Optionally append gallery files
+            // galleryFiles.forEach((file) => {
+            //     formData.append('gallery', file);
+            // });
+
+            const response = await axios.put(`http://134.209.145.149:9999/api/users/${uid}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
 
             if (response.data) {
                 setProfile(formValues);
@@ -327,6 +336,7 @@ const MyProfile = () => {
 
 
 
+
     if (error) {
         return <Typography color="error">{error}</Typography>;
     }
@@ -339,12 +349,12 @@ const MyProfile = () => {
         <DashboardCard>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h3" component="h2" sx={{ flex: 1 }}>
-                   My Profile
+                    My Profile
                 </Typography>
 
-                
+
             </Box>
-        {/* <Container> */}
+            {/* <Container> */}
             <ToastContainer />
             <AnimatedCard elevation={3} sx={{ padding: 4, marginTop: 4 }}>
                 <CardContent>
@@ -398,7 +408,7 @@ const MyProfile = () => {
                                             required
                                             error={!!errors.first_name}
                                             helperText={errors.first_name}
-                                          
+
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
@@ -411,7 +421,7 @@ const MyProfile = () => {
                                             required
                                             error={!!errors.last_name}
                                             helperText={errors.last_name}
-                                          
+
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
@@ -425,7 +435,7 @@ const MyProfile = () => {
                                             error={!!errors.email}
                                             disabled
                                             helperText={errors.email}
-                                            
+
                                         />
                                     </Grid>
                                 </Grid>
@@ -440,7 +450,7 @@ const MyProfile = () => {
                                             required
                                             error={!!errors.phone}
                                             helperText={errors.phone}
-                                        
+
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
@@ -452,7 +462,7 @@ const MyProfile = () => {
                                                 onChange={handleInputChange}
                                                 label="Gender"
                                             >
-                                               
+
                                                 <MenuItem value="male">Male</MenuItem>
                                                 <MenuItem value="female">Female</MenuItem>
                                                 <MenuItem value="other">Other</MenuItem>
@@ -471,7 +481,7 @@ const MyProfile = () => {
                                             required
                                             error={!!errors.postal_code}
                                             helperText={errors.postal_code}
-                                           
+
                                         />
                                     </Grid>
                                 </Grid>
@@ -486,7 +496,7 @@ const MyProfile = () => {
                                             required
                                             error={!!errors.address_line1}
                                             helperText={errors.address_line1}
-                                           
+
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
@@ -509,7 +519,7 @@ const MyProfile = () => {
                                             value={formValues.dob}
                                             onChange={handleInputChange}
                                             fullWidth
-                                         
+
                                             InputLabelProps={{
                                                 shrink: true,
                                             }}
@@ -532,7 +542,7 @@ const MyProfile = () => {
                                                 onChange={handleInputChange}
                                                 label="Language"
                                             >
-                                                
+
                                                 <MenuItem value="english">English</MenuItem>
                                                 <MenuItem value="spanish">Hindi</MenuItem>
                                                 <MenuItem value="french">French</MenuItem>
@@ -554,7 +564,7 @@ const MyProfile = () => {
                                             required
                                             error={!!errors.desc}
                                             helperText={errors.desc}
-                                       
+
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
@@ -568,7 +578,7 @@ const MyProfile = () => {
                                             error={!!errors.age}
                                             helperText={errors.age}
                                             disabled
-                                        
+
                                         />
                                     </Grid>
                                 </Grid>
@@ -644,29 +654,29 @@ const MyProfile = () => {
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <Typography variant="body1">
-                                                <strong>Zipcode:</strong> {profile.postal_code}
+                                            <strong>Zipcode:</strong> {profile.postal_code}
                                         </Typography>
                                     </Grid>
                                 </Grid>
                                 <Grid item container spacing={2}>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <Typography variant="body1">
-                                                <strong>Address:</strong> {profile.address_line1}
+                                            <strong>Address:</strong> {profile.address_line1}
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <Typography variant="body1">
-                                                <strong>City:</strong> {profile.city}
+                                            <strong>City:</strong> {profile.city}
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <Typography variant="body1">
-                                                <strong>Date of Birth:</strong> {profile.dob}
+                                            <strong>Date of Birth:</strong> {profile.dob}
                                         </Typography>
                                     </Grid>
-                                        <Grid item xs={12} sm={6} md={4}>
+                                    <Grid item xs={12} sm={6} md={4}>
                                         <Typography variant="body1">
-                                                <strong>Gender:</strong> {profile.gender}
+                                            <strong>Gender:</strong> {profile.gender}
                                         </Typography>
                                     </Grid>
                                     {/* <Grid item xs={12} sm={6} md={4}>
@@ -679,19 +689,19 @@ const MyProfile = () => {
                                             <strong>Language:</strong> {profile.language}
                                         </Typography>
                                     </Grid>
-                                        <Grid item xs={12} sm={6} md={4}>
-                                            <Typography variant="body1">
-                                                <strong>Description:</strong> {profile.desc}
-                                            </Typography>
-                                        </Grid>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <Typography variant="body1">
+                                            <strong>Description:</strong> {profile.desc}
+                                        </Typography>
+                                    </Grid>
                                 </Grid>
                                 <Grid item container spacing={2}>
-                                {/* <Grid item xs={12} sm={6} md={4}>
+                                    {/* <Grid item xs={12} sm={6} md={4}>
                                     <Typography variant="body1">
                                                 <strong>Description:</strong> {profile.desc}
                                     </Typography>
                                 </Grid> */}
-                            </Grid>
+                                </Grid>
                                 <Box display="flex" justifyContent="center" mt={2}>
                                     <Button variant="contained" color="primary" onClick={() => setEditMode(true)}>
                                         Edit
@@ -702,7 +712,7 @@ const MyProfile = () => {
                     </Grid>
                 </CardContent>
             </AnimatedCard>
-        {/* </Container> */}
+            {/* </Container> */}
         </DashboardCard>
     );
 };
