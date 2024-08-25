@@ -11,26 +11,39 @@ const ForgetPassword = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [loading, setLoading] = useState(false);
-    const { data1 } = useParams();
+    const { data1 } = useParams(); // Assuming data1 is the token now
     const secretKey = 'itsmehere';
     const [decryptedData, setDecryptedData] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
-        try {
-            // Function to decrypt data
-            const decryptData = (data1, key) => {
-                const bytes = CryptoJS.AES.decrypt(data1, key);
-                return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-            };
+        const decryptData = (data, key) => {
+            try {
+                const bytes = CryptoJS.AES.decrypt(data, key);
+                const decryptedText = bytes.toString(CryptoJS.enc.Utf8);
 
-            // Decrypt the data
+                // Log decrypted text for debugging
+                console.log('Decrypted text:', decryptedText);
+
+                // Ensure decryptedText is valid before parsing
+                return decryptedText ? JSON.parse(decryptedText) : null;
+            } catch (err) {
+                console.error('Error during decryption:', err.message);
+                return null;
+            }
+        };
+
+        if (data1) {
+            console.log('Encrypted data (data1):', data1); // Log the encrypted data
             const decodedData = decryptData(decodeURIComponent(data1), secretKey);
-            console.log(decodedData[0].email, "decrypted data is ===>>>");
-            setDecryptedData(decodedData);
-        } catch (error) {
-            console.error('Decryption error:', error);
-            toast.error('Invalid or corrupted reset link.');
+
+            if (!decodedData) {
+                console.error('Failed to decrypt data or data is empty.');
+                toast.error('Invalid or corrupted reset link.');
+            } else {
+                console.log('Decrypted data:', decodedData);
+                setDecryptedData(decodedData);
+            }
         }
     }, [data1]);
 
@@ -61,24 +74,23 @@ const ForgetPassword = () => {
         }
 
         try {
-            const response = await fetch('http://134.209.145.149:9999/api/resetPassword', {
+            const response = await fetch(`http://134.209.145.149:9999/api/reset-password/${data1}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ newPassword, email: decryptedData[0].email }), // Include decrypted data in the request
+                body: JSON.stringify({ password: newPassword }),
             });
 
             const result = await response.json();
             setLoading(false);
 
-            console.log('API response:', result); // Log the entire response
+            console.log('API response:', result);
 
             if (response.ok) {
                 toast.success('Password reset successfully');
                 navigate('/auth/login');
             } else {
-                // Log the errors if any
                 if (result.errors && result.errors.length > 0) {
                     console.log('Errors:', result.errors);
                     toast.error(result.errors[0].message);

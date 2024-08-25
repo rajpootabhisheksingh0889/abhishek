@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-
+import DashboardCard from 'src/components/shared/DashboardCard';
 import { useNavigate } from 'react-router-dom';
 import {
     Container,
@@ -336,7 +336,15 @@ const MyProfile = () => {
     }
 
     return (
-        <Container>
+        <DashboardCard>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Typography variant="h3" component="h2" sx={{ flex: 1 }}>
+                   My Profile
+                </Typography>
+
+                
+            </Box>
+        {/* <Container> */}
             <ToastContainer />
             <AnimatedCard elevation={3} sx={{ padding: 4, marginTop: 4 }}>
                 <CardContent>
@@ -694,7 +702,8 @@ const MyProfile = () => {
                     </Grid>
                 </CardContent>
             </AnimatedCard>
-        </Container>
+        {/* </Container> */}
+        </DashboardCard>
     );
 };
 
