@@ -80,7 +80,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
             const { token, user } = response.data;
             localStorage.setItem('accessToken', token);
-            localStorage.setItem('uid', user.id);
+            // localStorage.setItem('uid', user.id);
             localStorage.setItem('email', user.email);
             localStorage.setItem('role_id', user.role_id);
 
@@ -255,6 +255,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
             // Check if the error is related to OTP
             if (error.response && error.response.data.error === 'otp' && error.response.data.status === 0) {
+                setUserId(error.response.data.user_id);
                 Swal.fire({
                     icon: 'info',
                     title: 'Verify Your Account',
