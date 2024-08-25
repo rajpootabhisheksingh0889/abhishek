@@ -11,41 +11,35 @@ const ForgetPassword = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [loading, setLoading] = useState(false);
-    const { data1 } = useParams(); // Assuming data1 is the token now
+   const[token,setToken] = useState('');
+    const { resetToken } = useParams();
+    
     const secretKey = 'itsmehere';
     const [decryptedData, setDecryptedData] = useState(null);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const decryptData = (data, key) => {
-            try {
-                const bytes = CryptoJS.AES.decrypt(data, key);
-                const decryptedText = bytes.toString(CryptoJS.enc.Utf8);
+    console.log(resetToken,"data one is ===>>>")
 
-                // Log decrypted text for debugging
-                console.log('Decrypted text:', decryptedText);
+    useEffect(()=>{
+        setToken(resetToken);
+    },[resetToken])
+    // useEffect(() => {
+    //     try {
+    //         // Function to decrypt data
+    //         const decryptData = (data1, key) => {
+    //             const bytes = CryptoJS.AES.decrypt(data1, key);
+    //             return JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+    //         };
 
-                // Ensure decryptedText is valid before parsing
-                return decryptedText ? JSON.parse(decryptedText) : null;
-            } catch (err) {
-                console.error('Error during decryption:', err.message);
-                return null;
-            }
-        };
-
-        if (data1) {
-            console.log('Encrypted data (data1):', data1); // Log the encrypted data
-            const decodedData = decryptData(decodeURIComponent(data1), secretKey);
-
-            if (!decodedData) {
-                console.error('Failed to decrypt data or data is empty.');
-                toast.error('Invalid or corrupted reset link.');
-            } else {
-                console.log('Decrypted data:', decodedData);
-                setDecryptedData(decodedData);
-            }
-        }
-    }, [data1]);
+    //         // Decrypt the data
+    //         const decodedData = decryptData(decodeURIComponent(data1), secretKey);
+    //         console.log(decodedData[0].email, "decrypted data is ===>>>");
+    //         setDecryptedData(decodedData);
+    //     } catch (error) {
+    //         console.error('Decryption error:', error);
+    //         toast.error('Invalid or corrupted reset link.');
+    //     }
+    // }, [data1]);
 
     const handleNewPasswordChange = (e) => {
         setNewPassword(e.target.value);
@@ -74,23 +68,24 @@ const ForgetPassword = () => {
         }
 
         try {
-            const response = await fetch(`http://134.209.145.149:9999/api/reset-password/${data1}`, {
-                method: 'PUT',
+            const response = await fetch(`http://134.209.145.149:9999/api/reset-password/${token}`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ password: newPassword }),
+                body: JSON.stringify({ password:newPassword}), // Include decrypted data in the request
             });
 
             const result = await response.json();
             setLoading(false);
 
-            console.log('API response:', result);
+            console.log('API response:', result); // Log the entire response
 
             if (response.ok) {
                 toast.success('Password reset successfully');
                 navigate('/auth/login');
             } else {
+                // Log the errors if any
                 if (result.errors && result.errors.length > 0) {
                     console.log('Errors:', result.errors);
                     toast.error(result.errors[0].message);
@@ -126,7 +121,7 @@ const ForgetPassword = () => {
                     <Typography component="h1" variant="h5">
                         Reset Password
                     </Typography>
-                    {decryptedData ? (
+                    {token ? (
                         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
                             <TextField
                                 variant="outlined"

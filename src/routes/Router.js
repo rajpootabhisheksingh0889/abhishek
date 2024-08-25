@@ -303,7 +303,7 @@ const Router = [
     element: <BlankLayout />,
     children: [
       { path: '404', element: <Error /> },
-      { path: '/auth/forgetpassword/:data1', element: <ForgetPassword /> },
+      { path: '/auth/forgetpassword/:resetToken', element: <ForgetPassword /> },
       { path: '/auth/register', element: <Register /> },
       { path: '/auth/forget', element: <Forget /> },
       { path: '/auth/login', element: <Login /> },
