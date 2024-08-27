@@ -32,24 +32,41 @@ function Faq() {
   ];
 
   return (
-    <Container maxWidth="md">
-      <Paper elevation={3} sx={{ padding: 2, borderRadius: 2 }}>
-        <Typography variant="h4" gutterBottom>
+    <Container maxWidth="md" sx={{ marginTop: 4 }}>
+      <Paper elevation={6} sx={{ padding: 4, borderRadius: 4 }}>
+        <Typography
+          variant="h1"
+          component="h1"
+          align="center"
+          gutterBottom
+          sx={{
+            fontSize: isMobile ? '2.5rem' : '3.5rem',
+            fontWeight: 'bold',
+            color: theme.palette.primary.main,
+            marginBottom: 3,
+          }}
+        >
           Frequently Asked Questions
         </Typography>
         {faqData.map((faq, index) => (
-          <Accordion key={index} sx={{ marginBottom: 2 }}>
+          <Accordion key={index} sx={{ marginBottom: 2, borderRadius: 2, overflow: 'hidden' }}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
               aria-controls={`panel${index}-content`}
               id={`panel${index}-header`}
+              sx={{
+                backgroundColor: theme.palette.action.hover,
+                '& .MuiAccordionSummary-content': {
+                  margin: 0,
+                },
+              }}
             >
-              <Typography variant={isMobile ? 'h6' : 'h5'}>
+              <Typography variant={isMobile ? 'h6' : 'h5'} sx={{ fontWeight: 'medium' }}>
                 {faq.question}
               </Typography>
             </AccordionSummary>
-            <AccordionDetails>
-              <Typography variant="body1">
+            <AccordionDetails sx={{ backgroundColor: theme.palette.background.default }}>
+              <Typography variant="body1" sx={{ color: theme.palette.text.secondary }}>
                 {faq.answer}
               </Typography>
             </AccordionDetails>

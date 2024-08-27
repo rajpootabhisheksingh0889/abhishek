@@ -22,7 +22,7 @@ const CompanySection = () => {
         <Grid item xs={12} md={6}>
           <Paper elevation={3} sx={{ borderRadius: 2, overflow: 'hidden' }}>
             <img
-              src="https://via.placeholder.com/800x800"
+              src="https://cdn.pixabay.com/photo/2024/05/20/15/17/flower-8775511_1280.jpg"
               alt="Company"
               style={{
                 width: '100%',
@@ -45,6 +45,15 @@ const CompanySection = () => {
             </Typography>
             <Typography variant="body1">
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
+              hendrerit risus ut diam gravida, nec congue orci posuere. Donec
+              facilisis ante id turpis dictum, at vestibulum quam posuere. Sed
+              faucibus magna ut urna scelerisque,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
+              hendrerit risus ut diam gravida, nec congue orci posuere. Donec
+              facilisis ante id turpis dictum, at vestibulum quam posuere. Sed
+              faucibus magna ut urna scelerisque,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
+              hendrerit risus ut diam gravida, nec congue orci posuere. Donec
+              facilisis ante id turpis dictum, at vestibulum quam posuere. Sed
+              faucibus magna ut urna scelerisque,  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
               hendrerit risus ut diam gravida, nec congue orci posuere. Donec
               facilisis ante id turpis dictum, at vestibulum quam posuere. Sed
               faucibus magna ut urna scelerisque, sed commodo dolor feugiat.
