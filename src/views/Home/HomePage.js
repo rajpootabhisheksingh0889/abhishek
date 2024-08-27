@@ -61,7 +61,6 @@ function HomePage() {
         <FeaturedProductPage />
       </motion.div>
 
-      <br />
 
       <motion.div
         ref={faqRef}
