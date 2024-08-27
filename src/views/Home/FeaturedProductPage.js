@@ -67,7 +67,7 @@ const FeaturedProductPage = () => {
             {/* <Typography variant="h1" align="center" gutterBottom>
                 Featured Products
             </Typography> */}
-            <Grid container spacing={4} justifyContent="center" sx={{ padding: 4 }}>
+            <Grid container spacing={4} justifyContent="center" sx={{ padding: 1 }}>
                 {products.map((product) => (
                     <Grid item key={product.id} xs={12} sm={6} md={3}>
                         <StyledCard sx={{ maxWidth: 345, borderRadius: 12 }}>
