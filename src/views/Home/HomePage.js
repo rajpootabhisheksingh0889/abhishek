@@ -5,6 +5,7 @@ import CompanySection from './CompanySection'
 import Faq from './Faq'
 import StyledCarousel from './StyledCarousel'
 import AgentHome from './AgentHome'
+import FeaturedProductPage from './FeaturedProductPage'
 
 function HomePage() {
   return (
@@ -13,6 +14,7 @@ function HomePage() {
       <StyledCarousel />
       <CompanySection/>
       <AgentHome/>
+      <FeaturedProductPage/>
       <br/>
       <Faq/>
         <Footer/>

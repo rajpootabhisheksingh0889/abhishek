@@ -4,10 +4,10 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import { styled } from '@mui/system';
 
 const cards = [
-    { id: 1, name: 'John Doe', email: 'john.doe@example.com', rating: 4.5, image: 'https://via.placeholder.com/150' },
-    { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', rating: 4.0, image: 'https://via.placeholder.com/150' },
-    { id: 3, name: 'Mike Johnson', email: 'mike.johnson@example.com', rating: 3.5, image: 'https://via.placeholder.com/150' },
-    { id: 4, name: 'Anna Williams', email: 'anna.williams@example.com', rating: 5.0, image: 'https://via.placeholder.com/150' },
+    { id: 1, name: 'John Doe', email: 'john.doe@example.com', rating: 4.5, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg' },
+    { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', rating: 4.0, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg' },
+    { id: 3, name: 'Mike Johnson', email: 'jane.smith@example.com', rating: 4.1, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg' },
+    { id: 4, name: 'Anna Williams', email: 'anna.williams@example.com', rating: 5.0, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg' },
 ];
 
 // Custom styled components
