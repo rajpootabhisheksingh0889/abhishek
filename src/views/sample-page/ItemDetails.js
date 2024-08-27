@@ -4,6 +4,8 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Footer from "../Home/Footer";
+import Navbar from "../Home/Navbar";
 
 const dummyItem = {
   name: "Stylish Chair",
@@ -39,6 +41,8 @@ const ItemDetails = () => {
   }, [itemId]);
 
   return (
+    <>
+    <Navbar/>
     <Box width="80%" m="80px auto">
       <Box display="flex" flexWrap="wrap" columnGap="40px">
         {/* IMAGES */}
@@ -162,6 +166,8 @@ const ItemDetails = () => {
         </Box>
       </Box>
     </Box>
+    <Footer/>
+    </>
   );
 };
 

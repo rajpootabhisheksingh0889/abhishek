@@ -58,15 +58,7 @@ const Router = [
           </PrivateRoute>
         ),
       },
-      {
-        path: '/ItemDetails',
-        exact: true,
-        element: (
-          <PrivateRoute>
-            <ItemDetails />
-          </PrivateRoute>
-        ),
-      },
+     
       {
         path: '/icons',
         exact: true,
@@ -261,7 +253,7 @@ const Router = [
       },
 
       {
-        path: '/productdetails/:productId',
+        path: '/productdetails',
         exact: true,
         element: (
           <PrivateRoute>
@@ -300,7 +292,15 @@ const Router = [
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },
-  
+  {
+    path: '/ItemDetails',
+    exact: true,
+    element: (
+      // <PrivateRoute>
+      <ItemDetails />
+      // </PrivateRoute>
+    ),
+  },
   {
     path: '/home',
     exact: true,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardContent, CardMedia, Grid, Typography, IconButton, Box, Button, Rating } from '@mui/material';
+import { Card, CardContent, CardMedia, Container, Grid, Typography, IconButton, Box, Button, Rating } from '@mui/material';
 import PhoneIcon from '@mui/icons-material/Phone';
 import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
@@ -37,6 +37,7 @@ const AgentHome = () => {
     };
 
     return (
+        <Container sx={{ mt: 4 }}>
         <Box padding={3} sx={{ mt: 0.5 }}>
             <StyledTypography variant="h1">Our Agents</StyledTypography>
             <Grid container spacing={3}>
@@ -76,6 +77,7 @@ const AgentHome = () => {
                 ))}
             </Grid>
         </Box>
+        </Container>
     );
 };
 

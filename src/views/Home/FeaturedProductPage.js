@@ -1,8 +1,9 @@
 import React from "react";
-import { Grid, Card, CardContent, CardMedia, Typography, Button, Box, IconButton } from "@mui/material";
+import { Grid, Card, CardContent, Container, CardMedia, Typography, Button, Box, IconButton } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import InfoIcon from "@mui/icons-material/Info";
 import { styled } from "@mui/system";
+import { useNavigate } from 'react-router-dom';
 
 const products = [
     {
@@ -61,13 +62,19 @@ const StyledTypography = styled(Typography)(({ theme }) => ({
     textTransform: 'uppercase',
 }));
 const FeaturedProductPage = () => {
+    const navigate = useNavigate(); // Initialize useNavigate hook
+
+    const handleViewClick = (id) => {
+        navigate(`/ItemDetails`); // Navigate to /agentdetails with the agent ID
+    };
     return (
+        <Container sx={{ mt: 4 }}>
         <Box sx={{ padding: 4 }}>
             <StyledTypography variant="h1">Featured Products</StyledTypography>
             {/* <Typography variant="h1" align="center" gutterBottom>
                 Featured Products
             </Typography> */}
-            <Grid container spacing={4} justifyContent="center" sx={{ padding: 1 }}>
+                <Grid container spacing={4} justifyContent="center" sx={{ padding: 1 }} onClick={() => handleViewClick()}>
                 {products.map((product) => (
                     <Grid item key={product.id} xs={12} sm={6} md={3}>
                         <StyledCard sx={{ maxWidth: 345, borderRadius: 12 }}>
@@ -106,6 +113,7 @@ const FeaturedProductPage = () => {
                 ))}
             </Grid>
         </Box>
+        </Container>
     );
 };
 

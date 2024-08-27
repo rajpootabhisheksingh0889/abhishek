@@ -30,6 +30,7 @@ const Faq = () => {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
+    
     <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
       <StyledTypography variant="h1">Frequently Asked Questions</StyledTypography>
       {/* <Typography variant="h4" gutterBottom align="center">
