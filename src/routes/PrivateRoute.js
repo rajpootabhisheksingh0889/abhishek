@@ -8,7 +8,7 @@ const isAuthenticated = () => {
 };
 
 const PrivateRoute = ({ children }) => {
-    return isAuthenticated() ? children : <Navigate to="/auth/login" />;
+    return isAuthenticated() ? children : <Navigate to="/home" />;
 };
 
 export default PrivateRoute;

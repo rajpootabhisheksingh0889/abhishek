@@ -6,6 +6,7 @@ import ForgetPassword from 'src/views/authentication/auth/ForgetPassword';
 import AddProduct from 'src/views/Admin/AddProduct';
 import Forget from 'src/views/authentication/auth/Forget';
 import HomePage from 'src/views/Home/HomePage';
+import AgentDetails from 'src/views/Home/AgentDetails';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -299,13 +300,22 @@ const Router = [
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },
-
+  
   {
     path: '/home',
     exact: true,
     element: (
       // <PrivateRoute>
         <HomePage />
+      // </PrivateRoute>
+    ),
+  },
+  {
+    path: '/agentdetails/:id',
+    exact: true,
+    element: (
+      // <PrivateRoute>
+      <AgentDetails />
       // </PrivateRoute>
     ),
   },

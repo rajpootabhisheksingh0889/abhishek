@@ -8,6 +8,8 @@ import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
+import Button from '@mui/material/Button';
+import { useNavigate } from 'react-router-dom';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -39,7 +41,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   width: '100%',
   '& .MuiInputBase-input': {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     [theme.breakpoints.up('sm')]: {
@@ -52,6 +53,17 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function Navbar() {
+  const navigate = useNavigate();
+  const token = localStorage.getItem('accessToken'); // Check for token in localStorage
+
+  const handleLoginClick = () => {
+    navigate('/auth/login');
+  };
+
+  const handleDashboardClick = () => {
+    navigate('/dashboard');
+  };
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -71,7 +83,7 @@ export default function Navbar() {
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
           >
-           Ecommerce
+            Ecommerce
           </Typography>
           <Search>
             <SearchIconWrapper>
@@ -82,6 +94,15 @@ export default function Navbar() {
               inputProps={{ 'aria-label': 'search' }}
             />
           </Search>
+          {token ? (
+            <Button color="inherit" sx={{ ml: 2 }} onClick={handleDashboardClick}>
+              Dashboard
+            </Button>
+          ) : (
+            <Button color="inherit" sx={{ ml: 2 }} onClick={handleLoginClick}>
+              Login
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
     </Box>

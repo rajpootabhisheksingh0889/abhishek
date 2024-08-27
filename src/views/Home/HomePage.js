@@ -7,6 +7,7 @@ import Faq from './Faq';
 import StyledCarousel from './StyledCarousel';
 import AgentHome from './AgentHome';
 import FeaturedProductPage from './FeaturedProductPage';
+import AgentDetails from './AgentDetails';
 
 function HomePage() {
   const carouselRef = useRef(null);
@@ -70,6 +71,9 @@ function HomePage() {
       >
         <Faq />
       </motion.div>
+
+
+      
 
       <Footer />
     </div>

@@ -2,11 +2,12 @@ import React from 'react';
 import { Card, CardContent, CardMedia, Grid, Typography, IconButton, Box, Button, Rating } from '@mui/material';
 import PhoneIcon from '@mui/icons-material/Phone';
 import { styled } from '@mui/system';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
 
 const cards = [
     { id: 1, name: 'John Doe', email: 'john.doe@example.com', rating: 4.5, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg' },
     { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', rating: 4.0, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg' },
-    { id: 3, name: 'Mike Johnson', email: 'jane.smith@example.com', rating: 4.1, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg' },
+    { id: 3, name: 'Mike Johnson', email: 'mike.johnson@example.com', rating: 4.1, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg' },
     { id: 4, name: 'Anna Williams', email: 'anna.williams@example.com', rating: 5.0, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg' },
 ];
 
@@ -29,6 +30,12 @@ const StyledTypography = styled(Typography)(({ theme }) => ({
 }));
 
 const AgentHome = () => {
+    const navigate = useNavigate(); // Initialize useNavigate hook
+
+    const handleViewClick = (id) => {
+        navigate(`/agentdetails/${id}`); // Navigate to /agentdetails with the agent ID
+    };
+
     return (
         <Box padding={3} sx={{ mt: 0.5 }}>
             <StyledTypography variant="h1">Our Agents</StyledTypography>
@@ -55,7 +62,11 @@ const AgentHome = () => {
                                     <IconButton aria-label="call" color="primary">
                                         <PhoneIcon />
                                     </IconButton>
-                                    <Button variant="outlined" color="primary">
+                                    <Button
+                                        variant="outlined"
+                                        color="primary"
+                                        onClick={() => handleViewClick(card.id)} // Add onClick handler
+                                    >
                                         View
                                     </Button>
                                 </Box>
