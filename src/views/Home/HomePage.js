@@ -1,13 +1,11 @@
 import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
-import Footer from './Footer';
-import Navbar from './Navbar';
+import Layout from './Layout'; // Import the Layout component
 import CompanySection from './CompanySection';
 import Faq from './Faq';
 import StyledCarousel from './StyledCarousel';
 import AgentHome from './AgentHome';
 import FeaturedProductPage from './FeaturedProductPage';
-import AgentDetails from './AgentDetails';
 
 function HomePage() {
   const carouselRef = useRef(null);
@@ -23,9 +21,8 @@ function HomePage() {
   const isFaqInView = useInView(faqRef, { once: true });
 
   return (
-    <div>
-      <Navbar />
 
+ <Layout>
       <motion.div
         ref={carouselRef}
         initial={{ opacity: 0, y: -50 }}
@@ -62,7 +59,6 @@ function HomePage() {
         <FeaturedProductPage />
       </motion.div>
 
-
       <motion.div
         ref={faqRef}
         initial={{ opacity: 0, y: 50 }}
@@ -71,12 +67,8 @@ function HomePage() {
       >
         <Faq />
       </motion.div>
+     </Layout>
 
-
-      
-
-      <Footer />
-    </div>
   );
 }
 

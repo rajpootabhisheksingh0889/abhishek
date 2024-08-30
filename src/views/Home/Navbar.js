@@ -2,6 +2,8 @@ import * as React from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
+import { Link } from 'react-router-dom';
+
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -10,6 +12,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -52,8 +56,17 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
+const MenuButton = styled(Button)(({ theme }) => ({
+  color: 'inherit',
+  marginLeft: theme.spacing(2),
+  '&:hover': {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+}));
+
 export default function Navbar() {
   const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = React.useState(null);
   const token = localStorage.getItem('accessToken'); // Check for token in localStorage
 
   const handleLoginClick = () => {
@@ -62,6 +75,29 @@ export default function Navbar() {
 
   const handleDashboardClick = () => {
     navigate('/dashboard');
+  };
+
+  const handleMenuClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleClick = () => {
+    navigate('/');
+    handleMenuClose();
+  };
+
+  const handleAgentClick = () => {
+    navigate('/agent');
+    // handleMenuClose();
+  };
+
+  const handleProductClick = () => {
+    navigate('/productpage');
+    handleMenuClose();
   };
 
   return (
@@ -94,14 +130,32 @@ export default function Navbar() {
               inputProps={{ 'aria-label': 'search' }}
             />
           </Search>
+          <MenuButton onClick={handleClick}>Home</MenuButton>
+          <MenuButton onClick={handleProductClick}>Product</MenuButton>
+          <MenuButton onClick={handleAgentClick}>Agent</MenuButton>
+          <MenuButton onClick={handleDashboardClick}>About</MenuButton>
+          <MenuButton onClick={handleDashboardClick}>Contact Us</MenuButton>
           {token ? (
-            <Button color="inherit" sx={{ ml: 2 }} onClick={handleDashboardClick}>
-              Dashboard
-            </Button>
+            <>
+              <MenuButton onClick={handleDashboardClick}>Dashboard</MenuButton>
+              <MenuButton onClick={handleMenuClick}>Menu</MenuButton>
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+                PaperProps={{
+                  style: {
+                    width: '200px',
+                  },
+                }}
+              >
+                {/* <MenuItem onClick={handleHomeClick}>Home</MenuItem>
+                <MenuItem onClick={handleProfileClick}>Profile</MenuItem> */}
+                {/* <MenuItem onClick={handleSettingsClick}>Logout</MenuItem> */}
+              </Menu>
+            </>
           ) : (
-            <Button color="inherit" sx={{ ml: 2 }} onClick={handleLoginClick}>
-              Login
-            </Button>
+            <MenuButton onClick={handleLoginClick}>Login</MenuButton>
           )}
         </Toolbar>
       </AppBar>
