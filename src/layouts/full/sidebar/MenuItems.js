@@ -266,6 +266,12 @@ const Menuitems = [
         icon: IconLayoutDashboard,
         href: '/permission',
     },
+    {
+        id: uniqueId(),
+        title: 'Languages',
+        icon: IconLayoutDashboard,
+        href: '/languages',
+    },
 ];
 
 const Menuitems1 = [

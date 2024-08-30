@@ -32,6 +32,8 @@ const MyProfile = Loadable(lazy(() => import('../views/Admin/MyProfile')));
 const Permission = Loadable(lazy(() => import('../views/Admin/Permission')));
 const CustomPermission = Loadable(lazy(() => import('../views/Admin/CustomPermission')));
 const ProductDetails = Loadable(lazy(() => import('../views/Admin/ProductDetails')));
+const Languages = Loadable(lazy(()=> import('../views/Admin/Languages')))
+const AddLanguage = Loadable(lazy(()=> import('../views/Admin/AddLanguage')))
 
 
 const CustomerDashboard = Loadable(lazy(() => import('../views/Customer/CustomerDashboard')));
@@ -96,6 +98,35 @@ const Router = [
           </PrivateRoute>
         ),
       },
+
+      {
+        path: '/languages',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <Languages/>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/addlanguage',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <AddLanguage/>
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/addlanguage/:productId',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <AddProduct />
+          </PrivateRoute>
+        ),
+      },
+
 
       {
         path: '/custom-permissions/:userId',
