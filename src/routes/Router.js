@@ -6,6 +6,8 @@ import ForgetPassword from 'src/views/authentication/auth/ForgetPassword';
 import AddProduct from 'src/views/Admin/AddProduct';
 import Forget from 'src/views/authentication/auth/Forget';
 import HomePage from 'src/views/Home/HomePage';
+import ProductAll from 'src/views/Home/ProductAll';
+import AgentAll from 'src/views/Home/AgentAll';
 import AgentDetails from 'src/views/Home/AgentDetails';
 
 /* ***Layouts**** */
@@ -307,6 +309,24 @@ const Router = [
     element: (
       // <PrivateRoute>
         <HomePage />
+      // </PrivateRoute>
+    ),
+  },
+  {
+    path: '/agent',
+    exact: true,
+    element: (
+      // <PrivateRoute>
+        <AgentAll />
+      // </PrivateRoute>
+    ),
+  },
+  {
+    path: '/productpage',
+    exact: true,
+    element: (
+      // <PrivateRoute>
+        <ProductAll />
       // </PrivateRoute>
     ),
   },
