@@ -38,7 +38,7 @@ const AgentHome = () => {
 
     return (
         <Container sx={{ mt: 4 }}>
-        <Box padding={3} sx={{ mt: 0.5 }}>
+        <Box padding={3} sx={{ mt: 0.5 ,mb: 0.5}}>
             <StyledTypography variant="h1">Our Agents</StyledTypography>
             <Grid container spacing={3}>
                 {cards.map((card) => (
