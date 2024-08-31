@@ -25,10 +25,10 @@ const AddProduct = () => {
         name: '',
         desc: '',
         category_id: '1',
-        SKU: '',
-        price: '',
-        // currency: 'USD',
-        inventory: '',
+        // SKU: '',
+        // price: '',
+        // // currency: 'USD',
+        // inventory: '',
         // brand: '',
         // weight: '',
         // dimensions: {
@@ -62,11 +62,11 @@ const AddProduct = () => {
                 setFormData({
                     name: product.name || '',
                     desc: product.desc || '',
-                    category_id: product.category_id || '',
-                    SKU: product.SKU || '',
-                    price: product.price || '',
+                    // category_id: product.category_id || '',
+                    // SKU: product.SKU || '',
+                    // price: product.price || '',
                     // currency: product.currency || 'USD',
-                    inventory: product.inventory || '',
+                    // inventory: product.inventory || '',
                     // brand: product.brand || '',
                     // Other fields can be added here as needed
                 });
@@ -140,10 +140,10 @@ const AddProduct = () => {
                 name: '',
                 desc: '',
                 // category: '',
-                SKU: '',
-                price: '',
+                // SKU: '',
+                // price: '',
                 // currency: 'USD',
-                inventory: '',
+                // inventory: '',
                 // brand: '',
                 // weight: '',
                 // dimensions: {
@@ -223,7 +223,7 @@ const AddProduct = () => {
                                     <MenuItem value="Books">Books</MenuItem>
                                 </TextField>
                             </Grid> */}
-                            <Grid item xs={12} md={6}>
+                            {/* <Grid item xs={12} md={6}>
                                 <TextField
                                     label="SKU"
                                     name="SKU"
@@ -257,7 +257,7 @@ const AddProduct = () => {
                                     fullWidth
                                     required
                                 />
-                            </Grid>
+                            </Grid> */}
                             {/* <Grid item xs={12} md={6}>
                                 <TextField
                                     label="Brand"

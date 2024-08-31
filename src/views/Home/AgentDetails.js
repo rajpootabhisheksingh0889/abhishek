@@ -1,4 +1,4 @@
-import React from 'react';
+import React ,{ useEffect }  from 'react';
 import { Grid, Card, CardContent, Typography, Avatar, Box, IconButton } from '@mui/material';
 import { Email, Phone } from '@mui/icons-material';
 import Navbar from './Navbar';
@@ -13,6 +13,10 @@ const StyledTypography = styled(Typography)(({ theme }) => ({
     textTransform: 'uppercase',
 }));
 const AgentDetails = () => {
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
     return (
         <>
             <Navbar />
