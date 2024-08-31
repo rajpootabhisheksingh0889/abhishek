@@ -134,12 +134,12 @@ const ProductList = () => {
                 >
                     <TableHead>
                         <TableRow>
-                            <TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Id
                                 </Typography>
                             </TableCell>
-                            <TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Name
                                 </Typography>
@@ -149,22 +149,22 @@ const ProductList = () => {
                                     SKU
                                 </Typography>
                             </TableCell> */}
-                            <TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Description
                                 </Typography>
                             </TableCell>
-                            <TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Price
                                 </Typography>
                             </TableCell>
-                            <TableCell align="right">
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Quantity
                                 </Typography>
                             </TableCell>
-                            <TableCell align="right">
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Actions
                                 </Typography>
@@ -215,10 +215,10 @@ const ProductList = () => {
                                             {product.price} {product.currency}
                                         </Typography>
                                     </TableCell>
-                                    <TableCell align="right">
+                                    <TableCell >
                                         <Typography variant="h6">{product.inventory}</Typography>
                                     </TableCell>
-                                    <TableCell align="right">
+                                    <TableCell >
                                         <IconButton
                                             aria-owns={open ? 'mouse-over-popover' : undefined}
                                             aria-haspopup="true"

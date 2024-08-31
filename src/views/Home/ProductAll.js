@@ -93,9 +93,9 @@ function ProductAll() {
   return (
     <Layout>
       <Container className='mt-4'>
-        <StyledTypography variant="h1">All Product</StyledTypography>
+        <StyledTypography variant="h1">Products</StyledTypography>
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={4} md={3}>
+          <Grid item xs={12} sm={4} md={2}>
             <Sidebar>
               <Typography variant="h6">Filters</Typography>
               <Divider />
@@ -111,7 +111,7 @@ function ProductAll() {
               </Box>
             </Sidebar>
           </Grid>
-          <Grid item xs={12} sm={8} md={9}>
+          <Grid item xs={12} sm={8} md={10}>
             <Content>
               {/* <StyledTypography variant="h1">All Product</StyledTypography> */}
               {/* <TextField
@@ -131,9 +131,9 @@ function ProductAll() {
                   sx={{ width: '100%', maxWidth: '300px' }}
                 />
               </Box>
-              <Grid container spacing={3} marginTop={2}>
+              <Grid container spacing={2} marginTop={2.5}>
                 {filteredProducts.map(product => (
-                  <Grid item xs={12} sm={6} md={4} key={product.id}>
+                  <Grid item xs={12} sm={6} md={3} key={product.id}>
                     <StyledCard sx={{ maxWidth: 345, borderRadius: 12 }}>
                       <CardMedia
                         component="img"

@@ -16,9 +16,10 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    Button
+    Button,
+    TextField
 } from '@mui/material';
-import { Edit, Delete, Visibility } from '@mui/icons-material';
+import { Edit, Delete } from '@mui/icons-material';
 import Swal from 'sweetalert2';
 import DashboardCard from 'src/components/shared/DashboardCard';
 import NoData from "src/assets/images/products/NoData.jpg";
@@ -33,6 +34,10 @@ const Languages = () => {
     const [popoverContent, setPopoverContent] = useState("");
     const [openDialog, setOpenDialog] = useState(false);
     const [productToDelete, setProductToDelete] = useState(null);
+    const [openModal, setOpenModal] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [currentProduct, setCurrentProduct] = useState({ id: '', name: '' });
+    const [validationError, setValidationError] = useState('');
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -85,12 +90,71 @@ const Languages = () => {
         }
     };
 
-    const handleEdit = (productId) => {
-        navigate(`/addlanguage/${productId}`);
+    const handleEdit = (product) => {
+        setCurrentProduct(product);
+        setIsEditing(true);
+        setOpenModal(true);
+        setValidationError('');
     };
 
-    const handleView = (productId) => {
-        navigate(`/productdetails/${productId}`);
+    const handleAddProduct = () => {
+        setCurrentProduct({ id: '', name: '' });
+        setIsEditing(false);
+        setOpenModal(true);
+        setValidationError('');
+    };
+
+    const handleModalClose = () => {
+        setOpenModal(false);
+        setCurrentProduct({ id: '', name: '' });
+        setValidationError('');
+    };
+
+    const handleSaveProduct = async () => {
+        if (!currentProduct.name.trim()) {
+            setValidationError('Language name cannot be empty');
+            return;
+        }
+
+        if (isEditing) {
+            try {
+                await axios.put(`http://134.209.145.149:9999/api/language/${currentProduct.id}`, currentProduct);
+                setProducts(products.map((product) => (product.id === currentProduct.id ? currentProduct : product)));
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Updated!',
+                    text: 'Language updated successfully',
+                    confirmButtonText: 'OK'
+                });
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Failed to update language',
+                    confirmButtonText: 'OK'
+                });
+            }
+        } else {
+            try {
+                const response = await axios.post(`http://134.209.145.149:9999/api/language`, currentProduct);
+                setProducts([...products, response.data]);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Added!',
+                    text: 'Language added successfully',
+                    confirmButtonText: 'OK'
+                });
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'Failed to add language',
+                    confirmButtonText: 'OK'
+                });
+            }
+        }
+
+        setOpenModal(false);
     };
 
     const open = Boolean(anchorEl);
@@ -102,10 +166,6 @@ const Languages = () => {
     if (!Array.isArray(products)) {
         return <Typography>Error: Unexpected data format</Typography>;
     }
-
-    const handleAddProduct = () => {
-        navigate("/addlanguage");
-    };
 
     return (
         <DashboardCard>
@@ -120,7 +180,7 @@ const Languages = () => {
                         size="large"
                         onClick={handleAddProduct}
                     >
-                        Add Languages
+                        Add Language
                     </Button>
                 </Box>
             </Box>
@@ -134,19 +194,17 @@ const Languages = () => {
                 >
                     <TableHead>
                         <TableRow>
-                            <TableCell  align="center">
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Id
                                 </Typography>
                             </TableCell>
-                            <TableCell  align="center">
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Name
                                 </Typography>
                             </TableCell>
-                          
-                           
-                            <TableCell align="center">
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Actions
                                 </Typography>
@@ -165,32 +223,25 @@ const Languages = () => {
                                 </TableCell>
                             </TableRow>
                         ) : (
-                                    products.map((product, index) => (
+                            products.map((product, index) => (
                                 <TableRow key={product.id}>
-                                    <TableCell align="center">
-                                        <Typography
-                                            sx={{
-                                                fontSize: "15px",
-                                                fontWeight: "500",
-                                            }}
-                                        >
+                                    <TableCell>
+                                        <Typography variant="subtitle2">
                                             {index + 1}
                                         </Typography>
                                     </TableCell>
-                                    <TableCell  align="center">
-                                        <Typography variant="subtitle2" fontWeight={600}>
+                                    <TableCell>
+                                        <Typography variant="subtitle2">
                                             {product.name}
                                         </Typography>
                                     </TableCell>
-                                  
-                                
-                                    <TableCell align="center">
+                                    <TableCell>
                                         <IconButton
                                             aria-owns={open ? 'mouse-over-popover' : undefined}
                                             aria-haspopup="true"
                                             onMouseEnter={(event) => handlePopoverOpen(event, 'Edit')}
                                             onMouseLeave={handlePopoverClose}
-                                            onClick={() => handleEdit(product.id)}
+                                            onClick={() => handleEdit(product)}
                                         >
                                             <Edit />
                                         </IconButton>
@@ -236,21 +287,55 @@ const Languages = () => {
             <Dialog
                 open={openDialog}
                 onClose={() => setOpenDialog(false)}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title">
-                    {"Confirm Deletion"}
-                </DialogTitle>
+                <DialogTitle>Delete Product</DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Are you sure you want to delete the product "{productToDelete?.name}"?
+                    <DialogContentText>
+                        Are you sure you want to delete this language?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-                    <Button onClick={confirmDelete} color="primary" autoFocus>
+                    <Button onClick={confirmDelete} color="primary">
                         Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Modal for Adding/Editing Languages */}
+            <Dialog
+                open={openModal}
+                onClose={handleModalClose}
+                maxWidth="sm"  // Set modal to medium size
+                fullWidth
+                PaperProps={{
+                    sx: {
+                        borderRadius: 3, // Add rounded corners
+                        padding: 3,      // Add padding
+                    }
+                }}
+            >
+                <DialogTitle>
+                    {isEditing ? 'Edit Language' : 'Add Language'}
+                </DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        label="Language Name"
+                        type="text"
+                        fullWidth
+                        variant="outlined"
+                        value={currentProduct.name}
+                        onChange={(e) => setCurrentProduct({ ...currentProduct, name: e.target.value })}
+                        error={!!validationError}
+                        helperText={validationError}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleModalClose} color="secondary" variant="outlined">Cancel</Button>
+                    <Button onClick={handleSaveProduct} color="primary" variant="contained">
+                        {isEditing ? 'Update' : 'Add'}
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -260,32 +345,11 @@ const Languages = () => {
 
 const SkeletonLoading = () => (
     <>
-        {Array.from({ length: 5 }).map((_, index) => (
+        {[...Array(5)].map((_, index) => (
             <TableRow key={index}>
-                <TableCell>
-                    <Skeleton variant="rectangular" height={20} width={50} />
-                </TableCell>
-                <TableCell>
-                    <Skeleton variant="rectangular" height={20} width={100} />
-                </TableCell>
-                <TableCell>
-                    <Skeleton variant="rectangular" height={20} width={100} />
-                </TableCell>
-                <TableCell>
-                    <Skeleton variant="rectangular" height={20} width={200} />
-                </TableCell>
-                <TableCell>
-                    <Skeleton variant="rectangular" height={20} width={50} />
-                </TableCell>
-                <TableCell>
-                    <Skeleton variant="rectangular" height={20} width={50} />
-                </TableCell>
-                <TableCell>
-                    <Box sx={{ display: 'flex', gap: 2 }}>
-                        <Skeleton variant="circular" width={24} height={24} />
-                        <Skeleton variant="circular" width={24} height={24} />
-                    </Box>
-                </TableCell>
+                <TableCell><Skeleton animation="wave" variant="rectangular" height={20} /></TableCell>
+                <TableCell><Skeleton animation="wave" variant="rectangular" height={20} /></TableCell>
+                <TableCell><Skeleton animation="wave" variant="rectangular" height={20} /></TableCell>
             </TableRow>
         ))}
     </>

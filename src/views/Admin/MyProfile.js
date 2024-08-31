@@ -57,7 +57,7 @@ const MyProfile = () => {
         city: '',
         desc: '',
         dob: '',
-        language: '',
+        language: [],
         age: '',
         image: '',
         role_id: null,
@@ -110,7 +110,7 @@ const MyProfile = () => {
                         city: profileData.city || '',
                         desc: profileData.desc || '',
                         dob: profileData.dob || '',
-                        language: profileData.language || '',
+                        language: profileData.language || [],
                         age: profileData.dob ? calculateAge(profileData.dob) : '',
                         image: profileData.image || '',
                         gallery: profileData.gallery || []
@@ -144,64 +144,75 @@ const MyProfile = () => {
         fetchLanguages();
     }, []);
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value, type, multiple } = e.target;
 
-        if (name === 'phone' && value.length > 10) {
-            return;
-        }
-
-        if (name === 'phone' && (isNaN(value) || value.length !== 10)) {
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                [name]: 'Phone number must be 10 digits long',
-            }));
-        } else {
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                [name]: '',
-            }));
-        }
-
-        if (name === 'postal_code' && value.length > 6) {
-            return;
-        }
-
-        if (name === 'postal_code' && (isNaN(value) || value.length !== 6)) {
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                [name]: 'Postal Code must be 6 digits long',
-            }));
-        } else {
-            setErrors((prevErrors) => ({
-                ...prevErrors,
-                [name]: '',
-            }));
-        }
-
-        if (name === 'dob') {
-            const age = calculateAge(value);
-            if (age < 18) {
-                setErrors((prevErrors) => ({
-                    ...prevErrors,
-                    age: 'Age must be at least 18',
-                }));
-            } else {
-                setErrors((prevErrors) => ({
-                    ...prevErrors,
-                    age: '',
-                }));
-            }
+        // Handle multiple select
+        if (multiple) {
             setFormValues((prevValues) => ({
                 ...prevValues,
-                age,
+                [name]: Array.from(e.target.selectedOptions, option => option.value),
             }));
-        }
+        } else {
+            // Update form values
+            setFormValues((prevValues) => ({
+                ...prevValues,
+                [name]: value,
+            }));
 
-        setFormValues((prevValues) => ({
-            ...prevValues,
-            [name]: value,
-        }));
+            // Phone number validation
+            if (name === 'phone') {
+                if (value.length > 10) return;
+                if (isNaN(value) || value.length !== 10) {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        [name]: 'Phone number must be 10 digits long',
+                    }));
+                } else {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        [name]: '',
+                    }));
+                }
+            }
+
+            // Postal code validation
+            if (name === 'postal_code') {
+                if (value.length > 6) return;
+                if (isNaN(value) || value.length !== 6) {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        [name]: 'Postal Code must be 6 digits long',
+                    }));
+                } else {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        [name]: '',
+                    }));
+                }
+            }
+
+            // Date of birth validation
+            if (name === 'dob') {
+                const age = calculateAge(value);
+                if (age < 18) {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        age: 'Age must be at least 18',
+                    }));
+                } else {
+                    setErrors((prevErrors) => ({
+                        ...prevErrors,
+                        age: '',
+                    }));
+                }
+                setFormValues((prevValues) => ({
+                    ...prevValues,
+                    age,
+                }));
+            }
+        }
     };
+
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
@@ -591,6 +602,7 @@ const MyProfile = () => {
                                                 value={formValues.language}
                                                 onChange={handleInputChange}
                                                 label="Language"
+                                                multiple // Allow multiple selections
                                             >
                                                 {/* Map over fetched languages to create MenuItem components */}
                                                 {languages.map((lang) => (
@@ -603,6 +615,7 @@ const MyProfile = () => {
                                             </Select>
                                             {errors.language && <FormHelperText>{errors.language}</FormHelperText>}
                                         </FormControl>
+
                                     </Grid>
 
                                     <Grid item xs={12} sm={6} md={4}>
