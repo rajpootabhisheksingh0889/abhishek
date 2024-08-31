@@ -183,7 +183,7 @@ const ProductList = () => {
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            products.map((product) => (
+                            products.map((product,index) => (
                                 <TableRow key={product.id}>
                                     <TableCell>
                                         <Typography
@@ -192,7 +192,7 @@ const ProductList = () => {
                                                 fontWeight: "500",
                                             }}
                                         >
-                                            {product.id}
+                                            {index + 1}
                                         </Typography>
                                     </TableCell>
                                     <TableCell>

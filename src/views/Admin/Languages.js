@@ -165,7 +165,7 @@ const Languages = () => {
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            products.map((product) => (
+                                    products.map((product, index) => (
                                 <TableRow key={product.id}>
                                     <TableCell align="center">
                                         <Typography
@@ -174,7 +174,7 @@ const Languages = () => {
                                                 fontWeight: "500",
                                             }}
                                         >
-                                            {product.id}
+                                            {index + 1}
                                         </Typography>
                                     </TableCell>
                                     <TableCell  align="center">

@@ -6,10 +6,12 @@ import Faq from './Faq';
 import StyledCarousel from './StyledCarousel';
 import AgentHome from './AgentHome';
 import FeaturedProductPage from './FeaturedProductPage';
+import TopSelling from './TopSelling';
 
 function HomePage() {
   const carouselRef = useRef(null);
   const companyRef = useRef(null);
+  const topsellingRef = useRef(null);
   const agentRef = useRef(null);
   const featuredProductRef = useRef(null);
   const faqRef = useRef(null);
@@ -18,6 +20,8 @@ function HomePage() {
   const isCompanyInView = useInView(companyRef, { once: true });
   const isAgentInView = useInView(agentRef, { once: true });
   const isFeaturedProductInView = useInView(featuredProductRef, { once: true });
+  const isTopsellingInView = useInView(topsellingRef, { once: true });
+
   const isFaqInView = useInView(faqRef, { once: true });
 
   return (
@@ -57,6 +61,15 @@ function HomePage() {
         transition={{ duration: 0.5, delay: 0.6 }}
       >
         <FeaturedProductPage />
+      </motion.div>
+
+      <motion.div
+        ref={topsellingRef}
+        initial={{ opacity: 0, x: -100 }}
+        animate={isTopsellingInView ? { opacity: 1, x: 0 } : {}}
+        transition={{ duration: 0.5, delay: 0.2 }}
+      >
+        <TopSelling />
       </motion.div>
 
       <motion.div
