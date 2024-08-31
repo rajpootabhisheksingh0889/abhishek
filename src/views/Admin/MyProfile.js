@@ -70,6 +70,7 @@ const MyProfile = () => {
     const navigate = useNavigate();
     const fileInputRef = useRef(null);
     const galleryInputRef = useRef(null);
+    const [languages, setLanguages] = useState([]);
 
     const currentDate = new Date();
     const maxDate = new Date(
@@ -126,6 +127,22 @@ const MyProfile = () => {
         fetchProfile();
     }, []);
 
+
+    // const [languages, setLanguages] = useState([]);
+
+    // Fetch languages from API when the component mounts
+    useEffect(() => {
+        const fetchLanguages = async () => {
+            try {
+                const response = await axios.get('http://134.209.145.149:9999/api/language');
+                setLanguages(response.data.languages); // Assuming API returns an object with a 'languages' array
+            } catch (error) {
+                console.error('Failed to fetch languages:', error);
+            }
+        };
+
+        fetchLanguages();
+    }, []);
     const handleInputChange = (e) => {
         const { name, value } = e.target;
 
@@ -570,13 +587,14 @@ const MyProfile = () => {
                                                 onChange={handleInputChange}
                                                 label="Language"
                                             >
-
-                                                <MenuItem value="english">English</MenuItem>
-                                                <MenuItem value="spanish">Hindi</MenuItem>
-                                                <MenuItem value="french">French</MenuItem>
-                                                <MenuItem value="german">German</MenuItem>
-                                                <MenuItem value="other">other</MenuItem>
-                                                {/* Add more languages as needed */}
+                                                {/* Map over fetched languages to create MenuItem components */}
+                                                {languages.map((lang) => (
+                                                    <MenuItem key={lang.value} value={lang.value}>
+                                                        {lang.label}
+                                                    </MenuItem>
+                                                ))}
+                                                {/* Add a static option for 'other' */}
+                                                <MenuItem value="other">Other</MenuItem>
                                             </Select>
                                             {errors.language && <FormHelperText>{errors.language}</FormHelperText>}
                                         </FormControl>

@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Container, Grid, Paper, Typography, Divider, Checkbox, FormControlLabel, Box, TextField, Card, CardContent, CardMedia, Button } from '@mui/material';
+import { Container, IconButton, Grid, Paper, Typography, Divider, Checkbox, FormControlLabel, Box, TextField, Card, CardContent, CardMedia, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Layout from './Layout';
+import InfoIcon from "@mui/icons-material/Info";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 // Styled components
 const Sidebar = styled(Paper)(({ theme }) => ({
@@ -14,13 +16,71 @@ const Content = styled(Paper)(({ theme }) => ({
   minHeight: '100vh',
 }));
 
+
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  transition: 'transform 0.3s',
+  '&:hover': {
+    transform: 'scale(1.05)',
+    boxShadow: theme.shadows[8],
+  },
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  background: theme.palette.primary.main,
+  color: theme.palette.common.white,
+  borderRadius: 20,
+  padding: '10px 20px',
+  marginTop: '12px',
+  textTransform: 'none',
+  '&:hover': {
+    background: theme.palette.primary.dark,
+  },
+}));
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.primary.main,
+  textAlign: 'center',
+  marginBottom: theme.spacing(3),
+  fontWeight: 700,
+  textTransform: 'uppercase',
+}));
 // Dummy product data
 const dummyProducts = [
-  { id: 1, name: 'Product 1', price: '$50', image: 'https://via.placeholder.com/150' },
-  { id: 2, name: 'Product 2', price: '$75', image: 'https://via.placeholder.com/150' },
-  { id: 3, name: 'Product 3', price: '$100', image: 'https://via.placeholder.com/150' },
-  { id: 4, name: 'Product 4', price: '$125', image: 'https://via.placeholder.com/150' },
-];
+  {
+    id: 1,
+    name: "Product 1",
+    description: "This is a great product.",
+    imageUrl: "https://cdn.pixabay.com/photo/2024/02/21/15/28/dahlia-8587940_1280.jpg",
+    price: "$10.00",
+  },
+  {
+    id: 2,
+    name: "Product 2",
+    description: "This is a great product.",
+    imageUrl: "https://cdn.pixabay.com/photo/2024/02/21/15/28/dahlia-8587940_1280.jpg",
+    price: "$20.00",
+  },
+  {
+    id: 3,
+    name: "Product 3",
+    description: "This is a great product.",
+    imageUrl: "https://cdn.pixabay.com/photo/2024/02/21/15/28/dahlia-8587940_1280.jpg",
+    price: "$30.00",
+  },
+  {
+    id: 4,
+    name: "Product 4",
+    description: "This is a great product.",
+    imageUrl: "https://cdn.pixabay.com/photo/2024/02/21/15/28/dahlia-8587940_1280.jpg",
+    price: "$40.00",
+  },
+]; const StyledTextField = styled(TextField)(({ theme }) => ({
+  '& .MuiOutlinedInput-root': {
+    borderRadius: theme.shape.borderRadius,
+    boxShadow: '0 3px 6px rgba(0, 0, 0, 0.1)',
+    backgroundColor: theme.palette.background.paper,
+  },
+}));
 
 function ProductAll() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -33,6 +93,7 @@ function ProductAll() {
   return (
     <Layout>
       <Container className='mt-4'>
+        <StyledTypography variant="h1">All Product</StyledTypography>
         <Grid container spacing={3}>
           <Grid item xs={12} sm={4} md={3}>
             <Sidebar>
@@ -52,37 +113,59 @@ function ProductAll() {
           </Grid>
           <Grid item xs={12} sm={8} md={9}>
             <Content>
-              <Typography variant="h4" gutterBottom>
-                Product Listings
-              </Typography>
-              <TextField
+              {/* <StyledTypography variant="h1">All Product</StyledTypography> */}
+              {/* <TextField
                 fullWidth
                 variant="outlined"
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 margin="normal"
-              />
+              /> */}
+              <Box display="flex" justifyContent="flex-end" mb={3}>
+                <StyledTextField
+                  variant="outlined"
+                  placeholder="Search Products"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  sx={{ width: '100%', maxWidth: '300px' }}
+                />
+              </Box>
               <Grid container spacing={3} marginTop={2}>
                 {filteredProducts.map(product => (
                   <Grid item xs={12} sm={6} md={4} key={product.id}>
-                    <Card>
+                    <StyledCard sx={{ maxWidth: 345, borderRadius: 12 }}>
                       <CardMedia
                         component="img"
-                        height="140"
-                        image={product.image}
                         alt={product.name}
+                        height="200"
+                        image={product.imageUrl}
+                        sx={{ borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
                       />
                       <CardContent>
-                        <Typography variant="h6">{product.name}</Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <Typography gutterBottom variant="h5" component="div">
+                            {product.name}
+                          </Typography>
+                          <IconButton color="primary">
+                            <InfoIcon />
+                          </IconButton>
+                        </Box>
                         <Typography variant="body2" color="text.secondary">
+                          {product.description}
+                        </Typography>
+                        <Typography variant="h6" color="text.primary" sx={{ marginTop: 2 }}>
                           {product.price}
                         </Typography>
-                        <Button variant="contained" color="primary" fullWidth>
-                          Add to Cart
-                        </Button>
+                        <StyledButton
+                          variant="contained"
+                          startIcon={<ShoppingCartIcon />}
+                          fullWidth
+                        >
+                          Buy Now
+                        </StyledButton>
                       </CardContent>
-                    </Card>
+                    </StyledCard>
                   </Grid>
                 ))}
               </Grid>

@@ -49,6 +49,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
     color: theme.palette.common.white,
     borderRadius: 20,
     padding: '10px 20px',
+    marginTop: '12px',
     textTransform: 'none',
     '&:hover': {
         background: theme.palette.primary.dark,
@@ -105,7 +106,7 @@ const TopSelling = () => {
                                         startIcon={<ShoppingCartIcon />}
                                         fullWidth
                                     >
-                                        Add to Cart
+                                       Buy Now
                                     </StyledButton>
                                 </CardContent>
                             </StyledCard>
