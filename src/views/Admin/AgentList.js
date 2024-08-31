@@ -176,11 +176,16 @@ const AgentList = () => {
             toast.success('Agent created successfully! Please verify the OTP sent to your email.');
             setOtpSent(true);
         } catch (error) {
-            toast.error('Failed to create agent.');
+            if (error.response && error.response.data && error.response.data.message === "Username already exists") {
+                toast.error('Username already exists. Please choose a different username.');
+            } else {
+                toast.error('Failed to create agent.');
+            }
         } finally {
             setLoading(false);
         }
     };
+
 
     const handleSendOtp = async () => {
         if (!newAgent.email.trim()) {
@@ -467,7 +472,7 @@ const AgentList = () => {
                             margin="dense"
                             name="phone"
                             label="Phone"
-                            type="text"
+                            type="number"
                             fullWidth
                             value={newAgent.phone}
                             onChange={handleChange}
@@ -479,7 +484,7 @@ const AgentList = () => {
                                 margin="dense"
                                 name="otp"
                                 label="OTP"
-                                type="text"
+                                type="number"
                                 fullWidth
                                 value={otp}
                                 onChange={(e) => setOtp(e.target.value)}

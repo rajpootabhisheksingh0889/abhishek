@@ -135,7 +135,7 @@ const MyProfile = () => {
         const fetchLanguages = async () => {
             try {
                 const response = await axios.get('http://134.209.145.149:9999/api/language');
-                setLanguages(response.data.languages); // Assuming API returns an object with a 'languages' array
+                setLanguages(response.data); // Assuming API returns an object with a 'languages' array
             } catch (error) {
                 console.error('Failed to fetch languages:', error);
             }
@@ -293,7 +293,7 @@ const MyProfile = () => {
             newErrors.postal_code = 'Postal code must be exactly 6 digits';
         }
         if (!formValues.address_line1) newErrors.address_line1 = 'Address is required';
-        if (!formValues.city) newErrors.city = 'City is required';
+        // if (!formValues.city) newErrors.city = 'City is required';
         if (!formValues.age) newErrors.age = 'Age is required';
         if (!formValues.dob) newErrors.dob = 'Date of birth is required';
         if (!formValues.language) newErrors.language = 'Language is required';
@@ -329,7 +329,7 @@ const MyProfile = () => {
             formData.append('gender', formValues.gender);
             formData.append('postal_code', formValues.postal_code);
             formData.append('address_line1', formValues.address_line1);
-            formData.append('city', formValues.city);
+            // formData.append('city', formValues.city);
             formData.append('age', formValues.age);
             formData.append('dob', formValues.dob);
             formData.append('language', formValues.language);
@@ -354,15 +354,20 @@ const MyProfile = () => {
             if (response.data) {
                 setProfile(formValues);
                 setEditMode(false);
+                
                 Swal.fire({
                     icon: 'success',
                     title: 'Profile updated successfully!',
                     showConfirmButton: false,
                     timer: 3000
                 });
+                
                 setTimeout(() => {
                     navigate('/profile');
                 }, 3000);
+                window.location.reload();
+               
+
             } else {
                 throw new Error(response.data.Message || 'Failed to update profile');
             }
@@ -589,12 +594,12 @@ const MyProfile = () => {
                                             >
                                                 {/* Map over fetched languages to create MenuItem components */}
                                                 {languages.map((lang) => (
-                                                    <MenuItem key={lang.value} value={lang.value}>
-                                                        {lang.label}
+                                                    <MenuItem key={lang.value} value={lang.id}>
+                                                        {lang.name}
                                                     </MenuItem>
                                                 ))}
                                                 {/* Add a static option for 'other' */}
-                                                <MenuItem value="other">Other</MenuItem>
+                                                {/* <MenuItem value="other">Other</MenuItem> */}
                                             </Select>
                                             {errors.language && <FormHelperText>{errors.language}</FormHelperText>}
                                         </FormControl>
@@ -732,7 +737,7 @@ const MyProfile = () => {
                                     </Grid> */}
                                     <Grid item xs={12} sm={6} md={4}>
                                         <Typography variant="body1">
-                                            <strong>Language:</strong> {profile.language}
+                                                <strong>Language:</strong> {profile.language_name}
                                         </Typography>
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
