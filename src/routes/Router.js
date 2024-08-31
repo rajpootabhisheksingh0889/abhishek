@@ -124,7 +124,7 @@ const Router = [
         exact: true,
         element: (
           <PrivateRoute>
-            <AddProduct />
+            <AddLanguage/>
           </PrivateRoute>
         ),
       },
