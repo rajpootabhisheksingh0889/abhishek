@@ -5,10 +5,10 @@ import { styled } from '@mui/system';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate from react-router-dom
 
 const cards = [
-    { id: 1, name: 'John Doe', email: 'john.doe@example.com',age:"16",language:"hindi,english",location:"bhopal", rating: 4.5, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg', online: true },
-    { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', age: "16", language: "hindi,english", location: "bhopal", rating: 4.0, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg', online: false },
-    { id: 3, name: 'Mike Johnson', email: 'mike.johnson@example.com', age: "16", language: "hindi,english", location: "bhopal", rating: 4.1, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg', online: true },
-    { id: 4, name: 'Anna Williams', email: 'anna.williams@example.com', age: "16", language: "hindi,english", location: "bhopal", rating: 5.0, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg', online: false },
+    { id: 1, name: 'John Doe', email: 'john.doe@example.com',age:"20",language:"hindi,english",location:"Texes", rating: 4.5, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg', online: true },
+    { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', age: "43", language: "hindi,english", location: "Toronto", rating: 4.0, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg', online: false },
+    { id: 3, name: 'Mike Johnson', email: 'mike.johnson@example.com', age: "28", language: "hindi,english", location: "California", rating: 4.1, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg', online: true },
+    { id: 4, name: 'Anna Williams', email: 'anna.williams@example.com', age: "24", language: "hindi,english", location: "Washington", rating: 5.0, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg', online: false },
 ];
 
 // Custom styled components
@@ -33,13 +33,13 @@ const StatusDot = styled(Box)(({ online }) => ({
     width: 12,
     height: 12,
     borderRadius: '50%',
-    backgroundColor: online ? 'green' : 'grey',
+    backgroundColor: online ? '#faaf00' : 'grey',
     display: 'inline-block',
     marginRight: 8,
 }));
 
 const StatusText = styled(Typography)(({ online }) => ({
-    color: online ? 'green' : 'grey',
+    color: online ? 'yellow' : 'grey',
     fontSize: '0.875rem',
     display: 'inline',
 }));
@@ -71,7 +71,8 @@ const AgentHome = () => {
                                         
                                         {card.name}
                                         <StatusText online={card.online} sx={{ marginLeft: 1 }}>
-                                            <StatusDot online={card.online} />{card.online ? 'Online' : 'Offline'}
+                                            <StatusDot online={card.online} />
+                                            {/* {card.online ? 'Online' : 'Offline'} */}
                                         </StatusText>
                                     </Typography>
                                     <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>

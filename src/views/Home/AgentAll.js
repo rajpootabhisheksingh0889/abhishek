@@ -24,10 +24,10 @@ import { useNavigate } from 'react-router-dom';
 import Layout from './Layout';
 
 const cards = [
-  { id: 1, name: 'John Doe', email: 'john.doe@example.com', age: "16", language: "hindi,english", location: "bhopal", rating: 4.5, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg', online: true },
-  { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', age: "16", language: "hindi,english", location: "bhopal", rating: 4.0, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg', online: false },
-  { id: 3, name: 'Mike Johnson', email: 'mike.johnson@example.com', age: "16", language: "hindi,english", location: "bhopal", rating: 4.1, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg', online: true },
-  { id: 4, name: 'Anna Williams', email: 'anna.williams@example.com', age: "16", language: "hindi,english", location: "bhopal", rating: 5.0, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg', online: false },
+  { id: 1, name: 'John Doe', email: 'john.doe@example.com', age: "46", language: "hindi,english", location: "Texas", rating: 4.5, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg', online: true },
+  { id: 2, name: 'Jane Smith', email: 'jane.smith@example.com', age: "26", language: "hindi,french", location: "Washington DC", rating: 4.0, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg', online: false },
+  { id: 3, name: 'Mike Johnson', email: 'mike.johnson@example.com', age: "38", language: "Punjabi,english", location: "California", rating: 4.1, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg', online: true },
+  { id: 4, name: 'Anna Williams', email: 'anna.williams@example.com', age: "23", language: "hindi,chinies", location: "Toronto", rating: 5.0, image: 'https://cdn.pixabay.com/photo/2018/01/22/07/31/portrait-3098319_1280.jpg', online: false },
 ];
 
 const StyledCard = styled(Card)(({ theme }) => ({

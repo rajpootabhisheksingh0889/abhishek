@@ -85,7 +85,7 @@ const Footer = () => {
                             <div class="subscribe-form">
                                 <form action="#">
                                     <input type="text" placeholder="Email Address"/>
-                                    <button><i class="fab fa-telegram-plane"></i></button>
+                                    {/* <button><i class="fab fa-telegram-plane"></i></button> */}
                                 </form>
                             </div>
                         </div>
@@ -98,7 +98,7 @@ const Footer = () => {
                 <div class="row">
                     <div class="col-xl-6 col-lg-6 text-center text-lg-left">
                         <div class="copyright-text">
-                            <p>Copyright &copy; 2018, All Right Reserved <a href="https://codepen.io/anupkumar92/">Anup</a></p>
+                            <p>Copyright &copy; 2024, All Right Reserved </p>
                         </div>
                     </div>
                     <div class="col-xl-6 col-lg-6 d-none d-lg-block text-right">

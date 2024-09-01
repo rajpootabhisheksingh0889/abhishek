@@ -126,20 +126,22 @@ const AgentDetails = () => {
                                     </StatusText>
                                 </Typography>
                                 <Typography variant="body1" color="textSecondary" gutterBottom>
-                                    Location: Real Estate Agent
+                                    Location: Toronto
                                 </Typography>
                                 <Typography variant="body1" color="textSecondary" gutterBottom>
-                                    Age: 5 years
+                                    Age: 25 years
                                 </Typography>
                                 <Typography variant="body1" color="textSecondary" gutterBottom>
-                                    Language: Hindi, English
+                                    Language: Hindi, English, french
                                 </Typography>
-                                {/* <Box display="flex" alignItems="center" gap={1} sx={{ mt: 2 }}>
-                                    <Email color="primary" />
+                                <Box display="flex" alignItems="center" gap={1} sx={{ mt: 2 }}>
+                                    {/* <Email color="primary" /> */}
                                     <Typography variant="body1" color="textSecondary">
-                                        agent@example.com
+                                        Reviews:-
                                     </Typography>
-                                </Box> */}
+                                    <Rating name="agent-rating" value={4} readOnly />
+
+                                </Box>
                                 <Box display="flex" alignItems="center" gap={1} sx={{ mt: 2 }}>
                                     <Phone color="primary" />
                                     <Typography variant="body1" color="textSecondary">
@@ -198,10 +200,7 @@ const AgentDetails = () => {
                                     tortor id pulvinar suscipit, ante lacus fermentum nisl, in lobortis nisi elit eget
                                     felis.
                                 </Typography>
-                                <Box sx={{ mt: 3 }}>
-                                    <Typography variant="h6">Reviews</Typography>
-                                    <Rating name="agent-rating" value={4} readOnly />
-                                </Box>
+                               
                             </CardContent>
                         </Grid>
                     </StyledCard>
