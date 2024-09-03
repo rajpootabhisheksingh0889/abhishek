@@ -3,6 +3,7 @@ import { Grid, Card, CardContent, Typography, Avatar, Box, Rating } from '@mui/m
 import { Email, Phone } from '@mui/icons-material';
 import Navbar from './Navbar';
 import Footer from './Footer';
+import AgentSlider from './AgentSlider';
 import { styled } from '@mui/system';
 import { motion } from 'framer-motion';
 
@@ -152,49 +153,23 @@ const AgentDetails = () => {
                         </Grid>
 
                         {/* Right Side: Static Photos and Description */}
-                        <Grid
-                            item
-                            xs={12}
-                            md={6}
-                            sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                padding: { xs: 3, md: 5 },
-                                backgroundColor: 'background.default',
-                            }}
-                        >
-                            <ImageContainer>
+                        {/* <Grid
+                            // item
+                            // xs={12}
+                            // md={6}
+                            // sx={{
+                            //     // display: 'flex',
+                              
+                            //     padding: { xs: 3, md: 5 },
+                            //     backgroundColor: 'background.default',
+                            // }}
+                        > */}
+                            <AgentSlider/>
+                            {/* <ImageContainer>
                                 {/* Replace with actual image URLs */}
-                                <motion.img
-                                    src="https://via.placeholder.com/400x300"
-                                    alt="Property 1"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ duration: 0.6, delay: 0.2 }}
-                                />
-                                <motion.img
-                                    src="https://via.placeholder.com/400x300"
-                                    alt="Property 2"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ duration: 0.6, delay: 0.4 }}
-                                />
-                                <motion.img
-                                    src="https://via.placeholder.com/400x300"
-                                    alt="Property 3"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ duration: 0.6, delay: 0.6 }}
-                                />
-                                <motion.img
-                                    src="https://via.placeholder.com/400x300"
-                                    alt="Property 4"
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ duration: 0.6, delay: 0.8 }}
-                                />
-                            </ImageContainer>
-                            <CardContent>
+                               
+                            {/* </ImageContainer> */} 
+                            {/* <CardContent>
                                 <Typography variant="body1" color="textSecondary" sx={{ mt: 3 }}>
                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur tincidunt,
                                     tortor id pulvinar suscipit, ante lacus fermentum nisl, in lobortis nisi elit eget
@@ -202,7 +177,8 @@ const AgentDetails = () => {
                                 </Typography>
                                
                             </CardContent>
-                        </Grid>
+                        // </Grid> */}
+                        {/* </Grid>  */}
                     </StyledCard>
                 </Box>
             </div>
