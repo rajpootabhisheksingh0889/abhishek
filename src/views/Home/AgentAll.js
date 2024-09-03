@@ -42,7 +42,7 @@ const StatusDot = styled(Box)(({ online }) => ({
   width: 12,
   height: 12,
   borderRadius: '50%',
-  backgroundColor: online ? 'green' : 'grey',
+  backgroundColor: online ? '#faaf00' : 'grey',
   display: 'inline-block',
   marginRight: 8,
 }));
@@ -193,7 +193,7 @@ const AgentAll = () => {
 
                         {card.name}
                         <StatusText online={card.online} sx={{ marginLeft: 1 }}>
-                          <StatusDot online={card.online} />{card.online ? 'Online' : 'Offline'}
+                          <StatusDot online={card.online} />
                         </StatusText>
                       </Typography>
                       <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>

@@ -33,7 +33,7 @@ const Profile = () => {
   const handleLogout = () => {
     localStorage.removeItem('user_type');
     localStorage.removeItem('accessToken');
-    navigate('/auth/login');
+    navigate('/');
   };
 
   // useEffect(() => {

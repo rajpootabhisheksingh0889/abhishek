@@ -9,6 +9,8 @@ import HomePage from 'src/views/Home/HomePage';
 import ProductAll from 'src/views/Home/ProductAll';
 import AgentAll from 'src/views/Home/AgentAll';
 import AgentDetails from 'src/views/Home/AgentDetails';
+import About from 'src/views/Home/About';
+import ContactUs from 'src/views/Home/ContactUs';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -313,7 +315,7 @@ const Router = [
         ),
       },
       {
-        path: '/subscription',
+        path: '/subscriptions',
         exact: true,
         element: (
           <PrivateRoute>
@@ -331,6 +333,15 @@ const Router = [
     element: (
       // <PrivateRoute>
       <ItemDetails />
+      // </PrivateRoute>
+    ),
+  },
+  {
+    path: '/',
+    exact: true,
+    element: (
+      // <PrivateRoute>
+      <HomePage />
       // </PrivateRoute>
     ),
   },
@@ -371,14 +382,60 @@ const Router = [
     ),
   },
   {
+    path: '/subscription',
+    exact: true,
+    element: (
+      // <PrivateRoute>
+      <Subscription />
+      // </PrivateRoute>
+    ),
+  },
+  {
+    path: '/auth/login',
+    exact: true,
+    element: (
+      // <PrivateRoute>
+      <Login />
+      // </PrivateRoute>
+    ),
+  },
+  {
+    path: '/about',
+    exact: true,
+    element: (
+      // <PrivateRoute>
+      <About />
+      // </PrivateRoute>
+    ),
+  },
+
+  {
+    path: '/contactus',
+    exact: true,
+    element: (
+      // <PrivateRoute>
+      <ContactUs />
+      // </PrivateRoute>
+    ),
+  },
+  {
+    path: '/auth/register',
+    exact: true,
+    element: (
+      // <PrivateRoute>
+      <Register />
+      // </PrivateRoute>
+    ),
+  },
+  {
     path: '/auth',
     element: <BlankLayout />,
     children: [
       { path: '404', element: <Error /> },
       { path: '/auth/forgetpassword/:resetToken', element: <ForgetPassword /> },
-      { path: '/auth/register', element: <Register /> },
+      // { path: '/auth/register', element: <Register /> },
       { path: '/auth/forget', element: <Forget /> },
-      { path: '/auth/login', element: <Login /> },
+      // { path: '/auth/login', element: <Login /> },
       { path: '*', element: <Navigate to="/auth/404" /> },
     ],
   },

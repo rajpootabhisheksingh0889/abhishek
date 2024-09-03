@@ -1,9 +1,7 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import { Link } from 'react-router-dom';
-
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -12,8 +10,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
+import Hidden from '@mui/material/Hidden';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -66,15 +67,16 @@ const MenuButton = styled(Button)(({ theme }) => ({
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const token = localStorage.getItem('accessToken'); // Check for token in localStorage
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const token = localStorage.getItem('accessToken');
+
+  const handleDrawerToggle = () => {
+    setDrawerOpen(!drawerOpen);
+  };
 
   const handleLoginClick = () => {
     navigate('/auth/login');
-  };
-
-  const handleDashboardClick = () => {
-    navigate('/dashboard');
   };
 
   const handleMenuClick = (event) => {
@@ -85,20 +87,19 @@ export default function Navbar() {
     setAnchorEl(null);
   };
 
-  const handleClick = () => {
-    navigate('/');
-    handleMenuClose();
+  const handleNavItemClick = (path) => {
+    navigate(path);
+    handleDrawerToggle();
   };
 
-  const handleAgentClick = () => {
-    navigate('/agent');
-    // handleMenuClose();
-  };
-
-  const handleProductClick = () => {
-    navigate('/productpage');
-    handleMenuClose();
-  };
+  const navItems = [
+    { text: 'Home', path: '/' },
+    { text: 'Product', path: '/productpage' },
+    { text: 'Agent', path: '/agent' },
+    { text: 'About', path: '/about' },
+    { text: 'Subscription', path: '/subscription' },
+    { text: 'Contact Us', path: '/contactus' },
+  ];
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -109,7 +110,8 @@ export default function Navbar() {
             edge="start"
             color="inherit"
             aria-label="open drawer"
-            sx={{ mr: 2 }}
+            sx={{ mr: 2, display: { sm: 'none' } }}
+            onClick={handleDrawerToggle}
           >
             <MenuIcon />
           </IconButton>
@@ -130,35 +132,65 @@ export default function Navbar() {
               inputProps={{ 'aria-label': 'search' }}
             />
           </Search>
-          <MenuButton onClick={handleClick}>Home</MenuButton>
-          <MenuButton onClick={handleProductClick}>Product</MenuButton>
-          <MenuButton onClick={handleAgentClick}>Agent</MenuButton>
-          <MenuButton onClick={handleDashboardClick}>About</MenuButton>
-          <MenuButton onClick={handleDashboardClick}>Contact Us</MenuButton>
-          {token ? (
-            <>
-              <MenuButton onClick={handleDashboardClick}>Dashboard</MenuButton>
-              <MenuButton onClick={handleMenuClick}>Menu</MenuButton>
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={handleMenuClose}
-                PaperProps={{
-                  style: {
-                    width: '200px',
-                  },
+          <Hidden smDown>
+            {navItems.map((item) => (
+              <MenuButton key={item.text} onClick={() => handleNavItemClick(item.path)}>
+                {item.text}
+              </MenuButton>
+            ))}
+            {token ? (
+              <MenuButton onClick={() => handleNavItemClick('/dashboard')}>Dashboard</MenuButton>
+            ) : (
+              <MenuButton
+                onClick={handleLoginClick}
+                style={{
+                  backgroundColor: '#007bff',
+                  color: 'white',
+                  padding: '10px 20px',
+                  borderRadius: '5px',
+                  border: 'none',
+                  cursor: 'pointer',
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                  transition: 'background-color 0.3s ease',
                 }}
               >
-                {/* <MenuItem onClick={handleHomeClick}>Home</MenuItem>
-                <MenuItem onClick={handleProfileClick}>Profile</MenuItem> */}
-                {/* <MenuItem onClick={handleSettingsClick}>Logout</MenuItem> */}
-              </Menu>
-            </>
-          ) : (
-            <MenuButton onClick={handleLoginClick}>Login</MenuButton>
-          )}
+                Login
+              </MenuButton>
+            )}
+          </Hidden>
         </Toolbar>
       </AppBar>
+      <Drawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={handleDrawerToggle}
+        sx={{ display: { sm: 'none' } }}
+      >
+        <Box
+          sx={{ width: 250 }}
+          role="presentation"
+          onClick={handleDrawerToggle}
+          onKeyDown={handleDrawerToggle}
+        >
+          <List>
+            {navItems.map((item) => (
+              <ListItem button key={item.text} onClick={() => handleNavItemClick(item.path)}>
+                <ListItemText primary={item.text} />
+              </ListItem>
+            ))}
+            {token ? (
+              <ListItem button onClick={() => handleNavItemClick('/dashboard')}>
+                <ListItemText primary="Dashboard" />
+              </ListItem>
+            ) : (
+              <ListItem button onClick={handleLoginClick}>
+                <ListItemText primary="Login" />
+              </ListItem>
+            )}
+          </List>
+        </Box>
+      </Drawer>
     </Box>
   );
 }

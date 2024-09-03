@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Grid, Box, Card, Stack, Typography } from '@mui/material';
-
+import Layout from '../Home/Layout';
 // components
 import PageContainer from 'src/components/container/PageContainer';
 import Logo from 'src/layouts/full/shared/logo/Logo';
@@ -10,6 +10,7 @@ import AuthLogin from './auth/AuthLogin';
 const Login2 = () => {
   
   return (
+    <Layout>
     <PageContainer title="Login" description="this is Login page">
       <Box
         sx={{
@@ -71,6 +72,7 @@ const Login2 = () => {
         </Grid>
       </Box>
     </PageContainer>
+    </Layout>
   );
 };
 

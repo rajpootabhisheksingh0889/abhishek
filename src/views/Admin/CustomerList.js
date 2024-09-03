@@ -112,6 +112,41 @@ const CustomerList = () => {
                             </TableCell>
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
+                                    Phone
+                                </Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
+                                <Typography variant="subtitle2" fontWeight={600}>
+                                  Gender
+                                </Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
+                                <Typography variant="subtitle2" fontWeight={600}>
+                                   City
+                                </Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
+                                <Typography variant="subtitle2" fontWeight={600}>
+                                    Postal Code
+                                </Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
+                                <Typography variant="subtitle2" fontWeight={600}>
+                                   DOB
+                                </Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
+                                <Typography variant="subtitle2" fontWeight={600}>
+                                   Address
+                                </Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
+                                <Typography variant="subtitle2" fontWeight={600}>
+                                    Language
+                                </Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
+                                <Typography variant="subtitle2" fontWeight={600}>
                                     Status
                                 </Typography>
                             </TableCell>
@@ -140,6 +175,24 @@ const CustomerList = () => {
                                     <TableCell>
                                         <Skeleton variant="text" width={60} />
                                     </TableCell>
+                                    <TableCell>
+                                        <Skeleton variant="text" width={60} />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Skeleton variant="text" width={60} />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Skeleton variant="text" width={60} />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Skeleton variant="text" width={60} />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Skeleton variant="text" width={60} />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Skeleton variant="text" width={60} />
+                                    </TableCell>
                                     {/* <TableCell>
                                         <Skeleton variant="text" width={60} />
                                     </TableCell> */}
@@ -156,12 +209,47 @@ const CustomerList = () => {
                                         </TableCell>
                                         <TableCell>
                                             <Typography variant="subtitle2">
-                                                {customer.first_name} {customer.last_name}
+                                                {customer.first_name } {customer.last_name}
                                             </Typography>
                                         </TableCell>
                                         <TableCell>
                                             <Typography color="textSecondary" variant="subtitle2" >
-                                                {customer.email}
+                                                {customer.email || "-"}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography color="textSecondary" variant="subtitle2" >
+                                                {customer.phone || "-"}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography color="textSecondary" variant="subtitle2" >
+                                                {customer.gender  || "-"}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography color="textSecondary" variant="subtitle2" >
+                                                {customer.city_name || "-"}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography color="textSecondary" variant="subtitle2" >
+                                                {customer.postal_code || "-"}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography color="textSecondary" variant="subtitle2" >
+                                                {customer.dob || "-"}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography color="textSecondary" variant="subtitle2" >
+                                                {customer.address_line1 || "-"}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography color="textSecondary" variant="subtitle2" >
+                                                {customer.language_name || "-"}
                                             </Typography>
                                         </TableCell>
                                         <TableCell>

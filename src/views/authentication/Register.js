@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom';
 import PageContainer from 'src/components/container/PageContainer';
 import Logo from 'src/layouts/full/shared/logo/Logo';
 import AuthRegister from './auth/AuthRegister';
+import Layout from '../Home/Layout';
 
 const Register2 = () => (
+  <Layout>
   <PageContainer title="Register" description="this is Register page">
     <Box
       sx={{
@@ -67,6 +69,7 @@ const Register2 = () => (
       </Grid>
     </Box>
   </PageContainer>
+  </Layout>
 );
 
 export default Register2;

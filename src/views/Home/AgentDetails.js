@@ -49,7 +49,7 @@ const StatusDot = styled(Box)(({ online }) => ({
     width: 12,
     height: 12,
     borderRadius: '50%',
-    backgroundColor: online ? 'green' : 'grey',
+    backgroundColor: online ? '#faaf00' : 'grey',
     display: 'inline-block',
     marginRight: 8,
 }));

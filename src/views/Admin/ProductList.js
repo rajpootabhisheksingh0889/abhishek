@@ -149,7 +149,7 @@ const ProductList = () => {
                                     SKU
                                 </Typography>
                             </TableCell> */}
-                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
+                            {/* <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Description
                                 </Typography>
@@ -163,7 +163,7 @@ const ProductList = () => {
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Quantity
                                 </Typography>
-                            </TableCell>
+                            </TableCell> */}
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Actions
@@ -205,7 +205,7 @@ const ProductList = () => {
                                             {product.SKU}
                                         </Typography>
                                     </TableCell> */}
-                                    <TableCell>
+                                    {/* <TableCell>
                                         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
                                             {product.desc}
                                         </Typography>
@@ -214,10 +214,10 @@ const ProductList = () => {
                                         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
                                             {product.price} {product.currency}
                                         </Typography>
-                                    </TableCell>
-                                    <TableCell >
+                                    </TableCell> */}
+                                    {/* <TableCell >
                                         <Typography variant="h6">{product.inventory}</Typography>
-                                    </TableCell>
+                                    </TableCell> */}
                                     <TableCell >
                                         <IconButton
                                             aria-owns={open ? 'mouse-over-popover' : undefined}

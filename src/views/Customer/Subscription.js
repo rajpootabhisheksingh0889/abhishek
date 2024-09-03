@@ -1,9 +1,21 @@
 import React from 'react';
 import { Grid, Card,Box, CardContent, Typography, Button, Divider } from '@mui/material';
 import DashboardCard from 'src/components/shared/DashboardCard';
+import Layout from '../Home/Layout';
+import { styled } from '@mui/system';
 
+
+const StyledTypography = styled(Typography)(({ theme }) => ({
+  color: theme.palette.primary.main,
+  textAlign: 'center',
+  marginTop: '21px',
+  marginBottom: theme.spacing(3),
+  fontWeight: 700,
+  textTransform: 'uppercase',
+}));
 const PricingCard = ({ title, price, features, buttonText }) => {
   return (
+
     <Card
       variant="outlined"
       sx={{
@@ -111,11 +123,10 @@ const Subscription = () => {
   ];
 
   return (
+    <Layout>
     <DashboardCard>
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h3" component="h2" sx={{ flex: 1 }}>
-         Subscription Plan
-        </Typography>
+          <StyledTypography variant="h1">Subscription Plan</StyledTypography>
       </Box>
       <Grid container direction="row" justifyContent="center" alignItems="flex-start" spacing={2}>
         {pricingPlans.map((plan, index) => (
@@ -126,6 +137,7 @@ const Subscription = () => {
         ))}
       </Grid>
     </DashboardCard>
+    </Layout>
   );
 };
 
