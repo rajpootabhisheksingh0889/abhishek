@@ -11,6 +11,10 @@ import AgentAll from 'src/views/Home/AgentAll';
 import AgentDetails from 'src/views/Home/AgentDetails';
 import About from 'src/views/Home/About';
 import ContactUs from 'src/views/Home/ContactUs';
+import Vendor from 'src/views/Admin/Vendor';
+import AddVendor from 'src/views/Admin/AddVendor';
+import VendorDetails from 'src/views/Admin/VenderDetail';
+import BuyNow from 'src/views/Customer/BuyNow';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -36,8 +40,8 @@ const MyProfile = Loadable(lazy(() => import('../views/Admin/MyProfile')));
 const Permission = Loadable(lazy(() => import('../views/Admin/Permission')));
 const CustomPermission = Loadable(lazy(() => import('../views/Admin/CustomPermission')));
 const ProductDetails = Loadable(lazy(() => import('../views/Admin/ProductDetails')));
-const Languages = Loadable(lazy(()=> import('../views/Admin/Languages')))
-const AddLanguage = Loadable(lazy(()=> import('../views/Admin/AddLanguage')))
+const Languages = Loadable(lazy(() => import('../views/Admin/Languages')))
+const AddLanguage = Loadable(lazy(() => import('../views/Admin/AddLanguage')))
 
 
 const CustomerDashboard = Loadable(lazy(() => import('../views/Customer/CustomerDashboard')));
@@ -64,7 +68,7 @@ const Router = [
           </PrivateRoute>
         ),
       },
-     
+
       {
         path: '/icons',
         exact: true,
@@ -108,7 +112,7 @@ const Router = [
         exact: true,
         element: (
           <PrivateRoute>
-            <Languages/>
+            <Languages />
           </PrivateRoute>
         ),
       },
@@ -117,7 +121,7 @@ const Router = [
         exact: true,
         element: (
           <PrivateRoute>
-            <AddLanguage/>
+            <AddLanguage />
           </PrivateRoute>
         ),
       },
@@ -126,7 +130,7 @@ const Router = [
         exact: true,
         element: (
           <PrivateRoute>
-            <AddLanguage/>
+            <AddLanguage />
           </PrivateRoute>
         ),
       },
@@ -165,6 +169,43 @@ const Router = [
         element: (
           <PrivateRoute>
             <Permission />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/vendor',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <Vendor />
+          </PrivateRoute>
+        ),
+      },
+
+      {
+        path: '/addvendor',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <AddVendor />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/addvendor/:id',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <AddVendor />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/venderdetails/:id',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <VendorDetails />
           </PrivateRoute>
         ),
       },
@@ -350,7 +391,7 @@ const Router = [
     exact: true,
     element: (
       // <PrivateRoute>
-        <HomePage />
+      <HomePage />
       // </PrivateRoute>
     ),
   },
@@ -359,7 +400,7 @@ const Router = [
     exact: true,
     element: (
       // <PrivateRoute>
-        <AgentAll />
+      <AgentAll />
       // </PrivateRoute>
     ),
   },
@@ -368,7 +409,7 @@ const Router = [
     exact: true,
     element: (
       // <PrivateRoute>
-        <ProductAll />
+      <ProductAll />
       // </PrivateRoute>
     ),
   },
@@ -415,6 +456,15 @@ const Router = [
     element: (
       // <PrivateRoute>
       <ContactUs />
+      // </PrivateRoute>
+    ),
+  },
+  {
+    path: '/buynow',
+    exact: true,
+    element: (
+      // <PrivateRoute>
+      <BuyNow />
       // </PrivateRoute>
     ),
   },

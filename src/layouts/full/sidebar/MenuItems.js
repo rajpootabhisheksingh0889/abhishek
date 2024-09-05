@@ -147,7 +147,7 @@
 //       const result = await axios.post('http://134.209.145.149:9999/api/checkSidebar', { uid: uid });
 //       // Assuming 'status' is the field you want from result
 //       console.log(result.data, "result is ==>>>>");
-      
+
 //     } catch (error) {
 //       console.error('Error loading data:', error);
 //     }
@@ -271,6 +271,12 @@ const Menuitems = [
         title: 'Languages',
         icon: IconLayoutDashboard,
         href: '/languages',
+    },
+    {
+        id: uniqueId(),
+        title: 'Vendor',
+        icon: IconLayoutDashboard,
+        href: '/vendor',
     },
 ];
 

@@ -6,6 +6,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Footer from "../Home/Footer";
 import Navbar from "../Home/Navbar";
+import { useNavigate } from 'react-router-dom';
 
 const dummyItem = {
   name: "Stylish Chair",
@@ -24,6 +25,7 @@ const dummyItems = [
 ];
 
 const ItemDetails = () => {
+  const navigate = useNavigate();
   const { itemId } = useParams();
   const [value, setValue] = useState("description");
   const [count, setCount] = useState(1);
@@ -100,9 +102,9 @@ const ItemDetails = () => {
                 padding: "10px 40px",
                 boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
               }}
-              onClick={() => console.log("Add to Cart clicked")}
+                onClick={() => navigate('/buynow')}
             >
-              ADD TO CART
+              BUY NOW
             </Button>
           </Box>
           <Box>
