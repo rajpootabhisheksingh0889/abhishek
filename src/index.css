@@ -13,7 +13,11 @@ margin-bottom: 10px!important;
 }
 
 
-
+@media (min-width: 1200px) {
+  .css-1je17zp-MuiContainer-root {
+      max-width: 100%;
+  }
+}
 
 ul {
     margin: 0px;

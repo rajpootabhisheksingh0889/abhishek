@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     Typography, Box,
@@ -7,71 +7,90 @@ import {
     TableCell,
     TableHead,
     TableRow,
-    Chip,
     TextField,
     Button,
     IconButton
 } from '@mui/material';
-import VisibilityIcon from '@mui/icons-material/Visibility'; // Eye icon for view action
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import DashboardCard from 'src/components/shared/DashboardCard';
-
-const products = [
-    {
-        id: "1",
-        name: "Sunil Joshi",
-        post: "Web Designer",
-        pname: "Elite Admin",
-        priority: "Low",
-        pbg: "primary.main",
-        budget: "3.9",
-    },
-    {
-        id: "2",
-        name: "Andrew McDownland",
-        post: "Project Manager",
-        pname: "Real Homes WP Theme",
-        priority: "Medium",
-        pbg: "secondary.main",
-        budget: "24.5",
-    },
-    {
-        id: "3",
-        name: "Christopher Jamil",
-        post: "Project Manager",
-        pname: "MedicalPro WP Theme",
-        priority: "High",
-        pbg: "error.main",
-        budget: "12.8",
-    },
-    {
-        id: "4",
-        name: "Nirav Joshi",
-        post: "Frontend Engineer",
-        pname: "Hosting Press HTML",
-        priority: "Critical",
-        pbg: "success.main",
-        budget: "2.4",
-    },
-];
-
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const Vendor = () => {
+    const [vendors, setVendors] = useState([]); // State to store vendors data
+    const [loading, setLoading] = useState(true); // State to handle loading
     const navigate = useNavigate();
+    const [anchorEl, setAnchorEl] = useState(null);
 
-    const handleViewClick = (productId) => {
-        // Handle view action, such as navigating to a product detail page
-        console.log(`Viewing product with ID: ${productId}`);
+
+    // Function to fetch vendor data from the API
+    const fetchVendors = async () => {
+        try {
+            const response = await axios.get('http://134.209.145.149:9999/api/vendor');
+            setVendors(response.data); // Set the fetched data
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching vendor data:', error);
+            setLoading(false); // Stop loading if there's an error
+        }
     };
+
+    useEffect(() => {
+        fetchVendors();
+    }, []);
+
+    const handleViewClick = (vendorId) => {
+        console.log(`Viewing vendor with ID: ${vendorId}`);
+        // Handle view action, such as navigating to a vendor detail page
+    };
+
     const handleAddVendor = () => {
         navigate("/addvendor");
     };
+
+    const handleEditClick = (vendorId) => {
+        navigate(`/addvendor/${vendorId}`);
+    };
+    
+    const handleDeleteClick = async (vendorId) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    await axios.delete(`http://134.209.145.149:9999/api/vendor/${vendorId}`);
+                    // Show success message with auto-close after 3 seconds
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: 'Vendor has been deleted.',
+                        icon: 'success',
+                        timer: 3000, // Auto-close after 3 seconds
+                        showConfirmButton: false
+                    });
+                    
+                    // Refetch vendor data after deletion
+                    fetchVendors();
+                } catch (error) {
+                    Swal.fire('Error', 'There was an issue deleting the vendor.', 'error');
+                    console.error('Error deleting vendor:', error);
+                }
+            }
+        });
+    };
+
     return (
-
-        <DashboardCard >
-
+        <DashboardCard>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                 <Typography variant="h3" component="h2" sx={{ flex: 1 }}>
-                  Vendor List
+                    Vendor List
                 </Typography>
 
                 <Box sx={{ display: 'flex', gap: 2 }}>
@@ -79,130 +98,115 @@ const Vendor = () => {
                         size="medium"
                         label="Search Vendor"
                         variant="outlined"
-                        // value={searchTerm}
-                        // onChange={(e) => setSearchTerm(e.target.value)}
+                        // Add search handling logic here if needed
                     />
-                    
+
                     <Button
                         variant="contained"
                         color="primary"
                         size="large"
                         onClick={handleAddVendor}
-                        // onClick={handleOpen}
                     >
                         Add Vendor
                     </Button>
                 </Box>
             </Box>
-            <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
-                <Table
-                    aria-label="simple table"
-                    sx={{
-                        whiteSpace: "nowrap",
-                        mt: 2
-                    }}
-                >
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Id
-                                </Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Assigned
-                                </Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Name
-                                </Typography>
-                            </TableCell>
-                            <TableCell>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Priority
-                                </Typography>
-                            </TableCell>
-                            <TableCell align="right">
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Budget
-                                </Typography>
-                            </TableCell>
-                            <TableCell align="center">
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Actions
-                                </Typography>
-                            </TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {products.map((product) => (
-                            <TableRow key={product.id}>
+
+            {loading ? (
+                <Typography variant="h6">Loading...</Typography>
+            ) : (
+                <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
+                    <Table
+                        aria-label="simple table"
+                        sx={{ whiteSpace: "nowrap", mt: 2 }}
+                    >
+                        <TableHead>
+                            <TableRow>
                                 <TableCell>
-                                    <Typography
-                                        sx={{
-                                            fontSize: "15px",
-                                            fontWeight: "500",
-                                        }}
-                                    >
-                                        {product.id}
+                                    <Typography variant="subtitle2" fontWeight={600}>
+                                        Id
                                     </Typography>
                                 </TableCell>
                                 <TableCell>
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                        }}
-                                    >
-                                        <Box>
-                                            <Typography variant="subtitle2" fontWeight={600}>
-                                                {product.name}
-                                            </Typography>
-                                            <Typography
-                                                color="textSecondary"
-                                                sx={{
-                                                    fontSize: "13px",
-                                                }}
-                                            >
-                                                {product.post}
-                                            </Typography>
-                                        </Box>
-                                    </Box>
-                                </TableCell>
-                                <TableCell>
-                                    <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-                                        {product.pname}
+                                    <Typography variant="subtitle2" fontWeight={600}>
+                                       Name
                                     </Typography>
                                 </TableCell>
                                 <TableCell>
-                                    <Chip
-                                        sx={{
-                                            px: "4px",
-                                            backgroundColor: product.pbg,
-                                            color: "#fff",
-                                        }}
-                                        size="small"
-                                        label={product.priority}
-                                    />
+                                    <Typography variant="subtitle2" fontWeight={600}>
+                                       Email
+                                    </Typography>
                                 </TableCell>
-                                <TableCell align="right">
-                                    <Typography variant="h6">${product.budget}k</Typography>
+                                <TableCell>
+                                    <Typography variant="subtitle2" fontWeight={600}>
+                                      Phone
+                                    </Typography>
+                                </TableCell>
+                                <TableCell >
+                                    <Typography variant="subtitle2" fontWeight={600}>
+                                       Gender
+                                    </Typography>
                                 </TableCell>
                                 <TableCell align="center">
-                                    <IconButton
-                                        color="primary"
-                                        onClick={() => handleViewClick(product.id)}
-                                    >
-                                        <VisibilityIcon />
-                                    </IconButton>
+                                    <Typography variant="subtitle2" fontWeight={600}>
+                                        Actions
+                                    </Typography>
                                 </TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </Box>
+                        </TableHead>
+                        <TableBody>
+                            {vendors.map((vendor, index) => (
+                                <TableRow key={vendor.id}>
+                                     <TableCell>
+                                        <Typography variant="subtitle2">
+                                            {index + 1}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography variant="subtitle2">
+                                            {vendor.name || "-"} 
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+                                            {vendor.email || "-"}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+                                            {vendor.phone || "-"}
+                                        </Typography>
+                                    </TableCell>
+                                    
+                                    <TableCell>
+                                        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>{vendor.gender || "-"}</Typography>
+                                    </TableCell>
+                                    <TableCell align="center">
+                                        <IconButton
+                                            color="primary"
+                                            onClick={() => handleViewClick(vendor.id)}
+                                        >
+                                            <VisibilityIcon />
+                                        </IconButton>
+                                        <IconButton
+                                            color="secondary"
+                                            onClick={() => handleEditClick(vendor.id)}
+                                        >
+                                            <EditIcon />
+                                        </IconButton>
+                                        <IconButton
+                                            color="error"
+                                            onClick={() => handleDeleteClick(vendor.id)}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </Box>
+            )}
         </DashboardCard>
     );
 };

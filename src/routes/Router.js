@@ -192,7 +192,7 @@ const Router = [
         ),
       },
       {
-        path: '/addvendor/:id',
+        path: '/addvendor/:vendorId',
         exact: true,
         element: (
           <PrivateRoute>
@@ -201,7 +201,7 @@ const Router = [
         ),
       },
       {
-        path: '/venderdetails/:id',
+        path: '/venderdetails/:vendorId',
         exact: true,
         element: (
           <PrivateRoute>

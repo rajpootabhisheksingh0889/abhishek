@@ -21,67 +21,57 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const AddVendor = () => {
+    const { vendorId } = useParams();
     const [formData, setFormData] = useState({
         name: '',
+        gender: '',
+        phone: '',
+        email: '',
+        state: '',
+        address_line1: '',
+        city: '',
+        postal_code: '',
         desc: '',
-        category_id: '1',
-        // SKU: '',
-        // price: '',
-        // // currency: 'USD',
-        // inventory: '',
-        // brand: '',
-        // weight: '',
-        // dimensions: {
-        //     depth: '',
-        //     width: '',
-        //     height: '',
-        // },
-        // images: [], // Ensure this is initialized as an array
-        // tags: [],
-        // variations: [],
-        // status: false,
+      
+      
+        
     });
 
     const [isEditMode, setIsEditMode] = useState(false);
     const navigate = useNavigate();
-    const { productId } = useParams(); // assuming route is like /add-product or /edit-product/:productId
+  // assuming route is like /add-product or /edit-product/:vendorId
 
     useEffect(() => {
-        if (productId) {
+        console.log("vendorId: ", vendorId);
+        if (vendorId) {
             setIsEditMode(true);
-            fetchProductDetails(productId);
+            fetchVendorDetails(vendorId);
         }
-    }, [productId]);
+    }, [vendorId]);
 
-    const fetchProductDetails = async (id) => {
+    const fetchVendorDetails = async (id) => {
         try {
-            const response = await axios.get(`http://134.209.145.149:9999/api/product/${id}`);
-            if (response.data && response.data) {
-
-                const product = response.data;
+            const response = await axios.get(`http://134.209.145.149:9999/api/vendor/${id}`);
+            console.log(response.data); // Check the response structure here
+            if (response.data) {
+                const vendor = response.data;
                 setFormData({
-                    name: product.name || '',
-                    desc: product.desc || '',
-                    // category_id: product.category_id || '',
-                    // SKU: product.SKU || '',
-                    // price: product.price || '',
-                    // currency: product.currency || 'USD',
-                    // inventory: product.inventory || '',
-                    // brand: product.brand || '',
-                    // Other fields can be added here as needed
+                    name: vendor.name || '',
+                    gender: vendor.gender || '',
+                    phone: vendor.phone || '',
+                    email: vendor.email || '',
+                    state: vendor.state || '',
+                    city: vendor.city || '',
+                    address_line1: vendor.address_line1 || '',
+                    postal_code: vendor.postal_code || '',
+                    desc: vendor.desc || '',
                 });
             }
-            // setFormData({
-            //     ...product,
-            //     dimensions: product.dimensions || { depth: '', width: '', height: '' },
-            //     images: Array.isArray(product.images) ? product.images : [], // Ensure it's an array
-            //     tags: Array.isArray(product.tags) ? product.tags : [],
-            //     variations: Array.isArray(product.variations) ? product.variations : [],
-            // });
         } catch (error) {
-            toast.error('Failed to fetch product details.');
+            toast.error('Failed to fetch vendor details.');
         }
     };
+    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -91,70 +81,37 @@ const AddVendor = () => {
         });
     };
 
-    const handleDimensionChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            dimensions: {
-                ...formData.dimensions,
-                [name]: value,
-            },
-        });
-    };
+
 
     const handleGoBack = () => {
         navigate(-1); // Navigate back to the previous page
     };
 
-    const handleImageChange = (e) => {
-        const files = Array.from(e.target.files);
-        const newImages = files.map(file => URL.createObjectURL(file));
-        setFormData({
-            ...formData,
-            images: [...formData.images, ...newImages],
-        });
-    };
-
-    const handleRemoveImage = (url) => {
-        setFormData({
-            ...formData,
-            images: formData.images.filter(image => image !== url),
-        });
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const apiUrl = isEditMode
-            ? `http://134.209.145.149:9999/api/product/${productId}`
-            : 'http://134.209.145.149:9999/api/product';
+            ? `http://134.209.145.149:9999/api/vendor/${vendorId}`
+            : 'http://134.209.145.149:9999/api/vendor';
 
         try {
             if (isEditMode) {
                 await axios.put(apiUrl, formData);
-                toast.success('Product updated successfully!');
+                toast.success('vendor updated successfully!');
             } else {
                 await axios.post(apiUrl, formData);
-                toast.success('Product added successfully!');
+                toast.success('Vendor added successfully!');
             }
             setFormData({
                 name: '',
+                gender: '',
+                phone: '',
+                email: '',
+                state: '',
+                address_line1: '',
+                city: '',
+                postal_code: '',
                 desc: '',
-                // category: '',
-                // SKU: '',
-                // price: '',
-                // currency: 'USD',
-                // inventory: '',
-                // brand: '',
-                // weight: '',
-                // dimensions: {
-                //     depth: '',
-                //     width: '',
-                //     height: '',
-                // },
-                // images: [], // Reset to an empty array
-                // tags: [],
-                // variations: [],
-                // status: false,
             });
             navigate(-1); // Navigate back to the previous page after successful submission
         } catch (error) {
@@ -185,7 +142,7 @@ const AddVendor = () => {
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6}>
                                 <TextField
-                                    label="First Name"
+                                    label="Name"
                                     name="name"
                                     value={formData.name}
                                     onChange={handleChange}
@@ -194,23 +151,12 @@ const AddVendor = () => {
                                     required
                                 />
                             </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    label="Last Name"
-                                    name="lastname"
-                                    value={formData.desc}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    fullWidth
-                                    multiline
-                                    required
-                                />
-                            </Grid>
+                        
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     label="Gender"
                                     name="gender"
-                                    value={formData.desc}
+                                    value={formData.gender}
                                     onChange={handleChange}
                                     variant="outlined"
                                     fullWidth
@@ -221,8 +167,8 @@ const AddVendor = () => {
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     label="Mobile Number"
-                                    name="lastname"
-                                    value={formData.desc}
+                                    name="phone"
+                                    value={formData.phone}
                                     onChange={handleChange}
                                     variant="outlined"
                                     fullWidth
@@ -233,8 +179,8 @@ const AddVendor = () => {
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     label="Email Address"
-                                    name="lastname"
-                                    value={formData.desc}
+                                    name="email"
+                                    value={formData.email}
                                     onChange={handleChange}
                                     variant="outlined"
                                     fullWidth
@@ -246,7 +192,7 @@ const AddVendor = () => {
                                 <TextField
                                     label="State"
                                     name="state"
-                                    value={formData.desc}
+                                    value={formData.state}
                                     onChange={handleChange}
                                     variant="outlined"
                                     fullWidth
@@ -257,8 +203,8 @@ const AddVendor = () => {
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     label="City"
-                                    name="lastname"
-                                    value={formData.desc}
+                                    name="city"
+                                    value={formData.city}
                                     onChange={handleChange}
                                     variant="outlined"
                                     fullWidth
@@ -269,8 +215,8 @@ const AddVendor = () => {
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     label="Address"
-                                    name="lastname"
-                                    value={formData.desc}
+                                    name="address_line1"
+                                    value={formData.address_line1}
                                     onChange={handleChange}
                                     variant="outlined"
                                     fullWidth
@@ -281,8 +227,8 @@ const AddVendor = () => {
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     label="Postal Code"
-                                    name="lastname"
-                                    value={formData.desc}
+                                    name="postal_code"
+                                    value={formData.postal_code}
                                     onChange={handleChange}
                                     variant="outlined"
                                     fullWidth
@@ -293,7 +239,7 @@ const AddVendor = () => {
                             <Grid item xs={12} md={12}>
                                 <TextField
                                     label="Descrption"
-                                    name="lastname"
+                                    name="desc"
                                     value={formData.desc}
                                     onChange={handleChange}
                                     variant="outlined"
@@ -303,151 +249,7 @@ const AddVendor = () => {
                                     required
                                 />
                             </Grid>
-                            {/* <Grid item xs={12} md={6}>
-                                <TextField
-                                    label="Category"
-                                    name="category"
-                                    value={formData.category}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    select
-                                    fullWidth
-                                    required
-                                >
-                                    <MenuItem value="Electronics">Electronics</MenuItem>
-                                    <MenuItem value="Clothing">Clothing</MenuItem>
-                                    <MenuItem value="Home">Home</MenuItem>
-                                    <MenuItem value="Books">Books</MenuItem>
-                                </TextField>
-                            </Grid> */}
-                            {/* <Grid item xs={12} md={6}>
-                                <TextField
-                                    label="SKU"
-                                    name="SKU"
-                                    value={formData.SKU}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    label="Price"
-                                    name="price"
-                                    value={formData.price}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    type="number"
-                                    fullWidth
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    label="Quantity"
-                                    name="inventory"
-                                    value={formData.inventory}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    type="number"
-                                    fullWidth
-                                    required
-                                />
-                            </Grid> */}
-                            {/* <Grid item xs={12} md={6}>
-                                <TextField
-                                    label="Brand"
-                                    name="brand"
-                                    value={formData.brand}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                />
-                            </Grid> */}
-                            {/* <Grid item xs={12} md={6}>
-                                <TextField
-                                    label="Weight (kg)"
-                                    name="weight"
-                                    value={formData.weight}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    type="number"
-                                    fullWidth
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={4}>
-                                <TextField
-                                    label="Depth (cm)"
-                                    name="depth"
-                                    value={formData.dimensions.depth}
-                                    onChange={handleDimensionChange}
-                                    variant="outlined"
-                                    type="number"
-                                    fullWidth
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={4}>
-                                <TextField
-                                    label="Width (cm)"
-                                    name="width"
-                                    value={formData.dimensions.width}
-                                    onChange={handleDimensionChange}
-                                    variant="outlined"
-                                    type="number"
-                                    fullWidth
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={4}>
-                                <TextField
-                                    label="Height (cm)"
-                                    name="height"
-                                    value={formData.dimensions.height}
-                                    onChange={handleDimensionChange}
-                                    variant="outlined"
-                                    type="number"
-                                    fullWidth
-                                    required
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    type="file"
-                                    fullWidth
-                                    inputProps={{ multiple: true, accept: "image/*" }}
-                                    onChange={handleImageChange}
-                                    variant="outlined"
-                                    label="Upload Images"
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                />
-                            </Grid> */}
-                            {/* <Grid item xs={12}>
-                                <ImageList cols={3}>
-                                    {Array.isArray(formData.images) && formData.images.map((url, index) => (
-                                        <ImageListItem key={index}>
-                                            <img src={url} alt={`product image ${index}`} />
-                                            <IconButton
-                                                aria-label="delete"
-                                                onClick={() => handleRemoveImage(url)}
-                                                sx={{
-                                                    position: 'absolute',
-                                                    top: 8,
-                                                    right: 8,
-                                                    backgroundColor: 'rgba(255, 255, 255, 0.7)',
-                                                }}
-                                            >
-                                                <DeleteIcon />
-                                            </IconButton>
-                                        </ImageListItem>
-                                    ))}
-                                </ImageList>
-                            </Grid> */}
+                            
                             <Grid item xs={12}>
                                 <Button type="submit" variant="contained" color="primary" fullWidth>
                                     {isEditMode ? 'Update Vendor' : 'Add Vendor'}
