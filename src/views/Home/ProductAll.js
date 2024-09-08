@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
-import { Container, IconButton, Grid, Paper, Typography, Divider, Checkbox, FormControlLabel, Box, TextField, Card, CardContent, CardMedia, Button } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import {
+  Container, IconButton, Grid, Paper, Typography, Divider, Checkbox, FormControlLabel, Box, TextField, Card, CardContent, CardMedia, Button, Pagination
+} from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Layout from './Layout';
 import InfoIcon from "@mui/icons-material/Info";
@@ -15,8 +18,6 @@ const Content = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
   minHeight: '100vh',
 }));
-
-
 
 const StyledCard = styled(Card)(({ theme }) => ({
   transition: 'transform 0.3s',
@@ -37,6 +38,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
     background: theme.palette.primary.dark,
   },
 }));
+
 const StyledTypography = styled(Typography)(({ theme }) => ({
   color: theme.palette.primary.main,
   textAlign: 'center',
@@ -44,37 +46,8 @@ const StyledTypography = styled(Typography)(({ theme }) => ({
   fontWeight: 700,
   textTransform: 'uppercase',
 }));
-// Dummy product data
-const dummyProducts = [
-  {
-    id: 1,
-    name: "Product 1",
-    description: "This is a great product.",
-    imageUrl: "https://cdn.pixabay.com/photo/2024/02/21/15/28/dahlia-8587940_1280.jpg",
-    price: "$10.00",
-  },
-  {
-    id: 2,
-    name: "Product 2",
-    description: "This is a great product.",
-    imageUrl: "https://cdn.pixabay.com/photo/2024/02/21/15/28/dahlia-8587940_1280.jpg",
-    price: "$20.00",
-  },
-  {
-    id: 3,
-    name: "Product 3",
-    description: "This is a great product.",
-    imageUrl: "https://cdn.pixabay.com/photo/2024/02/21/15/28/dahlia-8587940_1280.jpg",
-    price: "$30.00",
-  },
-  {
-    id: 4,
-    name: "Product 4",
-    description: "This is a great product.",
-    imageUrl: "https://cdn.pixabay.com/photo/2024/02/21/15/28/dahlia-8587940_1280.jpg",
-    price: "$40.00",
-  },
-]; const StyledTextField = styled(TextField)(({ theme }) => ({
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
   '& .MuiOutlinedInput-root': {
     borderRadius: theme.shape.borderRadius,
     boxShadow: '0 3px 6px rgba(0, 0, 0, 0.1)',
@@ -83,10 +56,32 @@ const dummyProducts = [
 }));
 
 function ProductAll() {
+  const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const itemsPerPage = 8; // Number of products per page
 
-  // Filter products based on search query
-  const filteredProducts = dummyProducts.filter(product =>
+  useEffect(() => {
+    fetchProducts();
+  }, [page]);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get('http://134.209.145.149:9999/api/product', {
+        params: {
+          page,
+          limit: itemsPerPage, // Limit the number of products per page
+        },
+      });
+      setProducts(response.data.products); // Assuming 'products' is the key in the API response
+      setTotalPages(response.data.totalPages); // Assuming 'totalPages' is provided by the API
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
+  const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -95,33 +90,9 @@ function ProductAll() {
       <Container className='mt-4'>
         <StyledTypography variant="h1">Products</StyledTypography>
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={4} md={2}>
-            <Sidebar>
-              <Typography variant="h6">Filters</Typography>
-              <Divider />
-              <FormControlLabel control={<Checkbox />} label="Category 1" />
-              <FormControlLabel control={<Checkbox />} label="Category 2" />
-              <FormControlLabel control={<Checkbox />} label="Category 3" />
-              <Divider />
-              <Typography variant="h6">Price Range</Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                <FormControlLabel control={<Checkbox />} label="$0 - $50" />
-                <FormControlLabel control={<Checkbox />} label="$51 - $100" />
-                <FormControlLabel control={<Checkbox />} label="$101 - $200" />
-              </Box>
-            </Sidebar>
-          </Grid>
-          <Grid item xs={12} sm={8} md={10}>
+         
+          <Grid item xs={12} sm={8} md={12}>
             <Content>
-              {/* <StyledTypography variant="h1">All Product</StyledTypography> */}
-              {/* <TextField
-                fullWidth
-                variant="outlined"
-                placeholder="Search products..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                margin="normal"
-              /> */}
               <Box display="flex" justifyContent="flex-end" mb={3}>
                 <StyledTextField
                   variant="outlined"
@@ -169,6 +140,16 @@ function ProductAll() {
                   </Grid>
                 ))}
               </Grid>
+
+              {/* Pagination */}
+              <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                <Pagination
+                  count={totalPages}
+                  page={page}
+                  onChange={(e, value) => setPage(value)}
+                  color="primary"
+                />
+              </Box>
             </Content>
           </Grid>
         </Grid>

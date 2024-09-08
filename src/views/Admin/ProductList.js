@@ -16,6 +16,7 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
+    Pagination,
     Button
 } from '@mui/material';
 import { Edit, Delete, Visibility } from '@mui/icons-material';
@@ -33,12 +34,16 @@ const ProductList = () => {
     const [popoverContent, setPopoverContent] = useState("");
     const [openDialog, setOpenDialog] = useState(false);
     const [productToDelete, setProductToDelete] = useState(null);
-
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalUsers, setTotalUsers] = useState(0);
+    const [usersPerPage, setUsersPerPage] = useState(10);
+   
     useEffect(() => {
         const fetchProducts = async () => {
             try {
                 const response = await axios.get('http://134.209.145.149:9999/api/product');
                 setProducts(response.data.products);
+                setTotalUsers(response.data.total_products); 
             } catch (err) {
                 setError(err);
             } finally {
@@ -53,7 +58,9 @@ const ProductList = () => {
         setAnchorEl(event.currentTarget);
         setPopoverContent(content);
     };
-
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value);
+    };
     const handlePopoverClose = () => {
         setAnchorEl(null);
         setPopoverContent("");
@@ -266,7 +273,14 @@ const ProductList = () => {
                     </TableBody>
                 </Table>
             </Box>
-
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+                <Pagination
+                    count={Math.ceil(totalUsers / usersPerPage)}
+                    page={currentPage}
+                    onChange={handlePageChange}
+                    color="primary"
+                />
+            </Box>
             <Dialog
                 open={openDialog}
                 onClose={() => setOpenDialog(false)}
