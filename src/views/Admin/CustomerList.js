@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
     Typography, Box, TextField, FormControl, InputLabel, Select, MenuItem,
-    Table, TableBody, TableCell, TableHead, TableRow, Chip, Button, Skeleton
+    Table, TableBody, TableCell, TableHead, TableRow, Chip, Button, Skeleton, Pagination
 } from '@mui/material';
 import DashboardCard from 'src/components/shared/DashboardCard';
 import NoData from "src/assets/images/products/NoData.jpg"; // Replace with your actual path
@@ -16,19 +16,29 @@ const CustomerList = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const userType = localStorage.getItem('user_type');
     const [selectedOption, setSelectedOption] = useState('all');
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalUsers, setTotalUsers] = useState(0);
+    const [usersPerPage, setUsersPerPage] = useState(10); // Set default to 10 users per page
+
     const handleChange1 = (event) => {
         setSelectedOption(event.target.value);
     };
+
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value);
+    };
+
     useEffect(() => {
         const fetchCustomers = async () => {
+            setLoading(true);
             try {
                 const response = await axios.get('http://134.209.145.149:9999/api/listUser?role_id=4', {
-                    params: { status: selectedOption }
+                    params: { status: selectedOption, page: currentPage, per_page: usersPerPage }
                 });
-                // Ensure data is an array
-                
+
                 if (Array.isArray(response.data.users)) {
                     setCustomers(response.data.users);
+                    setTotalUsers(response.data.total_users); // Get the total number of users
                 } else {
                     console.error('Unexpected data format', response.data);
                     setCustomers([]);
@@ -42,7 +52,7 @@ const CustomerList = () => {
         };
 
         fetchCustomers();
-    }, [selectedOption]);
+    }, [selectedOption, currentPage, usersPerPage]);
 
     const filteredCustomers = customers?.filter(customer => {
         const lowerCaseSearchTerm = searchTerm.toLowerCase();
@@ -51,7 +61,7 @@ const CustomerList = () => {
             (customer?.last_name?.toLowerCase().includes(lowerCaseSearchTerm) || '') ||
             (customer?.email?.toLowerCase().includes(lowerCaseSearchTerm) || '')
         );
-    }) || []; // Ensure filteredCustomers is an array
+    }) || [];
 
     return (
         <DashboardCard>
@@ -81,176 +91,58 @@ const CustomerList = () => {
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
-
-                    
                 </Box>
             </Box>
+
             <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
-                <Table
-                    aria-label="simple table"
-                    sx={{
-                        whiteSpace: "nowrap",
-                        mt: 2
-                    }}
-                >
+                <Table aria-label="simple table" sx={{ whiteSpace: "nowrap", mt: 2 }}>
                     <TableHead>
                         <TableRow>
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Id
-                                </Typography>
+                                <Typography variant="subtitle2" fontWeight={600}>Id</Typography>
                             </TableCell>
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Name
-                                </Typography>
+                                <Typography variant="subtitle2" fontWeight={600}>Name</Typography>
                             </TableCell>
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Email
-                                </Typography>
+                                <Typography variant="subtitle2" fontWeight={600}>Email</Typography>
                             </TableCell>
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Phone
-                                </Typography>
+                                <Typography variant="subtitle2" fontWeight={600}>Phone</Typography>
                             </TableCell>
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                  Gender
-                                </Typography>
+                                <Typography variant="subtitle2" fontWeight={600}>Status</Typography>
                             </TableCell>
-                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                   City
-                                </Typography>
-                            </TableCell>
-                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Postal Code
-                                </Typography>
-                            </TableCell>
-                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                   DOB
-                                </Typography>
-                            </TableCell>
-                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                   Address
-                                </Typography>
-                            </TableCell>
-                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Language
-                                </Typography>
-                            </TableCell>
-                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
-                                <Typography variant="subtitle2" fontWeight={600}>
-                                    Status
-                                </Typography>
-                            </TableCell>
-                            {/* {userType !== 'AG' && (
-                                <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
-                                    <Typography variant="subtitle2" fontWeight={600}>
-                                        Action
-                                    </Typography>
-                                </TableCell>
-                            )} */}
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {loading ? (
                             Array.from(new Array(5)).map((_, index) => (
                                 <TableRow key={index}>
-                                    <TableCell>
-                                        <Skeleton variant="text" width={40} />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton variant="text" width={100} />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton variant="text" width={150} />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton variant="text" width={60} />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton variant="text" width={60} />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton variant="text" width={60} />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton variant="text" width={60} />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton variant="text" width={60} />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton variant="text" width={60} />
-                                    </TableCell>
-                                    <TableCell>
-                                        <Skeleton variant="text" width={60} />
-                                    </TableCell>
-                                    {/* <TableCell>
-                                        <Skeleton variant="text" width={60} />
-                                    </TableCell> */}
+                                    <TableCell><Skeleton variant="text" width={40} /></TableCell>
+                                    <TableCell><Skeleton variant="text" width={100} /></TableCell>
+                                    <TableCell><Skeleton variant="text" width={150} /></TableCell>
+                                    <TableCell><Skeleton variant="text" width={60} /></TableCell>
+                                    <TableCell><Skeleton variant="text" width={60} /></TableCell>
                                 </TableRow>
                             ))
                         ) : (
                             filteredCustomers.length > 0 ? (
                                 filteredCustomers.map((customer, index) => (
-                                    <TableRow key={customer.id} >
+                                    <TableRow key={customer.id}>
                                         <TableCell>
-                                            <Typography variant="subtitle2">
-                                                {index + 1}
-                                            </Typography>
+                                            <Typography variant="subtitle2">{index + 1 + (currentPage - 1) * usersPerPage}</Typography>
                                         </TableCell>
                                         <TableCell>
                                             <Typography variant="subtitle2">
-                                                {customer.first_name } {customer.last_name}
+                                                {customer.first_name} {customer.last_name}
                                             </Typography>
                                         </TableCell>
                                         <TableCell>
-                                            <Typography color="textSecondary" variant="subtitle2" >
-                                                {customer.email || "-"}
-                                            </Typography>
+                                            <Typography color="textSecondary" variant="subtitle2">{customer.email || "-"}</Typography>
                                         </TableCell>
                                         <TableCell>
-                                            <Typography color="textSecondary" variant="subtitle2" >
-                                                {customer.phone || "-"}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography color="textSecondary" variant="subtitle2" >
-                                                {customer.gender  || "-"}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography color="textSecondary" variant="subtitle2" >
-                                                {customer.city_name || "-"}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography color="textSecondary" variant="subtitle2" >
-                                                {customer.postal_code || "-"}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography color="textSecondary" variant="subtitle2" >
-                                                {customer.dob || "-"}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography color="textSecondary" variant="subtitle2" >
-                                                {customer.address_line1 || "-"}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography color="textSecondary" variant="subtitle2" >
-                                                {customer.language_name || "-"}
-                                            </Typography>
+                                            <Typography color="textSecondary" variant="subtitle2">{customer.phone || "-"}</Typography>
                                         </TableCell>
                                         <TableCell>
                                             <Chip
@@ -259,25 +151,11 @@ const CustomerList = () => {
                                                 sx={{ borderRadius: '4px', fontSize: '0.8rem' }}
                                             />
                                         </TableCell>
-                                        {/* <TableCell>
-                                            <Typography  >
-                                                {customer.phone}
-                                            </Typography>
-                                        </TableCell> */}
-                                        {/* {userType !== 'AG' && (
-                                            <TableCell>
-                                                <Button variant="contained" color="primary" size="small"
-                                                    onClick={() => navigate(`/custom-permissions/${customer.id}`)}
-                                                >
-                                                    View
-                                                </Button>
-                                            </TableCell>
-                                        )} */}
                                     </TableRow>
                                 ))
                             ) : (
                                 <TableRow>
-                                    <TableCell colSpan={userType !== 'AG' ? 5 : 4} sx={{ textAlign: 'center' }}>
+                                    <TableCell colSpan={5} sx={{ textAlign: 'center' }}>
                                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '300px' }}>
                                             <img src={NoData} alt="No data available" style={{ maxWidth: '100%', maxHeight: '100%' }} />
                                         </Box>
@@ -287,11 +165,22 @@ const CustomerList = () => {
                         )}
                     </TableBody>
                 </Table>
+
                 {error && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '300px' }}>
                         <img src={NoData} alt="Error fetching data" style={{ maxWidth: '100%', maxHeight: '100%' }} />
                     </Box>
                 )}
+
+                {/* Pagination */}
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+                    <Pagination
+                        count={Math.ceil(totalUsers / usersPerPage)}
+                        page={currentPage}
+                        onChange={handlePageChange}
+                        color="primary"
+                    />
+                </Box>
             </Box>
         </DashboardCard>
     );
