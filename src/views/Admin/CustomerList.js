@@ -27,8 +27,8 @@ const CustomerList = () => {
                 });
                 // Ensure data is an array
                 
-                if (Array.isArray(response.data)) {
-                    setCustomers(response.data);
+                if (Array.isArray(response.data.users)) {
+                    setCustomers(response.data.users);
                 } else {
                     console.error('Unexpected data format', response.data);
                     setCustomers([]);

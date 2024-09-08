@@ -55,7 +55,7 @@ const AgentList = () => {
             const response = await axios.get('http://134.209.145.149:9999/api/listUser?role_id=3', {
                 params: { status: selectedOption }
             });
-            setAgents(response.data);
+            setAgents(response.data.users);
         } catch (err) {
             setError(err);
         } finally {
@@ -232,7 +232,7 @@ const AgentList = () => {
         }
     };
 
-    const filteredAgents = agents.filter(agent =>
+    const filteredAgents = agents?.filter(agent =>
         (selectedOption === 'all' || (selectedOption === 1 && agent?.status) || (selectedOption === 0 && !agent.status)) && (
             agent?.first_name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
             agent?.last_name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||

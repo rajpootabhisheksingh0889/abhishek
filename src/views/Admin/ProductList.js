@@ -38,7 +38,7 @@ const ProductList = () => {
         const fetchProducts = async () => {
             try {
                 const response = await axios.get('http://134.209.145.149:9999/api/product');
-                setProducts(response.data);
+                setProducts(response.data.products);
             } catch (err) {
                 setError(err);
             } finally {
