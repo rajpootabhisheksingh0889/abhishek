@@ -29,7 +29,7 @@ const Vendor = () => {
     const fetchVendors = async () => {
         try {
             const response = await axios.get('http://134.209.145.149:9999/api/vendor');
-            setVendors(response.data); // Set the fetched data
+            setVendors(response.data.data); // Set the fetched data
             setLoading(false);
         } catch (error) {
             console.error('Error fetching vendor data:', error);

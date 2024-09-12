@@ -123,15 +123,7 @@ export default function Navbar() {
           >
             Ecommerce
           </Typography>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
+        
           <Hidden smDown>
             {navItems.map((item) => (
               <MenuButton key={item.text} onClick={() => handleNavItemClick(item.path)}>
