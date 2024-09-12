@@ -119,7 +119,8 @@ const AgentAll = () => {
                     <CardMedia
                       component="img"
                       height="180"
-                      image={agent.image}
+                      // image={agent.image}
+                      image="https://images.pexels.com/photos/8462116/pexels-photo-8462116.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load"
                       alt={agent.name}
                       sx={{ borderRadius: '50%', width: '60%', margin: '16px auto' }}
                     />
