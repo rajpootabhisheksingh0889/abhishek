@@ -273,7 +273,7 @@ const ProductList = () => {
                     </TableBody>
                 </Table>
             </Box>
-            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
                 <Pagination
                     count={Math.ceil(totalUsers / usersPerPage)}
                     page={currentPage}
