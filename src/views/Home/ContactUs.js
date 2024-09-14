@@ -17,6 +17,7 @@ const ContactUs = () => {
     mobile: '',
     address: '',
     subject: '',
+    pincode: '',
     description: '',
   });
 
@@ -78,12 +79,13 @@ const ContactUs = () => {
               { label: 'Email', name: 'email', type: 'email' },
               { label: 'Mobile Number', name: 'mobile' },
               { label: 'Address', name: 'address' },
+              { label: 'Postal Code', name: 'postalcode' },
               { label: 'Subject', name: 'subject' },
             ].map((field, index) => (
               <Grid item xs={12} sm={6} key={index}>
                 <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileFocus={{ scale: 1.05 }}
+                  // whileHover={{ scale: 1.05 }}
+                  // whileFocus={{ scale: 1.05 }}
                 >
                   <TextField
                     fullWidth
@@ -116,8 +118,8 @@ const ContactUs = () => {
             ))}
             <Grid item xs={12}>
               <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileFocus={{ scale: 1.05 }}
+                // whileHover={{ scale: 1.05 }}
+                // whileFocus={{ scale: 1.05 }}
               >
                 <TextField
                   fullWidth

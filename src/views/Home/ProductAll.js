@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
-  Container, IconButton, Grid, Paper, Typography, Divider, Checkbox, FormControlLabel, Box, TextField, Card, CardContent, CardMedia, Button, Pagination
+  Container, IconButton, Grid, Paper, Typography, Box, TextField, Card, CardContent, CardMedia, Button, Pagination, MenuItem, Select, InputLabel, FormControl
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Layout from './Layout';
@@ -20,10 +20,13 @@ const Content = styled(Paper)(({ theme }) => ({
 }));
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  transition: 'transform 0.3s',
+  transition: 'transform 0.3s, box-shadow 0.3s',
+  borderRadius: 16,
+  boxShadow: theme.shadows[5],
+  overflow: 'hidden',
   '&:hover': {
     transform: 'scale(1.05)',
-    boxShadow: theme.shadows[8],
+    boxShadow: theme.shadows[12],
   },
 }));
 
@@ -31,7 +34,7 @@ const StyledButton = styled(Button)(({ theme }) => ({
   background: theme.palette.primary.main,
   color: theme.palette.common.white,
   borderRadius: 20,
-  padding: '10px 20px',
+  padding: '12px 24px',
   marginTop: '12px',
   textTransform: 'none',
   '&:hover': {
@@ -55,16 +58,51 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
+// const Overlay = styled(Box)(({ theme }) => ({
+//   position: 'absolute',
+//   top: 0,
+//   left: 0,
+//   width: '100%',
+//   height: '100%',
+//   background: 'linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.2))',
+//   zIndex: 1,
+//   transition: 'opacity 0.3s',
+//   opacity: 0,
+//   '&:hover': {
+//     opacity: 1,
+//   },
+// }));
+
+const CardContentWrapper = styled(Box)(({ theme }) => ({
+  position: 'relative',
+  zIndex: 2,
+}));
+
+// Container for filters and search bar
+const FilterContainer = styled(Grid)(({ theme }) => ({
+  marginBottom: theme.spacing(6),
+  
+  [theme.breakpoints.down('sm')]: {
+    flexDirection: 'column',
+    gap: theme.spacing(2),
+  },
+}));
+
 function ProductAll() {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [filterType, setFilterType] = useState('');
+  const [filterValue, setFilterValue] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('');
   const itemsPerPage = 8; // Number of products per page
 
   useEffect(() => {
     fetchProducts();
-  }, [page]);
+    fetchCategories(); // Fetch categories for the category dropdown
+  }, [page, filterType, filterValue, selectedCategory]);
 
   const fetchProducts = async () => {
     try {
@@ -72,12 +110,24 @@ function ProductAll() {
         params: {
           page,
           limit: itemsPerPage, // Limit the number of products per page
+          filterType,
+          filterValue,
+          category: selectedCategory
         },
       });
       setProducts(response.data.products); // Assuming 'products' is the key in the API response
       setTotalPages(response.data.totalPages); // Assuming 'totalPages' is provided by the API
     } catch (error) {
       console.error('Error fetching products:', error);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get('http://134.209.145.149:9999/api/categories');
+      setCategories(response.data.categories); // Assuming 'categories' is the key in the API response
+    } catch (error) {
+      console.error('Error fetching categories:', error);
     }
   };
 
@@ -89,61 +139,102 @@ function ProductAll() {
     <Layout>
       <Container className='mt-4'>
         <StyledTypography variant="h1">Products</StyledTypography>
-        <Grid container spacing={3}>
-         
+        <FilterContainer container spacing={2} sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+          <Grid item xs={12} sm={3}>
+            <FormControl fullWidth>
+              <InputLabel id="filter-select-label">Filter by</InputLabel>
+              <Select
+                labelId="filter-select-label"
+                id="filter-select"
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+                label="Filter by"
+              >
+                <MenuItem value="">None</MenuItem>
+                <MenuItem value="price">Filter by Price</MenuItem>
+                <MenuItem value="category">Filter by Category</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          {filterType === 'category' && (
+            <Grid item xs={12} sm={3}>
+              <FormControl fullWidth>
+                <InputLabel id="category-select-label">Category</InputLabel>
+                <Select
+                  labelId="category-select-label"
+                  id="category-select"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  label="Category"
+                >
+                  {categories.map(category => (
+                    <MenuItem key={category.id} value={category.id}>
+                      {category.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+          )}
+          <Grid item xs={12} sm={3}>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', width: '100%' }}>
+              <StyledTextField
+                variant="outlined"
+                placeholder="Search Products"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                sx={{ width: '100%' }}
+              />
+            </Box>
+          </Grid>
+        </FilterContainer>
+        <Grid container spacing={3} marginBottom={3.5} style={{ boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)' }}>
           <Grid item xs={12} sm={8} md={12}>
             <Content>
-              <Box display="flex" justifyContent="flex-end" mb={3}>
-                <StyledTextField
-                  variant="outlined"
-                  placeholder="Search Products"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  sx={{ width: '100%', maxWidth: '300px' }}
-                />
-              </Box>
               <Grid container spacing={2} marginTop={2.5}>
                 {filteredProducts.map(product => (
                   <Grid item xs={12} sm={6} md={3} key={product.id}>
-                    <StyledCard sx={{ maxWidth: 345, borderRadius: 12 }}>
+                    <StyledCard>
                       <CardMedia
                         component="img"
                         alt={product.name}
                         height="200"
-                        // image={product.imageUrl}
                         image="https://images.pexels.com/photos/27835751/pexels-photo-27835751/free-photo-of-a-tree-with-green-apples-on-it.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load"
-                        sx={{ borderTopLeftRadius: 12, borderTopRightRadius: 12 }}
+                        sx={{ borderBottom: '1px solid #ddd' }}
                       />
-                      <CardContent>
-                        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                          <Typography gutterBottom variant="h5" component="div">
-                            {product.name}
+                      {/* <Overlay /> */}
+                      <CardContentWrapper>
+                        <CardContent>
+                          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <Typography gutterBottom variant="h5" component="div">
+                              {product.name}
+                            </Typography>
+                            <IconButton color="primary">
+                              <InfoIcon />
+                            </IconButton>
+                          </Box>
+                          <Typography variant="body2" color="text.secondary">
+                            {product.description}
                           </Typography>
-                          <IconButton color="primary">
-                            <InfoIcon />
-                          </IconButton>
-                        </Box>
-                        <Typography variant="body2" color="text.secondary">
-                          {product.description}
-                        </Typography>
-                        <Typography variant="h6" color="text.primary" sx={{ marginTop: 2 }}>
-                          {product.price}
-                        </Typography>
-                        <StyledButton
-                          variant="contained"
-                          startIcon={<ShoppingCartIcon />}
-                          fullWidth
-                        >
-                          Buy Now
-                        </StyledButton>
-                      </CardContent>
+                          <Typography variant="h6" color="text.primary" sx={{ marginTop: 2 }}>
+                            {product.price}
+                          </Typography>
+                          <StyledButton
+                            variant="contained"
+                            startIcon={<ShoppingCartIcon />}
+                            fullWidth
+                          >
+                            Buy Now
+                          </StyledButton>
+                        </CardContent>
+                      </CardContentWrapper>
                     </StyledCard>
                   </Grid>
                 ))}
               </Grid>
 
               {/* Pagination */}
-              <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
                 <Pagination
                   count={totalPages}
                   page={page}
