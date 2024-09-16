@@ -25,25 +25,27 @@ const Vendor = () => {
     const [loading, setLoading] = useState(true); // State to handle loading
     const [page, setPage] = useState(1); // Current page
     const [totalPages, setTotalPages] = useState(1); // Total number of pages
+    const [searchQuery, setSearchQuery] = useState(''); // State to handle search input
     const navigate = useNavigate();
 
     // Function to fetch vendor data from the API
-    const fetchVendors = async (page = 1) => {
+    const fetchVendors = async (page = 1, query = '') => {
+        setLoading(true); // Start loading
         try {
-            const response = await axios.get(`http://134.209.145.149:9999/api/vendor?page=${page}`);
+            const response = await axios.get(`http://134.209.145.149:9999/api/vendor?search=${query}&page=${page}`);
             setVendors(response.data.data); // Set the fetched data
             setTotalPages(response.data.totalPages); // Set total pages from response
             setPage(page); // Update the current page
-            setLoading(false);
         } catch (error) {
             console.error('Error fetching vendor data:', error);
-            setLoading(false); // Stop loading if there's an error
+        } finally {
+            setLoading(false); // Stop loading
         }
     };
 
     useEffect(() => {
-        fetchVendors(page);
-    }, [page]);
+        fetchVendors(page, searchQuery);
+    }, [page, searchQuery]);
 
     const handleViewClick = (vendorId) => {
         console.log(`Viewing vendor with ID: ${vendorId}`);
@@ -81,7 +83,7 @@ const Vendor = () => {
                     });
 
                     // Refetch vendor data after deletion
-                    fetchVendors(page);
+                    fetchVendors(page, searchQuery);
                 } catch (error) {
                     Swal.fire('Error', 'There was an issue deleting the vendor.', 'error');
                     console.error('Error deleting vendor:', error);
@@ -89,6 +91,19 @@ const Vendor = () => {
             }
         });
     };
+
+    // Handle search input changes
+    const handleSearchChange = (event) => {
+        setSearchQuery(event.target.value);
+    };
+
+    // Handle search form submission
+    const handleSearch = () => {
+        fetchVendors(1, searchQuery); // Fetch vendors for the first page with the new search query
+    };
+
+
+
 
     return (
         <DashboardCard>
@@ -102,8 +117,16 @@ const Vendor = () => {
                         size="medium"
                         label="Search Vendor"
                         variant="outlined"
-                    // Add search handling logic here if needed
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                        onKeyPress={(event) => {
+                            if (event.key === 'Enter') {
+                                handleSearch();
+                            }
+                        }}
                     />
+
+            
 
                     <Button
                         variant="contained"
@@ -164,55 +187,65 @@ const Vendor = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {vendors.map((vendor, index) => (
-                                    <TableRow key={vendor.id}>
-                                        <TableCell>
-                                            <Typography variant="subtitle2">
-                                                {index + 1}
+                                {vendors.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={6} align="center">
+                                            <Typography variant="subtitle1" color="textSecondary">
+                                                No data available
                                             </Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography variant="subtitle2">
-                                                {vendor.name || "-"}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-                                                {vendor.email || "-"}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-                                                {vendor.phone || "-"}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-                                                {vendor.gender || "-"}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell align="center">
-                                            <IconButton
-                                                color="primary"
-                                                onClick={() => handleViewClick(vendor.id)}
-                                            >
-                                                <VisibilityIcon />
-                                            </IconButton>
-                                            <IconButton
-                                                color="secondary"
-                                                onClick={() => handleEditClick(vendor.id)}
-                                            >
-                                                <EditIcon />
-                                            </IconButton>
-                                            <IconButton
-                                                color="error"
-                                                onClick={() => handleDeleteClick(vendor.id)}
-                                            >
-                                                <DeleteIcon />
-                                            </IconButton>
                                         </TableCell>
                                     </TableRow>
-                                ))}
+                                ) : (
+                                    vendors.map((vendor, index) => (
+                                        <TableRow key={vendor.id}>
+                                            <TableCell>
+                                                <Typography variant="subtitle2">
+                                                    {index + 1}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Typography variant="subtitle2">
+                                                    {vendor.name || "-"}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+                                                    {vendor.email || "-"}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+                                                    {vendor.phone || "-"}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell>
+                                                <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+                                                    {vendor.gender || "-"}
+                                                </Typography>
+                                            </TableCell>
+                                            <TableCell align="center">
+                                                <IconButton
+                                                    color="primary"
+                                                    onClick={() => handleViewClick(vendor.id)}
+                                                >
+                                                    <VisibilityIcon />
+                                                </IconButton>
+                                                <IconButton
+                                                    color="secondary"
+                                                    onClick={() => handleEditClick(vendor.id)}
+                                                >
+                                                    <EditIcon />
+                                                </IconButton>
+                                                <IconButton
+                                                    color="error"
+                                                    onClick={() => handleDeleteClick(vendor.id)}
+                                                >
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
                             </TableBody>
                         </Table>
                     </Box>
@@ -221,7 +254,7 @@ const Vendor = () => {
                         <Pagination
                             count={totalPages}
                             page={page}
-                            onChange={(event, value) => fetchVendors(value)}
+                            onChange={(event, value) => fetchVendors(value, searchQuery)}
                             color="primary"
                         />
                     </Box>
