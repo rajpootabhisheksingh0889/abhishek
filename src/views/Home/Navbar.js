@@ -1,196 +1,132 @@
 import React, { useState } from 'react';
-import { styled, alpha } from '@mui/material/styles';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import InputBase from '@mui/material/InputBase';
+import { AppBar, Toolbar, IconButton, Button, Drawer, List, ListItem, ListItemText, ListItemIcon, Divider, Box } from '@mui/material';
+import { Home, Info, Help, AccountBox, Phone, Login, Dashboard } from '@mui/icons-material';
 import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
-import Button from '@mui/material/Button';
-import { useNavigate } from 'react-router-dom';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import Hidden from '@mui/material/Hidden';
+import { Link } from 'react-router-dom';
+import './Navbar.css';
+import logo from "../../assets/images/logo.png";
 
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(1),
-    width: 'auto',
-  },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  width: '100%',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    [theme.breakpoints.up('sm')]: {
-      width: '12ch',
-      '&:focus': {
-        width: '20ch',
-      },
-    },
-  },
-}));
-
-const MenuButton = styled(Button)(({ theme }) => ({
-  color: 'inherit',
-  marginLeft: theme.spacing(2),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-}));
-
-export default function Navbar() {
-  const navigate = useNavigate();
-  const [anchorEl, setAnchorEl] = useState(null);
+const Navbar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const token = localStorage.getItem('accessToken');
+  const accessToken = localStorage.getItem('accessToken'); // Check if accessToken exists
 
   const handleDrawerToggle = () => {
     setDrawerOpen(!drawerOpen);
   };
 
-  const handleLoginClick = () => {
-    navigate('/auth/login');
-  };
-
-  const handleMenuClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
-
-  const handleNavItemClick = (path) => {
-    navigate(path);
-    handleDrawerToggle();
-  };
-
   const navItems = [
-    { text: 'Home', path: '/' },
-    { text: 'Product', path: '/productpage' },
-    { text: 'Agent', path: '/agent' },
-    { text: 'About', path: '/about' },
-    { text: 'Subscription', path: '/subscription' },
-    { text: 'Contact Us', path: '/contactus' },
+    { text: 'Home', icon: <Home />, path: '/' },
+    { text: 'Product', icon: <Info />, path: '/productpage' },
+    { text: 'Agent', icon: <AccountBox />, path: '/agent' },
+    { text: 'About', icon: <Info />, path: '/about' },
+    { text: 'Subscription', icon: <Help />, path: '/subscription' },
+    { text: 'Contact Us', icon: <Phone />, path: '/contactus' },
   ];
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar>
+    <AppBar position="static" sx={{
+      background: 'linear-gradient(45deg, #3f51b5 30%, #1a237e 90%)',
+      color: 'white'
+    }} elevation={3}>
+      <Toolbar>
+        <Box sx={{ flexGrow: 1 }}>
           <IconButton
-            size="large"
             edge="start"
             color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2, display: { sm: 'none' } }}
+            aria-label="menu"
             onClick={handleDrawerToggle}
+            sx={{ display: { md: 'none' } }}
           >
             <MenuIcon />
           </IconButton>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-          >
-            Ecommerce
-          </Typography>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
-          <Hidden smDown>
-            {navItems.map((item) => (
-              <MenuButton key={item.text} onClick={() => handleNavItemClick(item.path)}>
-                {item.text}
-              </MenuButton>
-            ))}
-            {token ? (
-              <MenuButton onClick={() => handleNavItemClick('/dashboard')}>Dashboard</MenuButton>
-            ) : (
-              <MenuButton
-                onClick={handleLoginClick}
-                style={{
-                  backgroundColor: '#007bff',
-                  color: 'white',
-                  padding: '10px 20px',
-                  borderRadius: '5px',
-                  border: 'none',
-                  cursor: 'pointer',
-                  fontSize: '16px',
-                  fontWeight: 'bold',
-                  transition: 'background-color 0.3s ease',
-                }}
-              >
-                Login
-              </MenuButton>
-            )}
-          </Hidden>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        anchor="left"
-        open={drawerOpen}
-        onClose={handleDrawerToggle}
-        sx={{ display: { sm: 'none' } }}
-      >
-        <Box
-          sx={{ width: 250 }}
-          role="presentation"
-          onClick={handleDrawerToggle}
-          onKeyDown={handleDrawerToggle}
-        >
-          <List>
-            {navItems.map((item) => (
-              <ListItem button key={item.text} onClick={() => handleNavItemClick(item.path)}>
-                <ListItemText primary={item.text} />
-              </ListItem>
-            ))}
-            {token ? (
-              <ListItem button onClick={() => handleNavItemClick('/dashboard')}>
-                <ListItemText primary="Dashboard" />
-              </ListItem>
-            ) : (
-              <ListItem button onClick={handleLoginClick}>
-                <ListItemText primary="Login" />
-              </ListItem>
-            )}
-          </List>
+          <img
+            src={logo}
+            alt="Company Logo"
+            style={{
+              width: "63px",
+              height: "auto",
+              backgroundColor: "transparent",
+              borderRadius: "50%"
+            }}
+          />
         </Box>
+
+        {/* Desktop Menu Items */}
+        <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+          {navItems.map((item) => (
+            <Button
+              key={item.text}
+              color="inherit"
+              startIcon={item.icon}
+              component={Link}
+              to={item.path}
+              sx={{ margin: '0 10px', fontWeight: 'bold', textTransform: 'none' }}
+            >
+              {item.text}
+            </Button>
+          ))}
+          {accessToken ? (
+            <Button
+              color="inherit"
+              startIcon={<Dashboard />}
+              component={Link}
+              to="/dashboard"
+              sx={{ margin: '0 10px', fontWeight: 'bold', textTransform: 'none' }}
+            >
+              Dashboard
+            </Button>
+          ) : (
+            <Button
+              variant="contained"
+              color="secondary"
+              startIcon={<Login />}
+              component={Link}
+              to="/auth/login"
+              sx={{
+                margin: '0 10px',
+                fontWeight: 'bold',
+                textTransform: 'none',
+                borderRadius: '20px',
+                padding: '10px 20px',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                '&:hover': {
+                  boxShadow: '0 6px 12px rgba(0, 0, 0, 0.2)',
+                  transform: 'scale(1.05)',
+                },
+                transition: 'transform 0.3s ease-in-out'
+              }}
+            >
+              Login
+            </Button>
+          )}
+        </Box>
+      </Toolbar>
+
+      {/* Mobile Drawer */}
+      <Drawer anchor="left" open={drawerOpen} onClose={handleDrawerToggle}>
+        <List>
+          {navItems.map((item) => (
+            <ListItem button key={item.text} component={Link} to={item.path} onClick={handleDrawerToggle}>
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
+            </ListItem>
+          ))}
+          <Divider />
+          {accessToken ? (
+            <ListItem button component={Link} to="/dashboard" onClick={handleDrawerToggle}>
+              <ListItemIcon><Dashboard /></ListItemIcon>
+              <ListItemText primary="Dashboard" />
+            </ListItem>
+          ) : (
+            <ListItem button component={Link} to="/auth/login" onClick={handleDrawerToggle}>
+              <ListItemIcon><Login /></ListItemIcon>
+              <ListItemText primary="Login" />
+            </ListItem>
+          )}
+        </List>
       </Drawer>
-    </Box>
+    </AppBar>
   );
-}
+};
+
+export default Navbar;

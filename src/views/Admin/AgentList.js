@@ -4,7 +4,7 @@ import {
     Typography, Box, TextField,
     FormControl, InputLabel, Select, MenuItem,
     Table, TableBody, TableCell, TableHead, TableRow, Chip, Skeleton, Switch, Button,
-    Dialog, DialogTitle, DialogContent, DialogActions,
+    Dialog, Pagination, DialogTitle, DialogContent, DialogActions,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -25,7 +25,9 @@ const AgentList = () => {
     const [otpSent, setOtpSent] = useState(false);
     const [userId, setUserId] = useState(null); // Track the user ID for OTP verification
     const [otp, setOtp] = useState(''); // Track OTP input
-
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalUsers, setTotalUsers] = useState(0);
+    const [usersPerPage, setUsersPerPage] = useState(10);
     const [newAgent, setNewAgent] = useState({
         first_name: '',
         last_name: '',
@@ -42,7 +44,9 @@ const AgentList = () => {
         phone: '',
         otp: '',
     });
-
+    const handlePageChange = (event, value) => {
+        setCurrentPage(value);
+    };
     const [selectedOption, setSelectedOption] = useState('all');
 
     useEffect(() => {
@@ -55,7 +59,8 @@ const AgentList = () => {
             const response = await axios.get('http://134.209.145.149:9999/api/listUser?role_id=3', {
                 params: { status: selectedOption }
             });
-            setAgents(response.data);
+            setAgents(response.data.users);
+            setTotalUsers(response.data.total_users); 
         } catch (err) {
             setError(err);
         } finally {
@@ -232,7 +237,7 @@ const AgentList = () => {
         }
     };
 
-    const filteredAgents = agents.filter(agent =>
+    const filteredAgents = agents?.filter(agent =>
         (selectedOption === 'all' || (selectedOption === 1 && agent?.status) || (selectedOption === 0 && !agent.status)) && (
             agent?.first_name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
             agent?.last_name?.toLowerCase()?.includes(searchTerm?.toLowerCase()) ||
@@ -418,7 +423,14 @@ const AgentList = () => {
                     </Box>
                 )}
             </Box>
-
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 3 }}>
+                <Pagination
+                    count={Math.ceil(totalUsers / usersPerPage)}
+                    page={currentPage}
+                    onChange={handlePageChange}
+                    color="primary"
+                />
+            </Box>
             {/* Add Agent Modal */}
             <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
                 <DialogTitle>Add New Agent</DialogTitle>

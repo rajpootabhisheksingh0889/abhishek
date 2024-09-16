@@ -366,9 +366,9 @@ const getMenuItems = () => {
     switch (userType) {
         case '1':
             return Menuitems;
-        case '4':
-            return Menuitems1;
         case '3':
+            return Menuitems1;
+        case '2':
             return Menuitems2;
         default:
             return []; // Always return an array

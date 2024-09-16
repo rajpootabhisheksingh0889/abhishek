@@ -9,7 +9,9 @@ import {
     TableRow,
     TextField,
     Button,
-    IconButton
+    IconButton,
+    Skeleton,
+    Pagination
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
@@ -21,15 +23,17 @@ import Swal from 'sweetalert2';
 const Vendor = () => {
     const [vendors, setVendors] = useState([]); // State to store vendors data
     const [loading, setLoading] = useState(true); // State to handle loading
+    const [page, setPage] = useState(1); // Current page
+    const [totalPages, setTotalPages] = useState(1); // Total number of pages
     const navigate = useNavigate();
-    const [anchorEl, setAnchorEl] = useState(null);
-
 
     // Function to fetch vendor data from the API
-    const fetchVendors = async () => {
+    const fetchVendors = async (page = 1) => {
         try {
-            const response = await axios.get('http://134.209.145.149:9999/api/vendor');
-            setVendors(response.data); // Set the fetched data
+            const response = await axios.get(`http://134.209.145.149:9999/api/vendor?page=${page}`);
+            setVendors(response.data.data); // Set the fetched data
+            setTotalPages(response.data.totalPages); // Set total pages from response
+            setPage(page); // Update the current page
             setLoading(false);
         } catch (error) {
             console.error('Error fetching vendor data:', error);
@@ -38,8 +42,8 @@ const Vendor = () => {
     };
 
     useEffect(() => {
-        fetchVendors();
-    }, []);
+        fetchVendors(page);
+    }, [page]);
 
     const handleViewClick = (vendorId) => {
         console.log(`Viewing vendor with ID: ${vendorId}`);
@@ -53,7 +57,7 @@ const Vendor = () => {
     const handleEditClick = (vendorId) => {
         navigate(`/addvendor/${vendorId}`);
     };
-    
+
     const handleDeleteClick = async (vendorId) => {
         Swal.fire({
             title: 'Are you sure?',
@@ -75,9 +79,9 @@ const Vendor = () => {
                         timer: 3000, // Auto-close after 3 seconds
                         showConfirmButton: false
                     });
-                    
+
                     // Refetch vendor data after deletion
-                    fetchVendors();
+                    fetchVendors(page);
                 } catch (error) {
                     Swal.fire('Error', 'There was an issue deleting the vendor.', 'error');
                     console.error('Error deleting vendor:', error);
@@ -98,7 +102,7 @@ const Vendor = () => {
                         size="medium"
                         label="Search Vendor"
                         variant="outlined"
-                        // Add search handling logic here if needed
+                    // Add search handling logic here if needed
                     />
 
                     <Button
@@ -113,99 +117,115 @@ const Vendor = () => {
             </Box>
 
             {loading ? (
-                <Typography variant="h6">Loading...</Typography>
+                <Box sx={{ mt: 2 }}>
+                    <Skeleton variant="rectangular" width="100%" height={60} />
+                    <Skeleton variant="rectangular" width="100%" height={60} sx={{ mt: 1 }} />
+                    <Skeleton variant="rectangular" width="100%" height={60} sx={{ mt: 1 }} />
+                </Box>
             ) : (
-                <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
-                    <Table
-                        aria-label="simple table"
-                        sx={{ whiteSpace: "nowrap", mt: 2 }}
-                    >
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>
-                                    <Typography variant="subtitle2" fontWeight={600}>
-                                        Id
-                                    </Typography>
-                                </TableCell>
-                                <TableCell>
-                                    <Typography variant="subtitle2" fontWeight={600}>
-                                       Name
-                                    </Typography>
-                                </TableCell>
-                                <TableCell>
-                                    <Typography variant="subtitle2" fontWeight={600}>
-                                       Email
-                                    </Typography>
-                                </TableCell>
-                                <TableCell>
-                                    <Typography variant="subtitle2" fontWeight={600}>
-                                      Phone
-                                    </Typography>
-                                </TableCell>
-                                <TableCell >
-                                    <Typography variant="subtitle2" fontWeight={600}>
-                                       Gender
-                                    </Typography>
-                                </TableCell>
-                                <TableCell align="center">
-                                    <Typography variant="subtitle2" fontWeight={600}>
-                                        Actions
-                                    </Typography>
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {vendors.map((vendor, index) => (
-                                <TableRow key={vendor.id}>
-                                     <TableCell>
-                                        <Typography variant="subtitle2">
-                                            {index + 1}
+                <>
+                    <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
+                        <Table
+                            aria-label="simple table"
+                            sx={{ whiteSpace: "nowrap", mt: 2 }}
+                        >
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
+                                        <Typography variant="subtitle2" fontWeight={600}>
+                                            Id
                                         </Typography>
                                     </TableCell>
-                                    <TableCell>
-                                        <Typography variant="subtitle2">
-                                            {vendor.name || "-"} 
+                                    <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
+                                        <Typography variant="subtitle2" fontWeight={600}>
+                                            Name
                                         </Typography>
                                     </TableCell>
-                                    <TableCell>
-                                        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-                                            {vendor.email || "-"}
+                                    <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
+                                        <Typography variant="subtitle2" fontWeight={600}>
+                                            Email
                                         </Typography>
                                     </TableCell>
-                                    <TableCell>
-                                        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-                                            {vendor.phone || "-"}
+                                    <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
+                                        <Typography variant="subtitle2" fontWeight={600}>
+                                            Phone
                                         </Typography>
                                     </TableCell>
-                                    
-                                    <TableCell>
-                                        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>{vendor.gender || "-"}</Typography>
+                                    <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
+                                        <Typography variant="subtitle2" fontWeight={600}>
+                                            Gender
+                                        </Typography>
                                     </TableCell>
-                                    <TableCell align="center">
-                                        <IconButton
-                                            color="primary"
-                                            onClick={() => handleViewClick(vendor.id)}
-                                        >
-                                            <VisibilityIcon />
-                                        </IconButton>
-                                        <IconButton
-                                            color="secondary"
-                                            onClick={() => handleEditClick(vendor.id)}
-                                        >
-                                            <EditIcon />
-                                        </IconButton>
-                                        <IconButton
-                                            color="error"
-                                            onClick={() => handleDeleteClick(vendor.id)}
-                                        >
-                                            <DeleteIcon />
-                                        </IconButton>
+                                    <TableCell align="center" sx={{ backgroundColor: '#f5f5f5' }}>
+                                        <Typography variant="subtitle2" fontWeight={600}>
+                                            Actions
+                                        </Typography>
                                     </TableCell>
                                 </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </Box>
+                            </TableHead>
+                            <TableBody>
+                                {vendors.map((vendor, index) => (
+                                    <TableRow key={vendor.id}>
+                                        <TableCell>
+                                            <Typography variant="subtitle2">
+                                                {index + 1}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography variant="subtitle2">
+                                                {vendor.name || "-"}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+                                                {vendor.email || "-"}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+                                                {vendor.phone || "-"}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
+                                                {vendor.gender || "-"}
+                                            </Typography>
+                                        </TableCell>
+                                        <TableCell align="center">
+                                            <IconButton
+                                                color="primary"
+                                                onClick={() => handleViewClick(vendor.id)}
+                                            >
+                                                <VisibilityIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                color="secondary"
+                                                onClick={() => handleEditClick(vendor.id)}
+                                            >
+                                                <EditIcon />
+                                            </IconButton>
+                                            <IconButton
+                                                color="error"
+                                                onClick={() => handleDeleteClick(vendor.id)}
+                                            >
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </Box>
+
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+                        <Pagination
+                            count={totalPages}
+                            page={page}
+                            onChange={(event, value) => fetchVendors(value)}
+                            color="primary"
+                        />
+                    </Box>
+                </>
             )}
         </DashboardCard>
     );
