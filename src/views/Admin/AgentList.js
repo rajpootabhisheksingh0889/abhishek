@@ -316,6 +316,11 @@ const AgentList = () => {
                             </TableCell>
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
+                                    Gender
+                                </Typography>
+                            </TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
+                                <Typography variant="subtitle2" fontWeight={600}>
                                     Email
                                 </Typography>
                             </TableCell>
@@ -363,6 +368,9 @@ const AgentList = () => {
                                     <TableCell>
                                         <Skeleton variant="text" />
                                     </TableCell>
+                                    <TableCell>
+                                        <Skeleton variant="text" />
+                                    </TableCell>
                                     {/* <TableCell>
                                         <Skeleton variant="text" />
                                     </TableCell> */}
@@ -379,6 +387,11 @@ const AgentList = () => {
                                     <TableCell>
                                         <Typography variant="subtitle2">
                                             {agent.first_name} {agent.last_name}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Typography color="textSecondary" variant="subtitle2">
+                                            {agent.gender}
                                         </Typography>
                                     </TableCell>
                                     <TableCell>

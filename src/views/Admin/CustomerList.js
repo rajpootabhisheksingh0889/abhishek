@@ -105,6 +105,8 @@ const CustomerList = () => {
                                 <Typography variant="subtitle2" fontWeight={600}>Name</Typography>
                             </TableCell>
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
+                                <Typography variant="subtitle2" fontWeight={600}>Gender</Typography>
+                            </TableCell> <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>Email</Typography>
                             </TableCell>
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
@@ -120,6 +122,7 @@ const CustomerList = () => {
                             Array.from(new Array(5)).map((_, index) => (
                                 <TableRow key={index}>
                                     <TableCell><Skeleton variant="text" width={40} /></TableCell>
+                                    <TableCell><Skeleton variant="text" width={100} /></TableCell>
                                     <TableCell><Skeleton variant="text" width={100} /></TableCell>
                                     <TableCell><Skeleton variant="text" width={150} /></TableCell>
                                     <TableCell><Skeleton variant="text" width={60} /></TableCell>
@@ -139,6 +142,8 @@ const CustomerList = () => {
                                             </Typography>
                                         </TableCell>
                                         <TableCell>
+                                            <Typography color="textSecondary" variant="subtitle2">{customer.gender || "-"}</Typography>
+                                        </TableCell> <TableCell>
                                             <Typography color="textSecondary" variant="subtitle2">{customer.email || "-"}</Typography>
                                         </TableCell>
                                         <TableCell>

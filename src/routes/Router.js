@@ -15,6 +15,7 @@ import Vendor from 'src/views/Admin/Vendor';
 import AddVendor from 'src/views/Admin/AddVendor';
 import VendorDetails from 'src/views/Admin/VenderDetail';
 import BuyNow from 'src/views/Customer/BuyNow';
+import VendorDetail from 'src/views/Admin/VendorDetail';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -197,6 +198,15 @@ const Router = [
         element: (
           <PrivateRoute>
             <AddVendor />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/venderdetail',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <VendorDetail />
           </PrivateRoute>
         ),
       },

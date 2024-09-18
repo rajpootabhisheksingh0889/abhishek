@@ -240,7 +240,12 @@ const Menuitems = [
         icon: IconLayoutDashboard,
         href: '/productlist',
     },
-
+    {
+        id: uniqueId(),
+        title: 'Inventory',
+        icon: IconLayoutDashboard,
+        href: '/inventory',
+    },
     {
         id: uniqueId(),
         title: 'Discount Coupon',

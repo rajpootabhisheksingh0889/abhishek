@@ -126,7 +126,7 @@ const AgentAll = () => {
                     />
                     <CardContent sx={{ textAlign: 'center' }}>
                       <Typography gutterBottom variant="h6" component="div" sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        {agent.name}
+                        {agent?.first_name} {agent?.last_name}
                         <StatusText online={agent.online} sx={{ marginLeft: 1 }}>
                           <StatusDot online={agent.online} />
                         </StatusText>
