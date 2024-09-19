@@ -16,6 +16,8 @@ import AddVendor from 'src/views/Admin/AddVendor';
 import VendorDetails from 'src/views/Admin/VenderDetail';
 import BuyNow from 'src/views/Customer/BuyNow';
 import VendorDetail from 'src/views/Admin/VendorDetail';
+import Purchase from 'src/views/Admin/Purchase';
+import AddPurchase from 'src/views/Admin/AddPurchase';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -135,7 +137,24 @@ const Router = [
           </PrivateRoute>
         ),
       },
-
+      {
+        path: '/purchase',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <Purchase />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/addPurchase',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <AddPurchase />
+          </PrivateRoute>
+        ),
+      },
 
       {
         path: '/custom-permissions/:userId',

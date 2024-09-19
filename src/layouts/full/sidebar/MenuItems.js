@@ -283,6 +283,12 @@ const Menuitems = [
         icon: IconLayoutDashboard,
         href: '/vendor',
     },
+    {
+        id: uniqueId(),
+        title: 'Purchase',
+        icon: IconLayoutDashboard,
+        href: '/purchase',
+    },
 ];
 
 const Menuitems1 = [
