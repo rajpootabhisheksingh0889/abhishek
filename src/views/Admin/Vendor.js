@@ -19,7 +19,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import DashboardCard from 'src/components/shared/DashboardCard';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-
+import NoData from "src/assets/images/products/NoData.jpg";
 const Vendor = () => {
     const [vendors, setVendors] = useState([]); // State to store vendors data
     const [loading, setLoading] = useState(true); // State to handle loading
@@ -190,9 +190,9 @@ const Vendor = () => {
                                 {vendors.length === 0 ? (
                                     <TableRow>
                                         <TableCell colSpan={6} align="center">
-                                            <Typography variant="subtitle1" color="textSecondary">
-                                                No data available
-                                            </Typography>
+                                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '300px' }}>
+                                        <img src={NoData} alt="No data available" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+                                    </Box>
                                         </TableCell>
                                     </TableRow>
                                 ) : (
