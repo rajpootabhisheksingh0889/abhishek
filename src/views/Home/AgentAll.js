@@ -69,7 +69,7 @@ const AgentAll = () => {
   useEffect(() => {
     const fetchAgents = async () => {
       try {
-        const response = await axios.get(`http://134.209.145.149:9999/api/listUser?role_id=3&status=all&page=${page}`);
+        const response = await axios.get(`https://api.qikads.in/api/listUser?role_id=3&status=all&page=${page}`);
         if (response.data) {
           setAgents(response.data.users || []);
           setTotalPages(response.data.totalPages || 1);

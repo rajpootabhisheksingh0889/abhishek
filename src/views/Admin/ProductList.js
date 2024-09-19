@@ -41,7 +41,7 @@ const ProductList = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://134.209.145.149:9999/api/product');
+                const response = await axios.get('https://api.qikads.in/api/product');
                 setProducts(response.data.products);
                 setTotalUsers(response.data.total_products); 
             } catch (err) {
@@ -74,7 +74,7 @@ const ProductList = () => {
     const confirmDelete = async () => {
         setOpenDialog(false);
         try {
-            await axios.delete(`http://134.209.145.149:9999/api/product/${productToDelete.id}`);
+            await axios.delete(`https://api.qikads.in/api/product/${productToDelete.id}`);
             setProducts(products.filter((p) => p.id !== productToDelete.id));
             Swal.fire({
                 icon: 'success',

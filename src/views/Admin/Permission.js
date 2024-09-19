@@ -16,7 +16,7 @@ const Permission = () => {
   useEffect(() => {
     const fetchNames = async () => {
       try {
-        const response = await fetch('http://134.209.145.149:9999/api/menuList');
+        const response = await fetch('https://api.qikads.in/api/menuList');
         const result = await response.json();
 
         if (result.success) {
@@ -47,7 +47,7 @@ const Permission = () => {
   useEffect(() => {
     const fetchPermissions = async () => {
       try {
-        const response = await fetch('http://134.209.145.149:9999/api/getPermissions');
+        const response = await fetch('https://api.qikads.in/api/getPermissions');
         const permissions = await response.json();
 
         if (permissions) {
@@ -100,7 +100,7 @@ const Permission = () => {
     }));
 
     try {
-      const response = await fetch('http://134.209.145.149:9999/api/dPermission', {
+      const response = await fetch('https://api.qikads.in/api/dPermission', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

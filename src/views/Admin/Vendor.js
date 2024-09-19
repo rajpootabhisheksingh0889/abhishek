@@ -32,7 +32,7 @@ const Vendor = () => {
     const fetchVendors = async (page = 1, query = '') => {
         setLoading(true); // Start loading
         try {
-            const response = await axios.get(`http://134.209.145.149:9999/api/vendor?search=${query}&page=${page}`);
+            const response = await axios.get(`https://api.qikads.in/api/vendor?search=${query}&page=${page}`);
             setVendors(response.data.data); // Set the fetched data
             setTotalPages(response.data.totalPages); // Set total pages from response
             setPage(page); // Update the current page
@@ -72,7 +72,7 @@ const Vendor = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await axios.delete(`http://134.209.145.149:9999/api/vendor/${vendorId}`);
+                    await axios.delete(`https://api.qikads.in/api/vendor/${vendorId}`);
                     // Show success message with auto-close after 3 seconds
                     Swal.fire({
                         title: 'Deleted!',

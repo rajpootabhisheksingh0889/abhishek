@@ -71,7 +71,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                 otp_code: formData.otp,
             });
 
-            const response = await axios.post('http://134.209.145.149:9999/api/verify-otp', {
+            const response = await axios.post('https://api.qikads.in/api/verify-otp', {
                 user_id: userId,
                 otp_code: formData.otp,
             });
@@ -126,7 +126,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
         setLoading(true);
         try {
-            const response = await axios.post('http://134.209.145.149:9999/api/resend-otp', {
+            const response = await axios.post('https://api.qikads.in/api/resend-otp', {
                 email: formData.email,
             });
 
@@ -175,7 +175,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
         setLoading(true);
         try {
-            const response = await axios.post('http://134.209.145.149:9999/api/login', formData);
+            const response = await axios.post('https://api.qikads.in/api/login', formData);
             const { token, user, error, status, message, user_id } = response.data;
 
             if (error === 'otp' && status === 0) {

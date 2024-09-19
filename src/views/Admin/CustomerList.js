@@ -32,7 +32,7 @@ const CustomerList = () => {
         const fetchCustomers = async () => {
             setLoading(true);
             try {
-                const response = await axios.get('http://134.209.145.149:9999/api/listUser?role_id=2', {
+                const response = await axios.get('https://api.qikads.in/api/listUser?role_id=2', {
                     params: { status: selectedOption, page: currentPage, per_page: usersPerPage }
                 });
 

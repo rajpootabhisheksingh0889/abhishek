@@ -42,7 +42,7 @@ const Languages = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://134.209.145.149:9999/api/language');
+                const response = await axios.get('https://api.qikads.in/api/language');
                 setProducts(response.data);
             } catch (err) {
                 setError(err);
@@ -72,7 +72,7 @@ const Languages = () => {
     const confirmDelete = async () => {
         setOpenDialog(false);
         try {
-            await axios.delete(`http://134.209.145.149:9999/api/language/${productToDelete.id}`);
+            await axios.delete(`https://api.qikads.in/api/language/${productToDelete.id}`);
             setProducts(products.filter((p) => p.id !== productToDelete.id));
             Swal.fire({
                 icon: 'success',
@@ -118,7 +118,7 @@ const Languages = () => {
 
         if (isEditing) {
             try {
-                await axios.put(`http://134.209.145.149:9999/api/language/${currentProduct.id}`, currentProduct);
+                await axios.put(`https://api.qikads.in/api/language/${currentProduct.id}`, currentProduct);
                 setProducts(products.map((product) => (product.id === currentProduct.id ? currentProduct : product)));
                 Swal.fire({
                     icon: 'success',
@@ -136,7 +136,7 @@ const Languages = () => {
             }
         } else {
             try {
-                const response = await axios.post(`http://134.209.145.149:9999/api/language`, currentProduct);
+                const response = await axios.post(`https://api.qikads.in/api/language`, currentProduct);
                 setProducts([...products, response.data]);
                 Swal.fire({
                     icon: 'success',

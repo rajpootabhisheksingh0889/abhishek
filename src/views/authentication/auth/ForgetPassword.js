@@ -68,7 +68,7 @@ const ForgetPassword = () => {
         }
 
         try {
-            const response = await fetch(`http://134.209.145.149:9999/api/reset-password/${token}`, {
+            const response = await fetch(`https://api.qikads.in/api/reset-password/${token}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

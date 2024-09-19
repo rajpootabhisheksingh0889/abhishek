@@ -93,7 +93,7 @@ const MyProfile = () => {
                 if (!uid) {
                     throw new Error('User ID not found');
                 }
-                const response = await axios.get(`http://134.209.145.149:9999/api/user-info?user_id=${uid}`);
+                const response = await axios.get(`https://api.qikads.in/api/user-info?user_id=${uid}`);
                 if (response.data) {
                     const profileData = response.data;
 
@@ -134,7 +134,7 @@ const MyProfile = () => {
     useEffect(() => {
         const fetchLanguages = async () => {
             try {
-                const response = await axios.get('http://134.209.145.149:9999/api/language');
+                const response = await axios.get('https://api.qikads.in/api/language');
                 setLanguages(response.data); // Assuming API returns an object with a 'languages' array
             } catch (error) {
                 console.error('Failed to fetch languages:', error);
@@ -244,7 +244,7 @@ const MyProfile = () => {
         formData.append('user_id', uid);
 
         try {
-            const response = await axios.post('http://134.209.145.149:9999/api/gallery', formData, {
+            const response = await axios.post('https://api.qikads.in/api/gallery', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -356,7 +356,7 @@ const MyProfile = () => {
             //     formData.append('gallery', file);
             // });
 
-            const response = await axios.put(`http://134.209.145.149:9999/api/users/${uid}`, formData, {
+            const response = await axios.put(`https://api.qikads.in/api/users/${uid}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

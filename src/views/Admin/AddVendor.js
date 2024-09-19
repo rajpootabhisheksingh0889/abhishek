@@ -51,7 +51,7 @@ const AddVendor = () => {
 
     const fetchVendorDetails = async (id) => {
         try {
-            const response = await axios.get(`http://134.209.145.149:9999/api/vendor/${id}`);
+            const response = await axios.get(`https://api.qikads.in/api/vendor/${id}`);
             console.log(response.data); // Check the response structure here
             if (response.data) {
                 const vendor = response.data;
@@ -91,8 +91,8 @@ const AddVendor = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const apiUrl = isEditMode
-            ? `http://134.209.145.149:9999/api/vendor/${vendorId}`
-            : 'http://134.209.145.149:9999/api/vendor';
+            ? `https://api.qikads.in/api/vendor/${vendorId}`
+            : 'https://api.qikads.in/api/vendor';
 
         try {
             if (isEditMode) {

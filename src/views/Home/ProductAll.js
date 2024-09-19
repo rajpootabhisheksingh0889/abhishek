@@ -106,7 +106,7 @@ function ProductAll() {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://134.209.145.149:9999/api/product', {
+      const response = await axios.get('https://api.qikads.in/api/product', {
         params: {
           page,
           limit: itemsPerPage, // Limit the number of products per page
@@ -124,7 +124,7 @@ function ProductAll() {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get('http://134.209.145.149:9999/api/categories');
+      const response = await axios.get('https://api.qikads.in/api/categories');
       setCategories(response.data.categories); // Assuming 'categories' is the key in the API response
     } catch (error) {
       console.error('Error fetching categories:', error);

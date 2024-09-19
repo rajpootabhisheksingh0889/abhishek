@@ -56,7 +56,7 @@ const AgentList = () => {
     const fetchAgents = async () => {
         setLoading(true);
         try {
-            const response = await axios.get('http://134.209.145.149:9999/api/listUser?role_id=3', {
+            const response = await axios.get('https://api.qikads.in/api/listUser?role_id=3', {
                 params: { status: selectedOption }
             });
             setAgents(response.data.users);
@@ -79,7 +79,7 @@ const AgentList = () => {
             );
             setAgents(updatedAgents);
 
-            await axios.put(`http://134.209.145.149:9999/api/toggle_user_status/${agentId}`);
+            await axios.put(`https://api.qikads.in/api/toggle_user_status/${agentId}`);
             Swal.fire({
                 icon: 'success',
                 title: 'Status Updated',
@@ -173,7 +173,7 @@ const AgentList = () => {
 
         setLoading(true);
         try {
-            const response = await axios.post('http://134.209.145.149:9999/api/register', {
+            const response = await axios.post('https://api.qikads.in/api/register', {
                 ...newAgent,
                 role_id: 3,
             });
@@ -203,7 +203,7 @@ const AgentList = () => {
 
         setLoading(true);
         try {
-            await axios.post('http://134.209.145.149:9999/api/otp', { email: newAgent.email });
+            await axios.post('https://api.qikads.in/api/otp', { email: newAgent.email });
             toast.success('OTP sent to your email');
         } catch (error) {
             toast.error('Failed to send OTP.');
@@ -223,7 +223,7 @@ const AgentList = () => {
 
         setLoading(true);
         try {
-            await axios.post('http://134.209.145.149:9999/api/verify-otp', {
+            await axios.post('https://api.qikads.in/api/verify-otp', {
                 user_id: userId,
                 otp_code: otp,
             });

@@ -22,7 +22,7 @@ const CustomerList = () => {
     useEffect(() => {
         const fetchCustomers = async () => {
             try {
-                const response = await axios.get('http://134.209.145.149:9999/api/listUser?role_id=4', {
+                const response = await axios.get('https://api.qikads.in/api/listUser?role_id=4', {
                     params: { status: selectedOption }
                 });
                 // Ensure data is an array

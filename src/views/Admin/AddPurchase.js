@@ -34,8 +34,8 @@ const AddPurchase = () => {
     useEffect(() => {
         const fetchOptions = async () => {
             try {
-                const vendorResponse = await axios.get('http://134.209.145.149:9999/api/listUser?role_id=3&status=all');
-                const productResponse = await axios.get('http://134.209.145.149:9999/api/product');
+                const vendorResponse = await axios.get('https://api.qikads.in/api/listUser?role_id=3&status=all');
+                const productResponse = await axios.get('https://api.qikads.in/api/product');
 
                 setVendors(vendorResponse.data.users || []);
                 setProducts(productResponse.data.products || []);
@@ -54,7 +54,7 @@ const AddPurchase = () => {
 
     const fetchProductDetails = async (id) => {
         try {
-            const response = await axios.get(`http://134.209.145.149:9999/api/language/${id}`);
+            const response = await axios.get(`https://api.qikads.in/api/language/${id}`);
             if (response.data) {
                 const product = response.data;
                 setFormData({
@@ -92,8 +92,8 @@ const AddPurchase = () => {
         }
 
         const apiUrl = isEditMode
-            ? `http://134.209.145.149:9999/api/language/${productId}`
-            : 'http://134.209.145.149:9999/api/language';
+            ? `https://api.qikads.in/api/language/${productId}`
+            : 'https://api.qikads.in/api/language';
 
         const payload = {
             name: formData.name,

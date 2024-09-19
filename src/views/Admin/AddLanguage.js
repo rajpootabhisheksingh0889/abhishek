@@ -39,7 +39,7 @@ const AddLanguage = () => {
 
     const fetchProductDetails = async (id) => {
         try {
-            const response = await axios.get(`http://134.209.145.149:9999/api/language/${id}`);
+            const response = await axios.get(`https://api.qikads.in/api/language/${id}`);
             if (response.data && response.data) {
               
                 const product = response.data;
@@ -87,8 +87,8 @@ const AddLanguage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const apiUrl = isEditMode
-            ? `http://134.209.145.149:9999/api/language/${productId}`
-            : 'http://134.209.145.149:9999/api/language';
+            ? `https://api.qikads.in/api/language/${productId}`
+            : 'https://api.qikads.in/api/language';
 
         try {
             if (isEditMode) {
