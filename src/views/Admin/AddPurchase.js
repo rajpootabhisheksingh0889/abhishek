@@ -34,10 +34,10 @@ const AddPurchase = () => {
     useEffect(() => {
         const fetchOptions = async () => {
             try {
-                const vendorResponse = await axios.get('https://api.qikads.in/api/listUser?role_id=3&status=all');
+                const vendorResponse = await axios.get('https://api.qikads.in/api/vendor');
                 const productResponse = await axios.get('https://api.qikads.in/api/product');
 
-                setVendors(vendorResponse.data.users || []);
+                setVendors(vendorResponse.data.data || []);
                 setProducts(productResponse.data.products || []);
             } catch (error) {
                 toast.error('Failed to fetch options.');
@@ -158,7 +158,7 @@ const AddPurchase = () => {
                                 >
                                     {vendors.map((vendor) => (
                                         <MenuItem key={vendor.id} value={vendor.id}>
-                                            {vendor.first_name} {vendor.last_name}
+                                            {vendor.name} 
                                         </MenuItem>
                                     ))}
                                 </TextField>
