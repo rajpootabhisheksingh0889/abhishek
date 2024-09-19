@@ -9,7 +9,7 @@ import {
     Chip, TextField,Button
 } from '@mui/material';
 import DashboardCard from 'src/components/shared/DashboardCard';
-
+import { useNavigate } from 'react-router-dom';
 const products = [
     {
         id: "1",
@@ -51,6 +51,10 @@ const products = [
 
 
 const Purchase = () => {
+    const navigate = useNavigate();
+    const handleAddPurchase = () => {
+        navigate("/addpurchase");
+    };
     return (
 
         <DashboardCard>
@@ -73,7 +77,7 @@ const Purchase = () => {
                         variant="contained"
                         color="primary"
                         size="large"
-                        // onClick={handleOpen}
+                        onClick={handleAddPurchase}
                     >
                         Add Purchase
                     </Button>
