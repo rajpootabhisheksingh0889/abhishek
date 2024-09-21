@@ -227,12 +227,12 @@ const Menuitems = [
         href: '/agentlist',
     },
 
-    {
-        id: uniqueId(),
-        title: 'Recording',
-        icon: IconLayoutDashboard,
-        href: '/recordinglist',
-    },
+    // {
+    //     id: uniqueId(),
+    //     title: 'Recording',
+    //     icon: IconLayoutDashboard,
+    //     href: '/recordinglist',
+    // },
 
     {
         id: uniqueId(),
@@ -246,24 +246,24 @@ const Menuitems = [
         icon: IconLayoutDashboard,
         href: '/inventory',
     },
-    {
-        id: uniqueId(),
-        title: 'Discount Coupon',
-        icon: IconLayoutDashboard,
-        href: '/discountlist',
-    },
-    {
-        id: uniqueId(),
-        title: 'Order Mangement',
-        icon: IconLayoutDashboard,
-        href: '/ordermangement',
-    },
-    {
-        id: uniqueId(),
-        title: 'Transaction Records',
-        icon: IconLayoutDashboard,
-        href: '/transactionrecords',
-    },
+    // {
+    //     id: uniqueId(),
+    //     title: 'Discount Coupon',
+    //     icon: IconLayoutDashboard,
+    //     href: '/discountlist',
+    // },
+    // {
+    //     id: uniqueId(),
+    //     title: 'Order Mangement',
+    //     icon: IconLayoutDashboard,
+    //     href: '/ordermangement',
+    // },
+    // {
+    //     id: uniqueId(),
+    //     title: 'Transaction Records',
+    //     icon: IconLayoutDashboard,
+    //     href: '/transactionrecords',
+    // },
 
     {
         id: uniqueId(),
