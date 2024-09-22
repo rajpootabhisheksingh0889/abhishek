@@ -173,11 +173,11 @@ const AddVendor = () => {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
-              <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6}>
                 <TextField
-                  label="Name"
-                  name="name"
-                  value={formData.name}
+                  label="Organization Name"
+                  name="orgname"
+                  value={formData.orgname}
                   onChange={handleChange}
                   variant="outlined"
                   fullWidth
@@ -186,15 +186,16 @@ const AddVendor = () => {
               </Grid>
               <Grid item xs={12} md={6}>
                 <TextField
-                  label="Gender"
-                  name="gender"
-                  value={formData.gender}
+                  label="Owner Name"
+                  name="oname"
+                  value={formData.oname}
                   onChange={handleChange}
                   variant="outlined"
                   fullWidth
                   required
                 />
               </Grid>
+             
               <Grid item xs={12} md={6}>
                 <TextField
                   label="Mobile Number"
@@ -218,26 +219,30 @@ const AddVendor = () => {
                 />
               </Grid>
               <Grid item xs={12} md={6}>
-                <FormControl fullWidth required>
-                  <InputLabel>Country</InputLabel>
-                  <Select
-                    name="country"
-                    value={formData.country}
-                    onChange={handleChange}
-                  >
-                    {countries.map((country) => (
-                      <MenuItem key={country.id} value={country.id}>
-                        {country.name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+              <FormControl fullWidth required>
+  <InputLabel>Country</InputLabel>
+  <Select
+   label="country"
+    name="country"
+    value={formData.country}
+    onChange={handleChange}
+    // displayEmpty
+  >
+    {countries.map((country) => (
+      <MenuItem key={country.id} value={country.id}>
+        {country.name}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
+
               </Grid>
               <Grid item xs={12} md={6}>
                 <FormControl fullWidth required>
                   <InputLabel>State</InputLabel>
                   <Select
                     name="state"
+                     label="state"
                     value={formData.state}
                     onChange={handleChange}
                     disabled={!formData.country} // Disable if no country is selected
@@ -255,6 +260,7 @@ const AddVendor = () => {
                   <InputLabel>City</InputLabel>
                   <Select
                     name="city"
+                     label="city"
                     value={formData.city}
                     onChange={handleChange}
                     disabled={!formData.state} // Disable if no state is selected
@@ -269,7 +275,7 @@ const AddVendor = () => {
               </Grid>
               <Grid item xs={12} md={6}>
                 <TextField
-                  label="Address"
+                  label="Address 1"
                   name="address_line1"
                   value={formData.address_line1}
                   onChange={handleChange}
@@ -280,6 +286,18 @@ const AddVendor = () => {
               </Grid>
               <Grid item xs={12} md={6}>
                 <TextField
+                  label="Address 2"
+                  name="address_line2"
+                  value={formData.address_line2}
+                  onChange={handleChange}
+                  variant="outlined"
+                  fullWidth
+                  required
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                type='number'
                   label="Postal Code"
                   name="postal_code"
                   value={formData.postal_code}
@@ -289,19 +307,19 @@ const AddVendor = () => {
                   required
                 />
               </Grid>
-                            <Grid item xs={12} md={12}>
-                                <TextField
-                                    label="Descrption"
-                                    name="desc"
-                                    value={formData.desc}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    fullWidth
-                                    multiline
-                                    rows={5}
-                                    required
-                                />
-                            </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                type='number'
+                  label="Taxation No."
+                  name="taxation"
+                  value={formData.taxation}
+                  onChange={handleChange}
+                  variant="outlined"
+                  fullWidth
+                  required
+                />
+              </Grid>
+                           
                             
                             <Grid item xs={12}>
                                 <Button type="submit" variant="contained" color="primary" fullWidth>

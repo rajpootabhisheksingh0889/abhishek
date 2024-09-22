@@ -224,12 +224,7 @@ const Vendor = () => {
                                                 </Typography>
                                             </TableCell>
                                             <TableCell align="center">
-                                                <IconButton
-                                                    color="primary"
-                                                    onClick={() => handleViewClick(vendor.id)}
-                                                >
-                                                    <VisibilityIcon />
-                                                </IconButton>
+                                           
                                                 <IconButton
                                                     color="secondary"
                                                     onClick={() => handleEditClick(vendor.id)}
