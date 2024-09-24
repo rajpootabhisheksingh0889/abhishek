@@ -161,7 +161,7 @@ const Vendor = () => {
                                     </TableCell>
                                     <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                         <Typography variant="subtitle2" fontWeight={600}>
-                                            Name
+                                            Owner Name
                                         </Typography>
                                     </TableCell>
                                     <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
@@ -176,7 +176,7 @@ const Vendor = () => {
                                     </TableCell>
                                     <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                         <Typography variant="subtitle2" fontWeight={600}>
-                                            Gender
+                                            Organization Name
                                         </Typography>
                                     </TableCell>
                                     <TableCell align="center" sx={{ backgroundColor: '#f5f5f5' }}>
@@ -205,7 +205,7 @@ const Vendor = () => {
                                             </TableCell>
                                             <TableCell>
                                                 <Typography variant="subtitle2">
-                                                    {vendor.name || "-"}
+                                                    {vendor.owner_name || "-"}
                                                 </Typography>
                                             </TableCell>
                                             <TableCell>
@@ -220,7 +220,7 @@ const Vendor = () => {
                                             </TableCell>
                                             <TableCell>
                                                 <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
-                                                    {vendor.gender || "-"}
+                                                    {vendor.organization_name || "-"}
                                                 </Typography>
                                             </TableCell>
                                             <TableCell align="center">

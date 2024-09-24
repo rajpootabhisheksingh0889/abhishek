@@ -14,24 +14,24 @@ import {
   FormControl,
 } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
-import { toast, ToastContainer } from 'react-toastify';
+import Swal from 'sweetalert2';
 import axios from 'axios';
 import DashboardCard from 'src/components/shared/DashboardCard';
-import 'react-toastify/dist/ReactToastify.css';
 
 const AddVendor = () => {
   const { vendorId } = useParams();
   const [formData, setFormData] = useState({
-    name: '',
-    gender: '',
+    owner_name: '',
+    organization_name: '',
     phone: '',
     email: '',
     country: '',
     state: '',
     city: '',
     address_line1: '',
+    address_line2: '',
     postal_code: '',
-    desc: '',
+    taxation: '',
   });
 
   const [isEditMode, setIsEditMode] = useState(false);
@@ -45,9 +45,9 @@ const AddVendor = () => {
     const fetchCountries = async () => {
       try {
         const response = await axios.get('http://134.209.145.149:9999/api/list_countries');
-        setCountries(response.data); // Adjust based on actual API response structure
+        setCountries(response.data);
       } catch (error) {
-        toast.error('Failed to fetch countries.');
+        Swal.fire('Error', 'Failed to fetch countries.', 'error');
       }
     };
 
@@ -64,40 +64,42 @@ const AddVendor = () => {
       const response = await axios.get(`http://134.209.145.149:9999/api/vendor/${id}`);
       const vendor = response.data;
       setFormData({
-        name: vendor.name || '',
-        gender: vendor.gender || '',
+        owner_name: vendor.owner_name || '',
+        organization_name: vendor.organization_name || '',
         phone: vendor.phone || '',
         email: vendor.email || '',
         country: vendor.country || '',
         state: vendor.state || '',
         city: vendor.city || '',
         address_line1: vendor.address_line1 || '',
+        address_line2: vendor.address_line2 || '',
         postal_code: vendor.postal_code || '',
-        desc: vendor.desc || '',
+        taxation: vendor.taxation || '',
       });
 
-      // Fetch states for the vendor's country
       fetchStates(vendor.country);
+      fetchCities(vendor.state);
     } catch (error) {
-      toast.error('Failed to fetch vendor details.');
+      Swal.fire('Error', 'Failed to fetch vendor details.', 'error');
     }
   };
 
   const fetchStates = async (countryId) => {
     try {
       const response = await axios.get(`http://134.209.145.149:9999/api/states/${countryId}`);
-      setStates(response.data); // Adjust based on actual API response structure
+      setStates(response.data);
+     
     } catch (error) {
-      toast.error('Failed to fetch states.');
+      Swal.fire('Error', 'Failed to fetch states.', 'error');
     }
   };
 
   const fetchCities = async (stateId) => {
     try {
       const response = await axios.get(`http://134.209.145.149:9999/api/cities/${stateId}`);
-      setCities(response.data); // Adjust based on actual API response structure
+      setCities(response.data);
     } catch (error) {
-      toast.error('Failed to fetch cities.');
+      Swal.fire('Error', 'Failed to fetch cities.', 'error');
     }
   };
 
@@ -108,13 +110,11 @@ const AddVendor = () => {
       [name]: value,
     }));
 
-    // Fetch states when country is selected
     if (name === 'country') {
       setFormData((prev) => ({ ...prev, state: '', city: '' }));
       fetchStates(value);
     }
 
-    // Fetch cities when state is selected
     if (name === 'state') {
       setFormData((prev) => ({ ...prev, city: '' }));
       fetchCities(value);
@@ -127,6 +127,9 @@ const AddVendor = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) return;
+
     const apiUrl = isEditMode
       ? `http://134.209.145.149:9999/api/vendor/${vendorId}`
       : 'http://134.209.145.149:9999/api/vendor';
@@ -134,27 +137,65 @@ const AddVendor = () => {
     try {
       if (isEditMode) {
         await axios.put(apiUrl, formData);
-        toast.success('Vendor updated successfully!');
+        Swal.fire({
+          icon: 'success',
+          title: 'Vendor updated successfully!',
+          timer: 3000,
+          showConfirmButton: false,
+        }).then(() => navigate(-1));
       } else {
         await axios.post(apiUrl, formData);
-        toast.success('Vendor added successfully!');
+        Swal.fire({
+          icon: 'success',
+          title: 'Vendor added successfully!',
+          timer: 3000,
+          showConfirmButton: false,
+        }).then(() => navigate(-1));
       }
-      setFormData({
-        name: '',
-        gender: '',
-        phone: '',
-        email: '',
-        country: '',
-        state: '',
-        city: '',
-        address_line1: '',
-        postal_code: '',
-        desc: '',
-      });
-      navigate(-1);
+
+      resetForm();
     } catch (error) {
-      toast.error('Failed to save vendor. Please try again.');
+      Swal.fire('Error', 'Failed to save vendor. Please try again.', 'error');
     }
+  };
+
+  const validateForm = () => {
+    const { phone, postal_code, ...requiredFields } = formData;
+
+    for (const key in requiredFields) {
+      if (!requiredFields[key]) {
+        Swal.fire('Error', `${key.replace('_', ' ')} is required.`, 'error');
+        return false;
+      }
+    }
+
+    if (phone.length !== 10) {
+      Swal.fire('Error', 'Mobile number must be exactly 10 digits.', 'error');
+      return false;
+    }
+
+    if (postal_code.length !== 6) {
+      Swal.fire('Error', 'Postal code must be exactly 6 digits.', 'error');
+      return false;
+    }
+
+    return true;
+  };
+
+  const resetForm = () => {
+    setFormData({
+      owner_name: '',
+      organization_name: '',
+      phone: '',
+      email: '',
+      country: '',
+      state: '',
+      city: '',
+      address_line1: '',
+      address_line2: '',
+      postal_code: '',
+      taxation: '',
+    });
   };
 
   return (
@@ -176,8 +217,8 @@ const AddVendor = () => {
               <Grid item xs={12} md={6}>
                 <TextField
                   label="Organization Name"
-                  name="orgname"
-                  value={formData.orgname}
+                  name="organization_name"
+                  value={formData.organization_name}
                   onChange={handleChange}
                   variant="outlined"
                   fullWidth
@@ -187,8 +228,8 @@ const AddVendor = () => {
               <Grid item xs={12} md={6}>
                 <TextField
                   label="Owner Name"
-                  name="oname"
-                  value={formData.oname}
+                  name="owner_name"
+                  value={formData.owner_name}
                   onChange={handleChange}
                   variant="outlined"
                   fullWidth
@@ -330,7 +371,7 @@ const AddVendor = () => {
           </form>
         </CardContent>
       </Card>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </DashboardCard>
   );
 };

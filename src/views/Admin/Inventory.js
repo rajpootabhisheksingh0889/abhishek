@@ -1,8 +1,13 @@
 import React from 'react'
 
+import UnderMaintenance from './UnderMaintenance'
+import DashboardCard from 'src/components/shared/DashboardCard'
+
 const Inventory = () => {
   return (
-    <div>Inventory</div>
+    <DashboardCard>
+      <UnderMaintenance/>
+    </DashboardCard>
   )
 }
 

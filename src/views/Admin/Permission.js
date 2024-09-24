@@ -8,6 +8,7 @@ import DashboardCard from 'src/components/shared/DashboardCard';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams, useNavigate } from 'react-router-dom';
+import UnderMaintenance from './UnderMaintenance';
 const Permission = () => {
   const [selections, setSelections] = useState([]);
   const [names, setNames] = useState([]);
@@ -132,8 +133,8 @@ const Permission = () => {
 
 
       <ToastContainer />
-
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+<UnderMaintenance/>
+      {/* <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
         <Typography variant="h3" component="h2" sx={{ flex: 1 }}>
           Permission
         </Typography>
@@ -219,7 +220,7 @@ const Permission = () => {
         >
           Submit
         </Button>
-      </CardContent>
+      </CardContent> */}
 
     </DashboardCard>
 

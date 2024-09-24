@@ -46,6 +46,9 @@ const AnimatedCard = styled(Card)`
 const MyProfile = () => {
     const [profile, setProfile] = useState(null);
     const [editMode, setEditMode] = useState(false);
+    const [countries, setCountries] = useState([]);
+    const [states, setStates] = useState([]);
+    const [cities, setCities] = useState([]);
     const [formValues, setFormValues] = useState({
         first_name: '',
         last_name: '',
@@ -53,11 +56,14 @@ const MyProfile = () => {
         phone: '',
         gender: '',
         postal_code: '',
-        address_line1: '',
+        country: '',
+        state: '',
         city: '',
+        address_line1: '',
+        address_line2: '',
         desc: '',
         dob: '',
-        language: [],
+        language: '',
         age: '',
         image: '',
         role_id: null,
@@ -85,7 +91,21 @@ const MyProfile = () => {
         const ageDate = new Date(ageDifMs);
         return Math.abs(ageDate.getUTCFullYear() - 1970);
     };
-
+    const uid = localStorage.getItem('uid');
+    useEffect(() => {
+        const fetchCountries = async () => {
+            try {
+                const response = await axios.get('http://134.209.145.149:9999/api/list_countries');
+                setCountries(response.data); // Adjust based on actual API response structure
+            } catch (error) {
+                toast.error('Failed to fetch countries.');
+            }
+        };
+    
+        fetchCountries();
+    
+        
+    }, []);
     useEffect(() => {
         const fetchProfile = async () => {
             try {
@@ -106,8 +126,11 @@ const MyProfile = () => {
                         phone: profileData.phone || '',
                         gender: profileData.gender || '',
                         postal_code: profileData.postal_code || '',
-                        address_line1: profileData.address_line1 || '',
+                        country: profileData.country || '',
+                        state: profileData.state || '',
                         city: profileData.city || '',
+                        address_line1: profileData.address_line1 || '',
+                        address_line2: profileData.address_line2 || '',
                         desc: profileData.desc || '',
                         dob: profileData.dob || '',
                         language: profileData.language || [],
@@ -115,6 +138,8 @@ const MyProfile = () => {
                         image: profileData.image || '',
                         gallery: profileData.gallery || []
                     });
+                    fetchStates(profileData.country);
+                    fetchCities(profileData.state);
                 } else {
                     throw new Error('Failed to fetch profile data');
                 }
@@ -127,7 +152,23 @@ const MyProfile = () => {
         fetchProfile();
     }, []);
 
+    const fetchStates = async (countryId) => {
+        try {
+            const response = await axios.get(`http://134.209.145.149:9999/api/states/${countryId}`);
+            setStates(response.data); // Adjust based on actual API response structure
+        } catch (error) {
+            toast.error('Failed to fetch states.');
+        }
+    };
 
+    const fetchCities = async (stateId) => {
+        try {
+            const response = await axios.get(`http://134.209.145.149:9999/api/cities/${stateId}`);
+            setCities(response.data); // Adjust based on actual API response structure
+        } catch (error) {
+            toast.error('Failed to fetch cities.');
+        }
+    };
     // const [languages, setLanguages] = useState([]);
 
     // Fetch languages from API when the component mounts
@@ -547,6 +588,63 @@ const MyProfile = () => {
                                     </Grid>
                                 </Grid>
                                 <Grid item container spacing={2}>
+
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <FormControl fullWidth required>
+                                            <InputLabel>Country</InputLabel>
+                                            <Select
+                                                label="country"
+                                                name="country"
+                                                value={formValues.country}
+                                                onChange={handleInputChange}
+                                            // displayEmpty
+                                            >
+                                                {countries.map((country) => (
+                                                    <MenuItem key={country.id} value={country.id}>
+                                                        {country.name}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <FormControl fullWidth required>
+                                            <InputLabel>State</InputLabel>
+                                            <Select
+                                                name="state"
+                                                label="state"
+                                                value={formValues.state}
+                                                onChange={handleInputChange}
+                                                disabled={!formValues.country} // Disable if no country is selected
+                                            >
+                                                {states.map((state) => (
+                                                    <MenuItem key={state.id} value={state.id}>
+                                                        {state.name}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} md={4}>
+                                        <FormControl fullWidth required>
+                                            <InputLabel>City</InputLabel>
+                                            <Select
+                                                name="city"
+                                                label="city"
+                                                value={formValues.city}
+                                                onChange={handleInputChange}
+                                                disabled={!formValues.state} // Disable if no state is selected
+                                            >
+                                                {cities.map((city) => (
+                                                    <MenuItem key={city.id} value={city.id}>
+                                                        {city.name}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                </Grid>
+                                <Grid item container spacing={2}>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <TextField
                                             name="address_line1"
@@ -562,14 +660,15 @@ const MyProfile = () => {
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <TextField
-                                            name="city"
-                                            label="City"
-                                            value={formValues.city}
+                                            name="address_line2"
+                                            label="Address2"
+                                            value={formValues.address_line2}
                                             onChange={handleInputChange}
                                             fullWidth
                                             required
-                                            error={!!errors.city}
-                                            helperText={errors.city}
+                                            error={!!errors.address_line2}
+                                            helperText={errors.address_line2}
+
                                         />
                                     </Grid>
                                     <Grid item xs={12} sm={6} md={4}>
@@ -593,6 +692,7 @@ const MyProfile = () => {
                                         />
                                     </Grid>
                                 </Grid>
+                             
                                 <Grid item container spacing={2}>
                                     <Grid item xs={12} sm={6} md={4}>
                                         <FormControl fullWidth required error={!!errors.language}>
@@ -602,7 +702,7 @@ const MyProfile = () => {
                                                 value={formValues.language}
                                                 onChange={handleInputChange}
                                                 label="Language"
-                                                multiple // Allow multiple selections
+                                                // multiple // Allow multiple selections
                                             >
                                                 {/* Map over fetched languages to create MenuItem components */}
                                                 {languages.map((lang) => (

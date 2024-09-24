@@ -10,6 +10,7 @@ import {
 } from '@mui/material';
 import DashboardCard from 'src/components/shared/DashboardCard';
 import { useNavigate } from 'react-router-dom';
+import UnderMaintenance from './UnderMaintenance';
 const products = [
     {
         id: "1",
@@ -60,11 +61,11 @@ const Purchase = () => {
         <DashboardCard>
 
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h3" component="h2" sx={{ flex: 1 }}>
+                {/* <Typography variant="h3" component="h2" sx={{ flex: 1 }}>
                     Purchase List
-                </Typography>
-
-                <Box sx={{ display: 'flex', gap: 2 }}>
+                </Typography> */}
+<UnderMaintenance/>
+                {/* <Box sx={{ display: 'flex', gap: 2 }}>
                     <TextField
                         size="medium"
                         label="Search Purchase"
@@ -177,7 +178,7 @@ const Purchase = () => {
                             </TableRow>
                         ))}
                     </TableBody>
-                </Table>
+                </Table> */}
             </Box>
         </DashboardCard>
     );
