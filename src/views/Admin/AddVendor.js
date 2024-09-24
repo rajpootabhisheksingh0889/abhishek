@@ -44,7 +44,7 @@ const AddVendor = () => {
   useEffect(() => {
     const fetchCountries = async () => {
       try {
-        const response = await axios.get('https://api.qikads.in/api/list_countries');
+        const response = await axios.get('http://134.209.145.149:9999/api/list_countries');
         setCountries(response.data); // Adjust based on actual API response structure
       } catch (error) {
         toast.error('Failed to fetch countries.');
@@ -61,7 +61,7 @@ const AddVendor = () => {
 
   const fetchVendorDetails = async (id) => {
     try {
-      const response = await axios.get(`https://api.qikads.in/api/vendor/${id}`);
+      const response = await axios.get(`http://134.209.145.149:9999/api/vendor/${id}`);
       const vendor = response.data;
       setFormData({
         name: vendor.name || '',
@@ -85,7 +85,7 @@ const AddVendor = () => {
 
   const fetchStates = async (countryId) => {
     try {
-      const response = await axios.get(`https://api.qikads.in/api/states/${countryId}`);
+      const response = await axios.get(`http://134.209.145.149:9999/api/states/${countryId}`);
       setStates(response.data); // Adjust based on actual API response structure
     } catch (error) {
       toast.error('Failed to fetch states.');
@@ -94,7 +94,7 @@ const AddVendor = () => {
 
   const fetchCities = async (stateId) => {
     try {
-      const response = await axios.get(`https://api.qikads.in/api/cities/${stateId}`);
+      const response = await axios.get(`http://134.209.145.149:9999/api/cities/${stateId}`);
       setCities(response.data); // Adjust based on actual API response structure
     } catch (error) {
       toast.error('Failed to fetch cities.');
@@ -128,8 +128,8 @@ const AddVendor = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const apiUrl = isEditMode
-      ? `https://api.qikads.in/api/vendor/${vendorId}`
-      : 'https://api.qikads.in/api/vendor';
+      ? `http://134.209.145.149:9999/api/vendor/${vendorId}`
+      : 'http://134.209.145.149:9999/api/vendor';
 
     try {
       if (isEditMode) {
@@ -173,7 +173,7 @@ const AddVendor = () => {
         <CardContent>
           <form onSubmit={handleSubmit}>
             <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={6}>
                 <TextField
                   label="Organization Name"
                   name="orgname"
@@ -195,7 +195,7 @@ const AddVendor = () => {
                   required
                 />
               </Grid>
-             
+
               <Grid item xs={12} md={6}>
                 <TextField
                   label="Mobile Number"
@@ -219,22 +219,22 @@ const AddVendor = () => {
                 />
               </Grid>
               <Grid item xs={12} md={6}>
-              <FormControl fullWidth required>
-  <InputLabel>Country</InputLabel>
-  <Select
-   label="country"
-    name="country"
-    value={formData.country}
-    onChange={handleChange}
-    // displayEmpty
-  >
-    {countries.map((country) => (
-      <MenuItem key={country.id} value={country.id}>
-        {country.name}
-      </MenuItem>
-    ))}
-  </Select>
-</FormControl>
+                <FormControl fullWidth required>
+                  <InputLabel>Country</InputLabel>
+                  <Select
+                    label="country"
+                    name="country"
+                    value={formData.country}
+                    onChange={handleChange}
+                  // displayEmpty
+                  >
+                    {countries.map((country) => (
+                      <MenuItem key={country.id} value={country.id}>
+                        {country.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
 
               </Grid>
               <Grid item xs={12} md={6}>
@@ -242,7 +242,7 @@ const AddVendor = () => {
                   <InputLabel>State</InputLabel>
                   <Select
                     name="state"
-                     label="state"
+                    label="state"
                     value={formData.state}
                     onChange={handleChange}
                     disabled={!formData.country} // Disable if no country is selected
@@ -260,7 +260,7 @@ const AddVendor = () => {
                   <InputLabel>City</InputLabel>
                   <Select
                     name="city"
-                     label="city"
+                    label="city"
                     value={formData.city}
                     onChange={handleChange}
                     disabled={!formData.state} // Disable if no state is selected
@@ -297,7 +297,7 @@ const AddVendor = () => {
               </Grid>
               <Grid item xs={12} md={6}>
                 <TextField
-                type='number'
+                  type='number'
                   label="Postal Code"
                   name="postal_code"
                   value={formData.postal_code}
@@ -309,7 +309,7 @@ const AddVendor = () => {
               </Grid>
               <Grid item xs={12} md={6}>
                 <TextField
-                type='number'
+                  type='number'
                   label="Taxation No."
                   name="taxation"
                   value={formData.taxation}
@@ -319,20 +319,20 @@ const AddVendor = () => {
                   required
                 />
               </Grid>
-                           
-                            
-                            <Grid item xs={12}>
-                                <Button type="submit" variant="contained" color="primary" fullWidth>
-                                    {isEditMode ? 'Update Vendor' : 'Add Vendor'}
-                                </Button>
-                            </Grid>
-                        </Grid>
-                    </form>
-                </CardContent>
-            </Card>
-            <ToastContainer />
-        </DashboardCard>
-    );
+
+
+              <Grid item xs={12}>
+                <Button type="submit" variant="contained" color="primary" fullWidth>
+                  {isEditMode ? 'Update Vendor' : 'Add Vendor'}
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+        </CardContent>
+      </Card>
+      <ToastContainer />
+    </DashboardCard>
+  );
 };
 
 export default AddVendor;

@@ -88,7 +88,7 @@ function Forget() {
     setLoading(true);
 
     try {
-      await axios.post('https://api.qikads.in/api/forget-password', { email });
+      await axios.post('http://134.209.145.149:9999/api/forget-password', { email });
 
       Swal.fire({
         icon: 'success',

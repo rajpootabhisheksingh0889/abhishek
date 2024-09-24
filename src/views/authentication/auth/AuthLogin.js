@@ -71,7 +71,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                 otp_code: formData.otp,
             });
 
-            const response = await axios.post('https://api.qikads.in/api/verify-otp', {
+            const response = await axios.post('http://134.209.145.149:9999/api/verify-otp', {
                 user_id: userId,
                 otp_code: formData.otp,
             });
@@ -126,7 +126,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
         setLoading(true);
         try {
-            const response = await axios.post('https://api.qikads.in/api/resend-otp', {
+            const response = await axios.post('http://134.209.145.149:9999/api/resend-otp', {
                 email: formData.email,
             });
 
@@ -175,7 +175,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
         setLoading(true);
         try {
-            const response = await axios.post('https://api.qikads.in/api/login', formData);
+            const response = await axios.post('http://134.209.145.149:9999/api/login', formData);
             const { token, user, error, status, message, user_id } = response.data;
 
             if (error === 'otp' && status === 0) {
@@ -342,29 +342,29 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                             >
                                 {loading ? <CircularProgress size={24} /> : 'Verify'}
                             </Button>
-                            
+
                         </>
                     )}
 
                     <Stack justifyContent="space-between" direction="row" alignItems="center" my={2}>
                         {otpRequired && (
-                        <Typography
-                            component="button"
-                            onClick={resendOtp}
-                            fontWeight="500"
-                            sx={{
-                                textDecoration: 'none',
-                                color: 'primary.main',
-                                background: 'none',
-                                border: 'none',
-                                cursor: 'pointer',
-                                padding: 0,
-                            }}
-                        >
-                            Resend OTP?
-                        </Typography>
+                            <Typography
+                                component="button"
+                                onClick={resendOtp}
+                                fontWeight="500"
+                                sx={{
+                                    textDecoration: 'none',
+                                    color: 'primary.main',
+                                    background: 'none',
+                                    border: 'none',
+                                    cursor: 'pointer',
+                                    padding: 0,
+                                }}
+                            >
+                                Resend OTP?
+                            </Typography>
                         )}
-                        
+
                         <Typography
                             component="button"
                             onClick={() => navigate('/auth/forget')}
@@ -380,7 +380,7 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
                         >
                             Forgot Password?
                         </Typography>
-                       
+
                     </Stack>
                     {!otpRequired && (
                         <Button

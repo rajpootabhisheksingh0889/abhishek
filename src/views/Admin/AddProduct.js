@@ -55,9 +55,9 @@ const AddProduct = () => {
 
     const fetchProductDetails = async (id) => {
         try {
-            const response = await axios.get(`https://api.qikads.in/api/product/${id}`);
+            const response = await axios.get(`http://134.209.145.149:9999/api/product/${id}`);
             if (response.data && response.data) {
-              
+
                 const product = response.data;
                 setFormData({
                     name: product.name || '',
@@ -71,14 +71,14 @@ const AddProduct = () => {
                     // Other fields can be added here as needed
                 });
             }
-                // setFormData({
-                //     ...product,
-                //     dimensions: product.dimensions || { depth: '', width: '', height: '' },
-                //     images: Array.isArray(product.images) ? product.images : [], // Ensure it's an array
-                //     tags: Array.isArray(product.tags) ? product.tags : [],
-                //     variations: Array.isArray(product.variations) ? product.variations : [],
-                // });
-            } catch (error) {
+            // setFormData({
+            //     ...product,
+            //     dimensions: product.dimensions || { depth: '', width: '', height: '' },
+            //     images: Array.isArray(product.images) ? product.images : [], // Ensure it's an array
+            //     tags: Array.isArray(product.tags) ? product.tags : [],
+            //     variations: Array.isArray(product.variations) ? product.variations : [],
+            // });
+        } catch (error) {
             toast.error('Failed to fetch product details.');
         }
     };
@@ -125,8 +125,8 @@ const AddProduct = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const apiUrl = isEditMode
-            ? `https://api.qikads.in/api/product/${productId}`
-            : 'https://api.qikads.in/api/product';
+            ? `http://134.209.145.149:9999/api/product/${productId}`
+            : 'http://134.209.145.149:9999/api/product';
 
         try {
             if (isEditMode) {

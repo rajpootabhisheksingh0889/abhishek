@@ -83,7 +83,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
     const handleRegister = async () => {
         setLoading(true);
         try {
-            const response = await axios.post('https://api.qikads.in/api/register', {
+            const response = await axios.post('http://134.209.145.149:9999/api/register', {
                 ...formData,
                 role_id: 4, // Default role_id set to 4
             });
@@ -123,7 +123,7 @@ const AuthRegister = ({ title, subtitle, subtext }) => {
 
     const handleVerifyOtp = async () => {
         try {
-            const response = await axios.post('https://api.qikads.in/api/verify-otp', {
+            const response = await axios.post('http://134.209.145.149:9999/api/verify-otp', {
                 user_id: userId,
                 otp_code: otp,
             });

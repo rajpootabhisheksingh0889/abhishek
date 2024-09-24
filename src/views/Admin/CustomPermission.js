@@ -20,14 +20,14 @@ const CustomPermission = () => {
         const fetchData = async () => {
             try {
                 // Fetch the user's permissions
-                const permissionsResponse = await axios.post('https://api.qikads.in/api/getCPermissions', { user_id: userId });
+                const permissionsResponse = await axios.post('http://134.209.145.149:9999/api/getCPermissions', { user_id: userId });
                 const { user_firstname, user_lastname, permissions: userPermissions } = permissionsResponse.data;
 
                 // Set the user's name
                 setUserName(`${user_firstname} ${user_lastname}`);
 
                 // Fetch the menu list
-                const menuResponse = await axios.get('https://api.qikads.in/api/menuList');
+                const menuResponse = await axios.get('http://134.209.145.149:9999/api/menuList');
                 const fetchedMenuList = Array.isArray(menuResponse.data.data) ? menuResponse.data.data : [];
 
                 // Initialize permissions with the fetched menu list
@@ -63,7 +63,7 @@ const CustomPermission = () => {
                     hasPermission: permission.hasPermission
                 }))
             };
-            await axios.post('https://api.qikads.in/api/cPermission', payload);
+            await axios.post('http://134.209.145.149:9999/api/cPermission', payload);
             toast.success('Permissions updated successfully!');
             setTimeout(() => {
                 window.location.reload();

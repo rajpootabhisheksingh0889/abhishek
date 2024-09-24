@@ -37,13 +37,13 @@ const ProductList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalUsers, setTotalUsers] = useState(0);
     const [usersPerPage, setUsersPerPage] = useState(10);
-   
+
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('https://api.qikads.in/api/product');
+                const response = await axios.get('http://134.209.145.149:9999/api/product');
                 setProducts(response.data.products);
-                setTotalUsers(response.data.total_products); 
+                setTotalUsers(response.data.total_products);
             } catch (err) {
                 setError(err);
             } finally {
@@ -74,7 +74,7 @@ const ProductList = () => {
     const confirmDelete = async () => {
         setOpenDialog(false);
         try {
-            await axios.delete(`https://api.qikads.in/api/product/${productToDelete.id}`);
+            await axios.delete(`http://134.209.145.149:9999/api/product/${productToDelete.id}`);
             setProducts(products.filter((p) => p.id !== productToDelete.id));
             Swal.fire({
                 icon: 'success',
@@ -190,7 +190,7 @@ const ProductList = () => {
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            products.map((product,index) => (
+                            products.map((product, index) => (
                                 <TableRow key={product.id}>
                                     <TableCell>
                                         <Typography

@@ -34,8 +34,8 @@ const AddPurchase = () => {
     useEffect(() => {
         const fetchOptions = async () => {
             try {
-                const vendorResponse = await axios.get('https://api.qikads.in/api/vendor');
-                const productResponse = await axios.get('https://api.qikads.in/api/product');
+                const vendorResponse = await axios.get('http://134.209.145.149:9999/api/vendor');
+                const productResponse = await axios.get('http://134.209.145.149:9999/api/product');
 
                 setVendors(vendorResponse.data.data || []);
                 setProducts(productResponse.data.products || []);
@@ -54,7 +54,7 @@ const AddPurchase = () => {
 
     const fetchProductDetails = async (id) => {
         try {
-            const response = await axios.get(`https://api.qikads.in/api/language/${id}`);
+            const response = await axios.get(`http://134.209.145.149:9999/api/language/${id}`);
             if (response.data) {
                 const product = response.data;
                 setFormData({
@@ -92,8 +92,8 @@ const AddPurchase = () => {
         }
 
         const apiUrl = isEditMode
-            ? `https://api.qikads.in/api/language/${productId}`
-            : 'https://api.qikads.in/api/language';
+            ? `http://134.209.145.149:9999/api/language/${productId}`
+            : 'http://134.209.145.149:9999/api/language';
 
         const payload = {
             name: formData.name,
@@ -158,7 +158,7 @@ const AddPurchase = () => {
                                 >
                                     {vendors.map((vendor) => (
                                         <MenuItem key={vendor.id} value={vendor.id}>
-                                            {vendor.name} 
+                                            {vendor.name}
                                         </MenuItem>
                                     ))}
                                 </TextField>

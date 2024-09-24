@@ -22,11 +22,11 @@ const CustomerList = () => {
     useEffect(() => {
         const fetchCustomers = async () => {
             try {
-                const response = await axios.get('https://api.qikads.in/api/listUser?role_id=4', {
+                const response = await axios.get('http://134.209.145.149:9999/api/listUser?role_id=4', {
                     params: { status: selectedOption }
                 });
                 // Ensure data is an array
-                
+
                 if (Array.isArray(response.data)) {
                     setCustomers(response.data);
                 } else {
@@ -82,7 +82,7 @@ const CustomerList = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
 
-                    
+
                 </Box>
             </Box>
             <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
@@ -117,12 +117,12 @@ const CustomerList = () => {
                             </TableCell>
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                  Gender
+                                    Gender
                                 </Typography>
                             </TableCell>
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                   City
+                                    City
                                 </Typography>
                             </TableCell>
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
@@ -132,12 +132,12 @@ const CustomerList = () => {
                             </TableCell>
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                   DOB
+                                    DOB
                                 </Typography>
                             </TableCell>
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                   Address
+                                    Address
                                 </Typography>
                             </TableCell>
                             <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
@@ -209,7 +209,7 @@ const CustomerList = () => {
                                         </TableCell>
                                         <TableCell>
                                             <Typography variant="subtitle2">
-                                                {customer.first_name } {customer.last_name}
+                                                {customer.first_name} {customer.last_name}
                                             </Typography>
                                         </TableCell>
                                         <TableCell>
@@ -224,7 +224,7 @@ const CustomerList = () => {
                                         </TableCell>
                                         <TableCell>
                                             <Typography color="textSecondary" variant="subtitle2" >
-                                                {customer.gender  || "-"}
+                                                {customer.gender || "-"}
                                             </Typography>
                                         </TableCell>
                                         <TableCell>

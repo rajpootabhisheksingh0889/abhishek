@@ -23,7 +23,7 @@ import 'react-toastify/dist/ReactToastify.css';
 const AddLanguage = () => {
     const [formData, setFormData] = useState({
         name: '',
-      
+
     });
 
     const [isEditMode, setIsEditMode] = useState(false);
@@ -39,23 +39,23 @@ const AddLanguage = () => {
 
     const fetchProductDetails = async (id) => {
         try {
-            const response = await axios.get(`https://api.qikads.in/api/language/${id}`);
+            const response = await axios.get(`http://134.209.145.149:9999/api/language/${id}`);
             if (response.data && response.data) {
-              
+
                 const product = response.data;
                 setFormData({
                     name: product.name || '',
 
                 });
             }
-                // setFormData({
-                //     ...product,
-                //     dimensions: product.dimensions || { depth: '', width: '', height: '' },
-                //     images: Array.isArray(product.images) ? product.images : [], // Ensure it's an array
-                //     tags: Array.isArray(product.tags) ? product.tags : [],
-                //     variations: Array.isArray(product.variations) ? product.variations : [],
-                // });
-            } catch (error) {
+            // setFormData({
+            //     ...product,
+            //     dimensions: product.dimensions || { depth: '', width: '', height: '' },
+            //     images: Array.isArray(product.images) ? product.images : [], // Ensure it's an array
+            //     tags: Array.isArray(product.tags) ? product.tags : [],
+            //     variations: Array.isArray(product.variations) ? product.variations : [],
+            // });
+        } catch (error) {
             toast.error('Failed to fetch product details.');
         }
     };
@@ -83,12 +83,12 @@ const AddLanguage = () => {
         navigate(-1); // Navigate back to the previous page
     };
 
- 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const apiUrl = isEditMode
-            ? `https://api.qikads.in/api/language/${productId}`
-            : 'https://api.qikads.in/api/language';
+            ? `http://134.209.145.149:9999/api/language/${productId}`
+            : 'http://134.209.145.149:9999/api/language';
 
         try {
             if (isEditMode) {
@@ -100,7 +100,7 @@ const AddLanguage = () => {
             }
             setFormData({
                 name: '',
-               
+
             });
             navigate(-1); // Navigate back to the previous page after successful submission
         } catch (error) {
@@ -140,9 +140,9 @@ const AddLanguage = () => {
                                     required
                                 />
                             </Grid>
-                          
-                     
-                       
+
+
+
                             <Grid item xs={12}>
                                 <Button type="submit" variant="contained" color="primary" fullWidth>
                                     {isEditMode ? 'Update Language' : 'Add Language'}

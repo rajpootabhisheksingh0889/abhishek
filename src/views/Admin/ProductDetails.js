@@ -9,7 +9,7 @@ const ProductDetails = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get(`https://api.qikads.in/api/productById/${productId}`)
+        axios.get(`http://134.209.145.149:9999/api/productById/${productId}`)
             .then(response => {
                 const productData = response.data.data[0];
                 // Split images string into an array

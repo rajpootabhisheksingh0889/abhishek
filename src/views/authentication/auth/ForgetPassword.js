@@ -11,18 +11,18 @@ const ForgetPassword = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [loading, setLoading] = useState(false);
-   const[token,setToken] = useState('');
+    const [token, setToken] = useState('');
     const { resetToken } = useParams();
-    
+
     const secretKey = 'itsmehere';
     const [decryptedData, setDecryptedData] = useState(null);
     const navigate = useNavigate();
 
-    console.log(resetToken,"data one is ===>>>")
+    console.log(resetToken, "data one is ===>>>")
 
-    useEffect(()=>{
+    useEffect(() => {
         setToken(resetToken);
-    },[resetToken])
+    }, [resetToken])
     // useEffect(() => {
     //     try {
     //         // Function to decrypt data
@@ -68,12 +68,12 @@ const ForgetPassword = () => {
         }
 
         try {
-            const response = await fetch(`https://api.qikads.in/api/reset-password/${token}`, {
+            const response = await fetch(`http://134.209.145.149:9999/api/reset-password/${token}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ password:newPassword}), // Include decrypted data in the request
+                body: JSON.stringify({ password: newPassword }), // Include decrypted data in the request
             });
 
             const result = await response.json();
