@@ -366,7 +366,15 @@ const Router = [
           </PrivateRoute>
         ),
       },
-
+      {
+        path: '/addpurchase/:productId',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <AddPurchase />
+          </PrivateRoute>
+        ),
+      },
       {
         path: '/productdetails',
         exact: true,

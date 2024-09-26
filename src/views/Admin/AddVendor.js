@@ -38,7 +38,10 @@ const AddVendor = () => {
   const [countries, setCountries] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
-
+  const [formErrors, setFormErrors] = useState({
+    phone: '',
+    postal_code: '',
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -110,6 +113,19 @@ const AddVendor = () => {
       [name]: value,
     }));
 
+    // Reset error messages
+    setFormErrors((prevErrors) => ({ ...prevErrors, [name]: '' }));
+
+    // Validate phone
+    if (name === 'phone' && value.length !== 10) {
+      setFormErrors((prev) => ({ ...prev, phone: 'Mobile number must be exactly 10 digits.' }));
+    }
+
+    // Validate postal code
+    if (name === 'postal_code' && value.length !== 6) {
+      setFormErrors((prev) => ({ ...prev, postal_code: 'Postal code must be exactly 6 digits.' }));
+    }
+
     if (name === 'country') {
       setFormData((prev) => ({ ...prev, state: '', city: '' }));
       fetchStates(value);
@@ -149,7 +165,7 @@ const AddVendor = () => {
           icon: 'success',
           title: 'Vendor added successfully!',
           timer: 3000,
-          showConfirmButton: false,
+          showConfirmButton: true,
         }).then(() => navigate(-1));
       }
 
@@ -159,6 +175,23 @@ const AddVendor = () => {
     }
   };
 
+
+
+  const resetForm = () => {
+    setFormData({
+      owner_name: '',
+      organization_name: '',
+      phone: '',
+      email: '',
+      country: '',
+      state: '',
+      city: '',
+      address_line1: '',
+      address_line2: '',
+      postal_code: '',
+      taxation: '',
+    });
+  };
   const validateForm = () => {
     const { phone, postal_code, ...requiredFields } = formData;
 
@@ -181,23 +214,6 @@ const AddVendor = () => {
 
     return true;
   };
-
-  const resetForm = () => {
-    setFormData({
-      owner_name: '',
-      organization_name: '',
-      phone: '',
-      email: '',
-      country: '',
-      state: '',
-      city: '',
-      address_line1: '',
-      address_line2: '',
-      postal_code: '',
-      taxation: '',
-    });
-  };
-
   return (
     <DashboardCard>
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -246,6 +262,8 @@ const AddVendor = () => {
                   variant="outlined"
                   fullWidth
                   required
+                  error={!!formErrors.phone}
+                  helperText={formErrors.phone}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -346,6 +364,8 @@ const AddVendor = () => {
                   variant="outlined"
                   fullWidth
                   required
+                  error={!!formErrors.postal_code}
+                  helperText={formErrors.postal_code}
                 />
               </Grid>
               <Grid item xs={12} md={6}>

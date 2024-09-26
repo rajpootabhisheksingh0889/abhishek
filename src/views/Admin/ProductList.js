@@ -151,11 +151,11 @@ const ProductList = () => {
                                     Name
                                 </Typography>
                             </TableCell>
-                            {/* <TableCell>
+                            <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
-                                    SKU
+                                   Description
                                 </Typography>
-                            </TableCell> */}
+                            </TableCell>
                             {/* <TableCell sx={{ backgroundColor: '#f5f5f5' }}>
                                 <Typography variant="subtitle2" fontWeight={600}>
                                     Description
@@ -207,11 +207,11 @@ const ProductList = () => {
                                             {product.name}
                                         </Typography>
                                     </TableCell>
-                                    {/* <TableCell>
+                                    <TableCell>
                                         <Typography variant="subtitle2" fontWeight={600}>
-                                            {product.SKU}
+                                            {product.desc}
                                         </Typography>
-                                    </TableCell> */}
+                                    </TableCell>
                                     {/* <TableCell>
                                         <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>
                                             {product.desc}

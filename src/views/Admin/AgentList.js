@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
+    FormHelperText,
     Typography, Box, TextField,
     FormControl, InputLabel, Select, MenuItem,
     Table, TableBody, TableCell, TableHead, TableRow, Chip, Skeleton, Switch, Button,
@@ -33,6 +34,7 @@ const AgentList = () => {
         last_name: '',
         email: '',
         password: '',
+        gender: '',
         phone: '',
     });
 
@@ -41,6 +43,7 @@ const AgentList = () => {
         last_name: '',
         email: '',
         password: '',
+        gender: '',
         phone: '',
         otp: '',
     });
@@ -104,7 +107,8 @@ const AgentList = () => {
             email: '',
             password: '',
             phone: '',
-            otp: '',
+            gender: '',
+           otp: '',
         });
     };
 
@@ -116,9 +120,11 @@ const AgentList = () => {
             email: '',
             password: '',
             phone: '',
+            gender: '',
         });
         setOtpSent(false);
         setOtp('');
+        fetchAgents();
     };
 
     const handleChange = (e) => {
@@ -134,6 +140,10 @@ const AgentList = () => {
         }
         if (!newAgent.last_name.trim()) {
             errors.last_name = 'Last Name is required';
+            valid = false;
+        }
+        if (!newAgent.gender.trim()) {
+            errors.gender = 'Gender is required';
             valid = false;
         }
         if (!newAgent.email.trim()) {
@@ -449,6 +459,7 @@ const AgentList = () => {
                 <DialogTitle>Add New Agent</DialogTitle>
                 <DialogContent>
                     <Box component="form" noValidate>
+                        
                         <TextField
                             margin="dense"
                             name="first_name"
@@ -471,6 +482,21 @@ const AgentList = () => {
                             error={Boolean(formErrors.last_name)}
                             helperText={formErrors.last_name}
                         />
+                        <FormControl margin="dense" fullWidth required error={!!formErrors.gender}>
+                            <InputLabel>Gender</InputLabel>
+                            <Select
+                                name="gender"
+                                value={newAgent.gender}
+                                onChange={handleChange}
+                                label="Gender"
+                            >
+                                <MenuItem value="male">Male</MenuItem>
+                                <MenuItem value="female">Female</MenuItem>
+                                <MenuItem value="other">Other</MenuItem>
+                            </Select>
+                            {formErrors.gender && <FormHelperText>{formErrors.gender}</FormHelperText>}
+                        </FormControl>
+
                         <TextField
                             margin="dense"
                             name="email"

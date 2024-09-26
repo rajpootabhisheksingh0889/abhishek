@@ -77,7 +77,7 @@ const MyProfile = () => {
     const fileInputRef = useRef(null);
     const galleryInputRef = useRef(null);
     const [languages, setLanguages] = useState([]);
-
+  
     const currentDate = new Date();
     const maxDate = new Date(
         currentDate.getFullYear() - 18,
@@ -92,20 +92,7 @@ const MyProfile = () => {
         return Math.abs(ageDate.getUTCFullYear() - 1970);
     };
     const uid = localStorage.getItem('uid');
-    useEffect(() => {
-        const fetchCountries = async () => {
-            try {
-                const response = await axios.get('http://134.209.145.149:9999/api/list_countries');
-                setCountries(response.data); // Adjust based on actual API response structure
-            } catch (error) {
-                toast.error('Failed to fetch countries.');
-            }
-        };
-    
-        fetchCountries();
-    
-        
-    }, []);
+   
     useEffect(() => {
         const fetchProfile = async () => {
             try {
@@ -151,7 +138,20 @@ const MyProfile = () => {
 
         fetchProfile();
     }, []);
+    useEffect(() => {
+        const fetchCountries = async () => {
+            try {
+                const response = await axios.get('http://134.209.145.149:9999/api/list_countries');
+                setCountries(response.data); // Adjust based on actual API response structure
+            } catch (error) {
+                toast.error('Failed to fetch countries.');
+            }
+        };
 
+        fetchCountries();
+       
+
+    }, []);
     const fetchStates = async (countryId) => {
         try {
             const response = await axios.get(`http://134.209.145.149:9999/api/states/${countryId}`);
@@ -215,7 +215,15 @@ const MyProfile = () => {
                     }));
                 }
             }
+            if (name === 'country') {
+                setFormValues((prev) => ({ ...prev, state: '', city: '' }));
+                fetchStates(value);
+            }
 
+            if (name === 'state') {
+                setFormValues((prev) => ({ ...prev, city: '' }));
+                fetchCities(value);
+            }
             // Postal code validation
             if (name === 'postal_code') {
                 if (value.length > 6) return;
@@ -343,14 +351,16 @@ const MyProfile = () => {
             newErrors.postal_code = 'Postal code is required';
         } else if (formValues.postal_code.length !== 6 || isNaN(formValues.postal_code)) {
             newErrors.postal_code = 'Postal code must be exactly 6 digits';
-        }
+        } if (!formValues.state) newErrors.state = 'State is required';
         if (!formValues.address_line1) newErrors.address_line1 = 'Address is required';
-        // if (!formValues.city) newErrors.city = 'City is required';
+        if (!formValues.city) newErrors.city = 'City is required';
         if (!formValues.age) newErrors.age = 'Age is required';
         if (!formValues.dob) newErrors.dob = 'Date of birth is required';
         if (!formValues.language) newErrors.language = 'Language is required';
         if (!formValues.desc) newErrors.desc = 'Description is required';
-
+        if (!formValues.country) newErrors.country = 'Country is required';
+        if (!formValues.state) newErrors.state = 'State is required';
+        // Check if there are errors
         // Check if there are errors
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors); // Set errors to state
@@ -381,7 +391,9 @@ const MyProfile = () => {
             formData.append('gender', formValues.gender);
             formData.append('postal_code', formValues.postal_code);
             formData.append('address_line1', formValues.address_line1);
-            // formData.append('city', formValues.city);
+            formData.append('country', formValues.country);
+            formData.append('state', formValues.state);
+            formData.append('city', formValues.city);
             formData.append('age', formValues.age);
             formData.append('dob', formValues.dob);
             formData.append('language', formValues.language);
@@ -410,7 +422,7 @@ const MyProfile = () => {
                 Swal.fire({
                     icon: 'success',
                     title: 'Profile updated successfully!',
-                    showConfirmButton: false,
+                    showConfirmButton: true,
                     timer: 3000
                 });
 

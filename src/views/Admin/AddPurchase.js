@@ -18,7 +18,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const AddPurchase = () => {
     const [formData, setFormData] = useState({
-        name: '',
+        // name: '',
         vendor: '',
         product: '',
         price: '',
@@ -58,7 +58,7 @@ const AddPurchase = () => {
             if (response.data) {
                 const product = response.data;
                 setFormData({
-                    name: product.name || '',
+                    // name: product.name || '',
                     vendor: product.vendor || '',
                     product: product.product || '',
                     price: product.price || '',
@@ -92,11 +92,11 @@ const AddPurchase = () => {
         }
 
         const apiUrl = isEditMode
-            ? `http://134.209.145.149:9999/api/language/${productId}`
-            : 'http://134.209.145.149:9999/api/language';
+            ? `http://134.209.145.149:9999/api/update_inventory/${productId}`
+            : 'http://134.209.145.149:9999/api/update_inventory';
 
         const payload = {
-            name: formData.name,
+            // name: formData.name,
             vendor: formData.vendor, // ID of the vendor
             product: formData.product, // ID of the product
             price: formData.price,
@@ -112,7 +112,7 @@ const AddPurchase = () => {
                 toast.success('Product added successfully!');
             }
             setFormData({
-                name: '',
+                // name: '',
                 vendor: '',
                 product: '',
                 price: '',
