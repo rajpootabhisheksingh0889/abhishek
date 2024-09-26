@@ -19,8 +19,8 @@ import 'react-toastify/dist/ReactToastify.css';
 const AddPurchase = () => {
     const [formData, setFormData] = useState({
         // name: '',
-        vendor: '',
-        product: '',
+        vendor_id: '',
+        product_id: '',
         price: '',
         quantity: '',
     });
@@ -59,7 +59,7 @@ const AddPurchase = () => {
                 const product = response.data;
                 setFormData({
                     // name: product.name || '',
-                    vendor: product.vendor || '',
+                    vendor_id: product.vendor || '',
                     product: product.product || '',
                     price: product.price || '',
                     quantity: product.quantity || '',
@@ -97,10 +97,10 @@ const AddPurchase = () => {
 
         const payload = {
             // name: formData.name,
-            vendor: formData.vendor, // ID of the vendor
-            product: formData.product, // ID of the product
-            price: formData.price,
-            quantity: formData.quantity,
+            vendor_id: formData.vendor, // ID of the vendor
+            product_id: formData.product, // ID of the product
+            price: Number(formData.price), // Ensure price is a number
+            quantity: Number(formData.quantity), // Ensure quantity is a number
         };
 
         try {
@@ -113,8 +113,8 @@ const AddPurchase = () => {
             }
             setFormData({
                 // name: '',
-                vendor: '',
-                product: '',
+                vendor_id: '',
+                product_id: '',
                 price: '',
                 quantity: '',
             });
