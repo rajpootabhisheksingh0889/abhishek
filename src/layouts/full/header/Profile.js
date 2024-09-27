@@ -32,6 +32,9 @@ const Profile = () => {
 
   const handleLogout = () => {
     localStorage.removeItem('user_type');
+    localStorage.removeItem('userAuthToken');
+    localStorage.removeItem('role_id');
+    localStorage.removeItem('uid');
     localStorage.removeItem('accessToken');
     navigate('/');
   };
