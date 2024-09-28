@@ -67,7 +67,7 @@ const AddPurchase = () => {
                 const product = response.data;
                 setFormData({
                     vendor_id: product.vendor || '',
-                    product: product.product || '',
+                    product_id: product.product_id || '',
                     price: product.price || '',
                     quantity: product.quantity || '',
                     country: product.country || '',
@@ -224,8 +224,8 @@ const AddPurchase = () => {
                                 <TextField
                                     select
                                     label="Select Product"
-                                    name="product"
-                                    value={formData.product}
+                                    name="product_id"
+                                    value={formData.product_id}
                                     onChange={handleChange}
                                     variant="outlined"
                                     fullWidth
