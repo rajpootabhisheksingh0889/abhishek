@@ -11,6 +11,7 @@ import {
     Box,
 } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
 import axios from 'axios';
 import DashboardCard from 'src/components/shared/DashboardCard';
 import { toast, ToastContainer } from 'react-toastify';
@@ -132,13 +133,17 @@ const AddPurchase = () => {
 
         // Validation
         if (!formData.vendor_id || !formData.product_id || !formData.price || !formData.quantity) {
-            toast.error('Please fill in all required fields.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Please fill in all required fields.',
+            });
             return;
         }
 
         const apiUrl = isEditMode
             ? `http://134.209.145.149:9999/api/update_inventory/${productId}`
-            : 'http://134.209.145.149:9999/api/update_inventory';
+            : 'http://134.209.145.149:9999/api/update_inventory'; // Corrected backtick
 
         const payload = {
             vendor_id: formData.vendor_id,
@@ -158,11 +163,25 @@ const AddPurchase = () => {
         try {
             if (isEditMode) {
                 await axios.put(apiUrl, payload);
-                toast.success('Product updated successfully!');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Product updated successfully!',
+                    timer: 3000, // Display for 3 seconds
+                    showConfirmButton: false,
+                });
             } else {
                 await axios.post(apiUrl, payload);
-                toast.success('Product added successfully!');
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Product added successfully!',
+                    timer: 3000, // Display for 3 seconds
+                    showConfirmButton: false,
+                });
             }
+
+            // Reset the form data
             setFormData({
                 vendor_id: '',
                 product_id: '',
@@ -175,9 +194,18 @@ const AddPurchase = () => {
                 address_line2: '',
                 postal_code: '',
             });
-            navigate(-1);
+
+            // Redirect after 3 seconds
+            setTimeout(() => {
+                navigate(-1);
+            }, 3000);
+
         } catch (error) {
-            toast.error('Failed to save product. Please try again.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to save product. Please try again.',
+            });
         }
     };
 
@@ -276,18 +304,22 @@ const AddPurchase = () => {
                                 />
                             </Grid>
                             {formData.vendor_id && ( 
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    label="Mobile Number"
-                                    name="phone"
-                                    value={formData.phone}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                    disabled
-                                />
-                            </Grid>
+                                <Grid item xs={12} md={6}>
+                                    <TextField
+                                        label="Mobile Number"
+                                        name="phone"
+                                        value={formData.phone}
+                                        onChange={handleChange}
+                                        variant="outlined"
+                                        fullWidth
+                                        required
+                                        disabled
+                                        InputLabelProps={{
+                                            shrink: true,  // Forces the label to stay above the input
+                                        }}
+                                    />
+                                </Grid>
+
                             )}
                             {formData.vendor_id && ( 
                             <Grid item xs={12} md={6}>
@@ -300,6 +332,9 @@ const AddPurchase = () => {
                                     fullWidth
                                     required
                                     disabled
+                                        InputLabelProps={{
+                                            shrink: true,  // Forces the label to stay above the input
+                                        }}
                                 />
                             </Grid>
                             )}
