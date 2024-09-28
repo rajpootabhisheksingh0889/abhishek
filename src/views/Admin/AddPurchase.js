@@ -222,120 +222,6 @@ const AddPurchase = () => {
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <TextField
-                                    label="Mobile Number"
-                                    name="phone"
-                                    value={formData.phone}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                    disabled
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    label="Email Address"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                    disabled
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    type="text"
-                                    label="Country Name"
-                                    name="country"
-                                    value={formData.country}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                    disabled
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    type="text"
-                                    label="State Name"
-                                    name="state"
-                                    value={formData.state}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                    disabled
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    type="text"
-                                    label="City Name"
-                                    name="City"
-                                    value={formData.city}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                    disabled
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    label="Address 1"
-                                    name="address_line1"
-                                    value={formData.address_line1}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                    disabled
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    label="Address 2"
-                                    name="address_line2"
-                                    value={formData.address_line2}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                    disabled
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    type='number'
-                                    label="Postal Code"
-                                    name="postal_code"
-                                    value={formData.postal_code}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                    disabled
-                                   
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    type='number'
-                                    label="Taxation No."
-                                    name="taxation"
-                                    value={formData.taxation}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                    disabled
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={6}>
-                                <TextField
                                     select
                                     label="Select Product"
                                     name="product"
@@ -375,6 +261,62 @@ const AddPurchase = () => {
                                     fullWidth
                                 />
                             </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    label="Mobile Number"
+                                    name="phone"
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                    disabled
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    label="Email Address"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                    disabled
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={12}>
+                                <TextField
+                                    type="text"
+                                    label="Address and State"
+                                    name="addressState"
+                                    value={`${formData.address_line1},${formData.address_line2},${formData.country},${formData.city},${formData.state}, ${formData.country}, ${formData.postal_code}`}  
+                                    onChange={handleChange}
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                    multiline
+                                    rows={4} 
+                                    disabled
+                                />
+                            </Grid>
+
+
+                           
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    type='number'
+                                    label="Tax Percentage."
+                                    name="tax"
+                                    value={formData.tax}
+                                    onChange={handleChange}
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                   
+                                />
+                            </Grid>
+                            
                             <Grid item xs={12}>
                                 <Button type="submit" variant="contained" color="primary" fullWidth>
                                     {isEditMode ? 'Update Purchase' : 'Add Purchase'}
