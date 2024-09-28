@@ -22,15 +22,15 @@ const AddPurchase = () => {
         product_id: '',
         price: '',
         quantity: '',
-        country: '',
-        state: '',
-        city: '',
-        address_line1: '',
-        address_line2: '',
-        postal_code: '',
-        taxation: '',
-        email: '',
-        phone: '',
+        // country: '',
+        // state: '',
+        // city: '',
+        // address_line1: '',
+        // address_line2: '',
+        // postal_code: '',
+        // taxation: '',
+        // email: '',
+        // phone: '',
     });
 
     const [vendors, setVendors] = useState([]);
@@ -62,7 +62,7 @@ const AddPurchase = () => {
 
     const fetchProductDetails = async (id) => {
         try {
-            const response = await axios.get(`http://134.209.145.149:9999/api/language/${id}`);
+            const response = await axios.get(`http://134.209.145.149:9999/api/user-info/${id}`);
             if (response.data) {
                 const product = response.data;
                 setFormData({

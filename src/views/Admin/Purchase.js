@@ -43,8 +43,8 @@ const Purchase = () => {
     }, [currentPage, searchTerm]);
 
     // Handle Edit action
-    const handleEdit = (id) => {
-        navigate(`/editpurchase/${id}`);
+    const handleEdit = (productId) => {
+        navigate(`/addpurchase/${productId}`);
     };
 
     // Handle Delete action
