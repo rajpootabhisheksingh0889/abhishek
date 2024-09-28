@@ -18,11 +18,19 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const AddPurchase = () => {
     const [formData, setFormData] = useState({
-        // name: '',
         vendor_id: '',
         product_id: '',
         price: '',
         quantity: '',
+        country: '',
+        state: '',
+        city: '',
+        address_line1: '',
+        address_line2: '',
+        postal_code: '',
+        taxation: '',
+        email: '',
+        phone: '',
     });
 
     const [vendors, setVendors] = useState([]);
@@ -58,15 +66,52 @@ const AddPurchase = () => {
             if (response.data) {
                 const product = response.data;
                 setFormData({
-                    // name: product.name || '',
                     vendor_id: product.vendor || '',
                     product: product.product || '',
                     price: product.price || '',
                     quantity: product.quantity || '',
+                    country: product.country || '',
+                    state: product.state || '',
+                    city: product.city || '',
+                    postal_code: product.postal_code || '',
+                    taxation: product.taxation || '',
+                    email: product.email || '',
+                    phone: product.phone || '',
                 });
             }
         } catch (error) {
             toast.error('Failed to fetch product details.');
+        }
+    };
+
+    const handleVendorChange = async (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+
+        // Fetch vendor details based on the selected vendor
+        try {
+            const response = await axios.get(`http://134.209.145.149:9999/api/vendor/${value}`);
+            if (response.data) {
+                const vendor = response.data;
+                setFormData({
+                    ...formData,
+                    vendor_id: vendor.id,
+                    country: vendor.country || '',
+                    state: vendor.state || '',
+                    city: vendor.city || '',
+                    address_line1: vendor.address_line1 || '',
+                    address_line2: vendor.address_line2 || '',
+                    postal_code: vendor.postal_code || '',
+                    taxation: vendor.taxation || '',
+                    email: vendor.email || '',
+                    phone: vendor.phone || '',
+                });
+            }
+        } catch (error) {
+            toast.error('Failed to fetch vendor details.');
         }
     };
 
@@ -86,7 +131,7 @@ const AddPurchase = () => {
         e.preventDefault();
 
         // Validation
-        if (!formData.vendor || !formData.product || !formData.price || !formData.quantity) {
+        if (!formData.vendor_id || !formData.product_id || !formData.price || !formData.quantity) {
             toast.error('Please fill in all required fields.');
             return;
         }
@@ -96,11 +141,18 @@ const AddPurchase = () => {
             : 'http://134.209.145.149:9999/api/update_inventory';
 
         const payload = {
-            // name: formData.name,
-            vendor_id: formData.vendor, // ID of the vendor
-            product_id: formData.product, // ID of the product
-            price: Number(formData.price), // Ensure price is a number
-            quantity: Number(formData.quantity), // Ensure quantity is a number
+            vendor_id: formData.vendor_id,
+            product_id: formData.product_id,
+            price: Number(formData.price),
+            quantity: Number(formData.quantity),
+            country: formData.country,
+            state: formData.state,
+            city: formData.city,
+            address_line1: formData.address_line1,
+            address_line2: formData.address_line2,
+            postal_code: formData.postal_code,
+            email: formData.email,
+            phone: formData.phone,
         };
 
         try {
@@ -112,11 +164,16 @@ const AddPurchase = () => {
                 toast.success('Product added successfully!');
             }
             setFormData({
-                // name: '',
                 vendor_id: '',
                 product_id: '',
                 price: '',
                 quantity: '',
+                country: '',
+                state: '',
+                city: '',
+                address_line1: '',
+                address_line2: '',
+                postal_code: '',
             });
             navigate(-1);
         } catch (error) {
@@ -149,19 +206,133 @@ const AddPurchase = () => {
                                 <TextField
                                     select
                                     label="Select Vendor"
-                                    name="vendor"
-                                    value={formData.vendor}
-                                    onChange={handleChange}
+                                    name="vendor_id"
+                                    value={formData.vendor_id}
+                                    onChange={handleVendorChange}
                                     variant="outlined"
                                     fullWidth
                                     required
                                 >
                                     {vendors.map((vendor) => (
                                         <MenuItem key={vendor.id} value={vendor.id}>
-                                            {vendor.name}
+                                            {vendor.owner_name}
                                         </MenuItem>
                                     ))}
                                 </TextField>
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    label="Mobile Number"
+                                    name="phone"
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                    disabled
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    label="Email Address"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                    disabled
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    type="text"
+                                    label="Country Name"
+                                    name="country"
+                                    value={formData.country}
+                                    onChange={handleChange}
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                    disabled
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    type="text"
+                                    label="State Name"
+                                    name="state"
+                                    value={formData.state}
+                                    onChange={handleChange}
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                    disabled
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    type="text"
+                                    label="City Name"
+                                    name="City"
+                                    value={formData.city}
+                                    onChange={handleChange}
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                    disabled
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    label="Address 1"
+                                    name="address_line1"
+                                    value={formData.address_line1}
+                                    onChange={handleChange}
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                    disabled
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    label="Address 2"
+                                    name="address_line2"
+                                    value={formData.address_line2}
+                                    onChange={handleChange}
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                    disabled
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    type='number'
+                                    label="Postal Code"
+                                    name="postal_code"
+                                    value={formData.postal_code}
+                                    onChange={handleChange}
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                    disabled
+                                   
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    type='number'
+                                    label="Taxation No."
+                                    name="taxation"
+                                    value={formData.taxation}
+                                    onChange={handleChange}
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                    disabled
+                                />
                             </Grid>
                             <Grid item xs={12} md={6}>
                                 <TextField
