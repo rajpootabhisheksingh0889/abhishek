@@ -59,10 +59,10 @@ const Reports = Loadable(lazy(() => import('../views/Agent/Reports')));
 
 const Router = [
   {
-    path: '/',
+    // path: '/',
     element: <FullLayout />,
     children: [
-      { path: '/', element: <Navigate to="/dashboard" /> },
+      // { path: '/', element: <Navigate to="/dashboard" /> },
       {
         path: '/dashboard',
         exact: true,
