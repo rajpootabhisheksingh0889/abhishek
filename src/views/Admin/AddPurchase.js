@@ -145,14 +145,14 @@ const AddPurchase = () => {
             product_id: formData.product_id,
             price: Number(formData.price),
             quantity: Number(formData.quantity),
-            country: formData.country,
-            state: formData.state,
-            city: formData.city,
-            address_line1: formData.address_line1,
-            address_line2: formData.address_line2,
-            postal_code: formData.postal_code,
-            email: formData.email,
-            phone: formData.phone,
+            // country: formData.country,
+            // state: formData.state,
+            // city: formData.city,
+            // address_line1: formData.address_line1,
+            // address_line2: formData.address_line2,
+            // postal_code: formData.postal_code,
+            // email: formData.email,
+            // phone: formData.phone,
         };
 
         try {
@@ -261,6 +261,21 @@ const AddPurchase = () => {
                                     fullWidth
                                 />
                             </Grid>
+
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    type='number'
+                                    label="Tax Percentage."
+                                    name="tax"
+                                    value={formData.tax}
+                                    onChange={handleChange}
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+
+                                />
+                            </Grid>
+                            {formData.vendor_id && ( 
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     label="Mobile Number"
@@ -273,6 +288,8 @@ const AddPurchase = () => {
                                     disabled
                                 />
                             </Grid>
+                            )}
+                            {formData.vendor_id && ( 
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     label="Email Address"
@@ -285,6 +302,8 @@ const AddPurchase = () => {
                                     disabled
                                 />
                             </Grid>
+                            )}
+                            {formData.vendor_id && ( 
                             <Grid item xs={12} md={12}>
                                 <TextField
                                     type="text"
@@ -300,22 +319,9 @@ const AddPurchase = () => {
                                     disabled
                                 />
                             </Grid>
-
+                            )}
 
                            
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    type='number'
-                                    label="Tax Percentage."
-                                    name="tax"
-                                    value={formData.tax}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                   
-                                />
-                            </Grid>
                             
                             <Grid item xs={12}>
                                 <Button type="submit" variant="contained" color="primary" fullWidth>
