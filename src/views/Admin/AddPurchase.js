@@ -63,7 +63,7 @@ const AddPurchase = () => {
 
     const fetchProductDetails = async (id) => {
         try {
-            const response = await axios.get(`http://134.209.145.149:9999/api/user-info/${id}`);
+            const response = await axios.get(`http://134.209.145.149:9999/api/inventory/${id}`);
             if (response.data) {
                 const product = response.data;
                 setFormData({

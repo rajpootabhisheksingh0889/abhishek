@@ -22,15 +22,11 @@ const Purchase = () => {
     const fetchPurchases = async (page = 1, search = '') => {
         setLoading(true);
         try {
-            const response = await axios.get(`http://134.209.145.149:9999/api/inventory`, {
-                params: {
-                    page,
-                    limit: purchasesPerPage,
-                    search
-                }
-            });
-            setPurchases(response.data.data);
-            setTotalPurchases(response.data.totalItems); // Assuming the API provides total count
+            const response = await axios.get(`http://134.209.145.149:9999/api/inventory?search=${search}&page=${page}&limit=${purchasesPerPage}`);
+
+            setPurchases(response.data.allData);
+            setTotalPurchases(response.data.totalItems);
+            setCurrentPage(page); // Update the current page
         } catch (error) {
             console.error('Error fetching purchases:', error);
         } finally {
@@ -123,14 +119,14 @@ const Purchase = () => {
                     </TableHead>
                     <TableBody>
                         {!loading ? (
-                            purchases.map((purchase) => (
+                            purchases.map((purchase, index) => (
                                 <TableRow key={purchase.id}>
-                                    <TableCell><Typography sx={{ fontSize: "15px", fontWeight: "500" }}>{purchase.id}</Typography></TableCell>
+                                    <TableCell><Typography sx={{ fontSize: "15px", fontWeight: "500" }}> {index + 1}</Typography></TableCell>
                                     <TableCell>
-                                        <Typography variant="subtitle2" fontWeight={600}>{purchase.name}</Typography>
+                                        <Typography variant="subtitle2" fontWeight={600}>{purchase.product_name}</Typography>
                                     </TableCell>
                                     <TableCell>
-                                        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>{purchase.pname}</Typography>
+                                        <Typography color="textSecondary" variant="subtitle2" fontWeight={400}>{purchase.vendor_name}</Typography>
                                     </TableCell>
                                     <TableCell><Typography variant="h6">${purchase.price}</Typography></TableCell>
                                     <TableCell align="right"><Typography variant="h6">{purchase.quantity}</Typography></TableCell>
@@ -162,6 +158,7 @@ const Purchase = () => {
                     page={currentPage}
                     onChange={handlePageChange}
                     color="primary"
+                    disabled={loading} // Disable pagination while loading
                 />
             </Box>
         </DashboardCard>
