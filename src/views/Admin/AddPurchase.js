@@ -39,7 +39,7 @@ const AddPurchase = () => {
     const [isEditMode, setIsEditMode] = useState(false);
     const navigate = useNavigate();
     const { productId } = useParams();
-
+    const [selectedVendor, setSelectedVendor] = useState('');
     useEffect(() => {
         const fetchOptions = async () => {
             try {
@@ -67,7 +67,7 @@ const AddPurchase = () => {
             if (response.data) {
                 const product = response.data;
                 setFormData({
-                    vendor_id: product.vendor || '',
+                    vendor_id: product.vendor_id || '',
                     product_id: product.product_id || '',
                     price: product.price || '',
                     quantity: product.quantity || '',
@@ -84,37 +84,40 @@ const AddPurchase = () => {
             toast.error('Failed to fetch product details.');
         }
     };
-
-    const handleVendorChange = async (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
-
-        // Fetch vendor details based on the selected vendor
-        try {
-            const response = await axios.get(`http://134.209.145.149:9999/api/vendor/${value}`);
-            if (response.data) {
-                const vendor = response.data;
-                setFormData({
-                    ...formData,
-                    vendor_id: vendor.id,
-                    country: vendor.country || '',
-                    state: vendor.state || '',
-                    city: vendor.city || '',
-                    address_line1: vendor.address_line1 || '',
-                    address_line2: vendor.address_line2 || '',
-                    postal_code: vendor.postal_code || '',
-                    taxation: vendor.taxation || '',
-                    email: vendor.email || '',
-                    phone: vendor.phone || '',
-                });
-            }
-        } catch (error) {
-            toast.error('Failed to fetch vendor details.');
-        }
+    const handleVendorChange = (e) => {
+        const { value } = e.target;
+        setSelectedVendor(value); // Update selected vendor
     };
+    useEffect(() => {
+        const fetchVendorDetails = async () => {
+            if (!selectedVendor) return; // Don't fetch if no vendor is selected
+
+            try {
+                const response = await axios.get(`http://134.209.145.149:9999/api/vendor/${selectedVendor}`);
+                if (response.data) {
+                    const vendor = response.data;
+                    setFormData((prevData) => ({
+                        ...prevData,
+                        vendor_id: vendor.id,
+                        country: vendor.country || '',
+                        state: vendor.state || '',
+                        city: vendor.city || '',
+                        address_line1: vendor.address_line1 || '',
+                        address_line2: vendor.address_line2 || '',
+                        postal_code: vendor.postal_code || '',
+                        taxation: vendor.taxation || '',
+                        email: vendor.email || '',
+                        phone: vendor.phone || '',
+                    }));
+                }
+            } catch (error) {
+                toast.error('Failed to fetch vendor details.');
+            }
+        };
+
+        fetchVendorDetails(); // Call the function inside useEffect
+    }, [selectedVendor]); // Dependency array includes selectedVendor
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -142,7 +145,7 @@ const AddPurchase = () => {
         }
 
         const apiUrl = isEditMode
-            ? `http://134.209.145.149:9999/api/update_inventory/${productId}`
+            ? `http://134.209.145.149:9999/api/inventory/${productId}`
             : 'http://134.209.145.149:9999/api/update_inventory'; // Corrected backtick
 
         const payload = {
