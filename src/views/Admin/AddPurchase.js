@@ -306,7 +306,7 @@ const AddPurchase = () => {
 
                                 />
                             </Grid>
-                            {formData.vendor_id && ( 
+                            {formData.vendor_id && !isEditMode && (
                                 <Grid item xs={12} md={6}>
                                     <TextField
                                         label="Mobile Number"
@@ -322,9 +322,9 @@ const AddPurchase = () => {
                                         }}
                                     />
                                 </Grid>
-
                             )}
-                            {formData.vendor_id && ( 
+
+                            {formData.vendor_id && !isEditMode && (
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     label="Email Address"
@@ -341,7 +341,7 @@ const AddPurchase = () => {
                                 />
                             </Grid>
                             )}
-                            {formData.vendor_id && ( 
+                            {formData.vendor_id && !isEditMode && (
                             <Grid item xs={12} md={12}>
                                 <TextField
                                     type="text"
