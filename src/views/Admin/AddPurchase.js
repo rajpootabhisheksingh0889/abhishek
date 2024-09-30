@@ -9,6 +9,12 @@ import {
     Button,
     MenuItem,
     Box,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
 } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -17,21 +23,31 @@ import DashboardCard from 'src/components/shared/DashboardCard';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+const taxTypes = [
+    { id: 1, name: 'GST', percentage: 18 },
+    { id: 2, name: 'VAT', percentage: 15 },
+    { id: 3, name: 'Sales Tax', percentage: 10 },
+    { id: 4, name: 'No Tax', percentage: 0 },
+];
+
 const AddPurchase = () => {
     const [formData, setFormData] = useState({
         vendor_id: '',
         product_id: '',
         price: '',
         quantity: '',
-        // country: '',
-        // state: '',
-        // city: '',
-        // address_line1: '',
-        // address_line2: '',
-        // postal_code: '',
-        // taxation: '',
-        // email: '',
-        // phone: '',
+        invoice: '',
+        date: '',
+        tax_type: '',
+        tax_percentage: 0,
+        phone: '',
+        email: '',
+        address_line1: '',
+        address_line2: '',
+        city: '',
+        state: '',
+        country: '',
+        postal_code: '',
     });
 
     const [vendors, setVendors] = useState([]);
@@ -39,7 +55,8 @@ const AddPurchase = () => {
     const [isEditMode, setIsEditMode] = useState(false);
     const navigate = useNavigate();
     const { productId } = useParams();
-    const [selectedVendor, setSelectedVendor] = useState('');
+    const [purchases, setPurchases] = useState([]);
+
     useEffect(() => {
         const fetchOptions = async () => {
             try {
@@ -54,84 +71,65 @@ const AddPurchase = () => {
         };
 
         fetchOptions();
-
-        if (productId) {
-            setIsEditMode(true);
-            fetchProductDetails(productId);
-        }
-    }, [productId]);
-
-    const fetchProductDetails = async (id) => {
-        try {
-            const response = await axios.get(`http://134.209.145.149:9999/api/inventory/${id}`);
-            if (response.data) {
-                const product = response.data;
-                setFormData({
-                    vendor_id: product.vendor_id || '',
-                    product_id: product.product_id || '',
-                    price: product.price || '',
-                    quantity: product.quantity || '',
-                    country: product.country || '',
-                    state: product.state || '',
-                    city: product.city || '',
-                    postal_code: product.postal_code || '',
-                    taxation: product.taxation || '',
-                    email: product.email || '',
-                    phone: product.phone || '',
-                });
-            }
-        } catch (error) {
-            toast.error('Failed to fetch product details.');
-        }
+    }, []);
+    const handleFinalSubmit = () => {
+        // Final submission logic goes here (e.g., sending purchases to the server)
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'All purchases submitted successfully!',
+            timer: 3000,
+            showConfirmButton: false,
+        });
     };
-    const handleVendorChange = (e) => {
-        const { value } = e.target;
-        setSelectedVendor(value); // Update selected vendor
-    };
-    useEffect(() => {
-        const fetchVendorDetails = async () => {
-            if (!selectedVendor) return; // Don't fetch if no vendor is selected
-
-            try {
-                const response = await axios.get(`http://134.209.145.149:9999/api/vendor/${selectedVendor}`);
-                if (response.data) {
-                    const vendor = response.data;
-                    setFormData((prevData) => ({
-                        ...prevData,
-                        vendor_id: vendor.id,
-                        country: vendor.country || '',
-                        state: vendor.state || '',
-                        city: vendor.city || '',
-                        address_line1: vendor.address_line1 || '',
-                        address_line2: vendor.address_line2 || '',
-                        postal_code: vendor.postal_code || '',
-                        taxation: vendor.taxation || '',
-                        email: vendor.email || '',
-                        phone: vendor.phone || '',
-                    }));
-                }
-            } catch (error) {
-                toast.error('Failed to fetch vendor details.');
-            }
-        };
-
-        fetchVendorDetails(); // Call the function inside useEffect
-    }, [selectedVendor]); // Dependency array includes selectedVendor
-
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({
             ...formData,
             [name]: value,
         });
+
+        // Set tax percentage based on selected tax type
+        if (name === 'tax_type') {
+            const selectedTax = taxTypes.find(tax => tax.id === parseInt(value));
+            setFormData(prevData => ({
+                ...prevData,
+                tax_percentage: selectedTax ? selectedTax.percentage : 0,
+            }));
+        }
+
+        // Populate vendor info if a vendor is selected
+        if (name === 'vendor_id') {
+            const selectedVendor = vendors.find(vendor => vendor.id === parseInt(value));
+            if (selectedVendor) {
+                setFormData(prevData => ({
+                    ...prevData,
+                    phone: selectedVendor.phone,
+                    email: selectedVendor.email,
+                    address_line1: selectedVendor.address_line1,
+                    address_line2: selectedVendor.address_line2,
+                    city: selectedVendor.city,
+                    state: selectedVendor.state,
+                    country: selectedVendor.country,
+                    postal_code: selectedVendor.postal_code,
+                }));
+            } else {
+                setFormData(prevData => ({
+                    ...prevData,
+                    phone: '',
+                    email: '',
+                    address_line1: '',
+                    address_line2: '',
+                    city: '',
+                    state: '',
+                    country: '',
+                    postal_code: '',
+                }));
+            }
+        }
     };
 
-    const handleGoBack = () => {
-        navigate(-1);
-    };
-
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
         // Validation
@@ -144,72 +142,41 @@ const AddPurchase = () => {
             return;
         }
 
-        const apiUrl = isEditMode
-            ? `http://134.209.145.149:9999/api/inventory/${productId}`
-            : 'http://134.209.145.149:9999/api/update_inventory'; // Corrected backtick
-
-        const payload = {
-            vendor_id: formData.vendor_id,
-            product_id: formData.product_id,
-            price: Number(formData.price),
-            quantity: Number(formData.quantity),
-            // country: formData.country,
-            // state: formData.state,
-            // city: formData.city,
-            // address_line1: formData.address_line1,
-            // address_line2: formData.address_line2,
-            // postal_code: formData.postal_code,
-            // email: formData.email,
-            // phone: formData.phone,
+        // Save the purchase data locally
+        const newPurchase = {
+            ...formData,
+            id: purchases.length + 1,
         };
 
-        try {
-            if (isEditMode) {
-                await axios.put(apiUrl, payload);
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: 'Product updated successfully!',
-                    timer: 3000, // Display for 3 seconds
-                    showConfirmButton: false,
-                });
-            } else {
-                await axios.post(apiUrl, payload);
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: 'Product added successfully!',
-                    timer: 3000, // Display for 3 seconds
-                    showConfirmButton: false,
-                });
-            }
+        setPurchases((prevPurchases) => [...prevPurchases, newPurchase]);
 
-            // Reset the form data
-            setFormData({
-                vendor_id: '',
-                product_id: '',
-                price: '',
-                quantity: '',
-                country: '',
-                state: '',
-                city: '',
-                address_line1: '',
-                address_line2: '',
-                postal_code: '',
-            });
+        // Reset form data
+        setFormData({
+            vendor_id: '',
+            product_id: '',
+            price: '',
+            quantity: '',
+            invoice: '',
+            date: '',
+            tax_type: '',
+            tax_percentage: 0,
+            phone: '',
+            email: '',
+            address_line1: '',
+            address_line2: '',
+            city: '',
+            state: '',
+            country: '',
+            postal_code: '',
+        });
 
-            // Redirect after 3 seconds
-            setTimeout(() => {
-                navigate(-1);
-            }, 3000);
-
-        } catch (error) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: 'Failed to save product. Please try again.',
-            });
-        }
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'Product added successfully!',
+            timer: 3000,
+            showConfirmButton: false,
+        });
     };
 
     return (
@@ -223,7 +190,7 @@ const AddPurchase = () => {
                         variant="contained"
                         color="primary"
                         size="large"
-                        onClick={handleGoBack}
+                        onClick={() => navigate(-1)}
                     >
                         Go back
                     </Button>
@@ -235,11 +202,37 @@ const AddPurchase = () => {
                         <Grid container spacing={2}>
                             <Grid item xs={12} md={6}>
                                 <TextField
+                                    label="Invoice Number"
+                                    name="invoice"
+                                    value={formData.invoice}
+                                    onChange={handleChange}
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
+                                    type="date"
+                                    label="Date"
+                                    name="date"
+                                    value={formData.date}
+                                    onChange={handleChange}
+                                    variant="outlined"
+                                    fullWidth
+                                    required
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} md={6}>
+                                <TextField
                                     select
                                     label="Select Vendor"
                                     name="vendor_id"
                                     value={formData.vendor_id}
-                                    onChange={handleVendorChange}
+                                    onChange={handleChange}
                                     variant="outlined"
                                     fullWidth
                                     required
@@ -251,6 +244,41 @@ const AddPurchase = () => {
                                     ))}
                                 </TextField>
                             </Grid>
+                            {formData.vendor_id && !isEditMode && (
+                                <>
+                                    <Grid item xs={12} md={6}>
+                                        <TextField
+                                            label="Mobile Number"
+                                            name="phone"
+                                            value={formData.phone}
+                                            onChange={handleChange}
+                                            variant="outlined"
+                                            fullWidth
+                                            required
+                                            disabled
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                        />
+                                    </Grid>
+                                  
+                                    <Grid item xs={12} md={12}>
+                                        <TextField
+                                            type="text"
+                                            label="Address and State"
+                                            name="address"
+                                            value={`${formData.address_line1}, ${formData.address_line2}, ${formData.city}, ${formData.state}, ${formData.country}, ${formData.postal_code}`}
+                                            onChange={handleChange}
+                                            variant="outlined"
+                                            fullWidth
+                                            required
+                                            multiline
+                                            rows={4}
+                                            disabled
+                                        />
+                                    </Grid>
+                                </>
+                            )}
                             <Grid item xs={12} md={6}>
                                 <TextField
                                     select
@@ -292,75 +320,38 @@ const AddPurchase = () => {
                                     fullWidth
                                 />
                             </Grid>
-
                             <Grid item xs={12} md={6}>
                                 <TextField
-                                    type='number'
-                                    label="Tax Percentage."
-                                    name="tax"
-                                    value={formData.tax}
+                                    select
+                                    label="Select Tax Type"
+                                    name="tax_type"
+                                    value={formData.tax_type}
                                     onChange={handleChange}
                                     variant="outlined"
                                     fullWidth
-                                    required
-
-                                />
+                                >
+                                    {taxTypes.map((tax) => (
+                                        <MenuItem key={tax.id} value={tax.id}>
+                                            {tax.name}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
                             </Grid>
-                            {formData.vendor_id && !isEditMode && (
+                            {formData.tax_type && (
                                 <Grid item xs={12} md={6}>
                                     <TextField
-                                        label="Mobile Number"
-                                        name="phone"
-                                        value={formData.phone}
-                                        onChange={handleChange}
+                                        type="number"
+                                        label="Tax Percentage"
+                                        name="tax_percentage"
+                                        value={formData.tax_percentage}
                                         variant="outlined"
                                         fullWidth
-                                        required
-                                        disabled
-                                        InputLabelProps={{
-                                            shrink: true,  // Forces the label to stay above the input
+                                        InputProps={{
+                                            readOnly: true, // Make it read-only
                                         }}
                                     />
                                 </Grid>
                             )}
-
-                            {formData.vendor_id && !isEditMode && (
-                            <Grid item xs={12} md={6}>
-                                <TextField
-                                    label="Email Address"
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                    disabled
-                                        InputLabelProps={{
-                                            shrink: true,  // Forces the label to stay above the input
-                                        }}
-                                />
-                            </Grid>
-                            )}
-                            {formData.vendor_id && !isEditMode && (
-                            <Grid item xs={12} md={12}>
-                                <TextField
-                                    type="text"
-                                    label="Address and State"
-                                    name="addressState"
-                                    value={`${formData.address_line1},${formData.address_line2},${formData.country},${formData.city},${formData.state}, ${formData.country}, ${formData.postal_code}`}  
-                                    onChange={handleChange}
-                                    variant="outlined"
-                                    fullWidth
-                                    required
-                                    multiline
-                                    rows={4} 
-                                    disabled
-                                />
-                            </Grid>
-                            )}
-
-                           
-                            
                             <Grid item xs={12}>
                                 <Button type="submit" variant="contained" color="primary" fullWidth>
                                     {isEditMode ? 'Update Purchase' : 'Add Purchase'}
@@ -368,6 +359,54 @@ const AddPurchase = () => {
                             </Grid>
                         </Grid>
                     </form>
+                </CardContent>
+            </Card>
+            {/* Purchases Table */}
+            <Card sx={{ mt: 4 }}>
+                <CardContent>
+                    <Typography variant="h4">Purchases</Typography>
+                    <TableContainer>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Invoice Number</TableCell>
+                                    <TableCell>Date</TableCell>
+                                    <TableCell>Vendor ID</TableCell>
+                                    <TableCell>Product ID</TableCell>
+                                    <TableCell>Price</TableCell>
+                                    <TableCell>Quantity</TableCell>
+                                    <TableCell>Tax Type</TableCell>
+                                    <TableCell>Tax Percentage</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {purchases.map((purchase) => (
+                                    <TableRow key={purchase.id}>
+                                        <TableCell>{purchase.invoice}</TableCell>
+                                        <TableCell>{purchase.date}</TableCell>
+                                        <TableCell>{purchase.vendor_id}</TableCell>
+                                        <TableCell>{purchase.product_id}</TableCell>
+                                        <TableCell>{purchase.price}</TableCell>
+                                        <TableCell>{purchase.quantity}</TableCell>
+                                        <TableCell>{taxTypes.find(tax => tax.id === parseInt(purchase.tax_type))?.name || ''}</TableCell>
+                                        <TableCell>{purchase.tax_percentage}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                    {purchases.length > 0 && ( // Conditional rendering of the submit button
+                        <Box mt={2}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleFinalSubmit}
+                                fullWidth
+                            >
+                                Submit All Purchases
+                            </Button>
+                        </Box>
+                    )}
                 </CardContent>
             </Card>
             <ToastContainer />

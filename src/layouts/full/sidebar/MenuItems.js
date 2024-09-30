@@ -289,6 +289,12 @@ const Menuitems = [
         icon: IconLayoutDashboard,
         href: '/purchase',
     },
+    {
+        id: uniqueId(),
+        title: 'Taxation ',
+        icon: IconLayoutDashboard,
+        href: '/taxation',
+    },
 ];
 
 const Menuitems1 = [

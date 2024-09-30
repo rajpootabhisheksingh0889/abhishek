@@ -19,6 +19,7 @@ import VendorDetail from 'src/views/Admin/VendorDetail';
 import Purchase from 'src/views/Admin/Purchase';
 import AddPurchase from 'src/views/Admin/AddPurchase';
 import Inventory from 'src/views/Admin/Inventory';
+import Taxation from 'src/views/Admin/Taxation';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -354,6 +355,15 @@ const Router = [
         element: (
           <PrivateRoute>
             <AddProduct />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: '/taxation',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <Taxation />
           </PrivateRoute>
         ),
       },
