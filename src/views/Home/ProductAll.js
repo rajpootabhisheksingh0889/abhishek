@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
-  Container, IconButton, Grid, Paper, Typography, Box, TextField, Card, CardContent, CardMedia, Button, Pagination, MenuItem, Select, InputLabel, FormControl
+  Container, IconButton, Grid, Paper, Typography, Box, TextField, Card, CardContent, CardMedia, Button, Pagination, MenuItem, Select, InputLabel, FormControl, Dialog, DialogTitle, DialogContent, DialogActions
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import Layout from './Layout';
@@ -58,30 +58,13 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
   },
 }));
 
-// const Overlay = styled(Box)(({ theme }) => ({
-//   position: 'absolute',
-//   top: 0,
-//   left: 0,
-//   width: '100%',
-//   height: '100%',
-//   background: 'linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.2))',
-//   zIndex: 1,
-//   transition: 'opacity 0.3s',
-//   opacity: 0,
-//   '&:hover': {
-//     opacity: 1,
-//   },
-// }));
-
 const CardContentWrapper = styled(Box)(({ theme }) => ({
   position: 'relative',
   zIndex: 2,
 }));
 
-// Container for filters and search bar
 const FilterContainer = styled(Grid)(({ theme }) => ({
   marginBottom: theme.spacing(6),
-
   [theme.breakpoints.down('sm')]: {
     flexDirection: 'column',
     gap: theme.spacing(2),
@@ -94,29 +77,33 @@ function ProductAll() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [filterType, setFilterType] = useState('');
-  const [filterValue, setFilterValue] = useState('');
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
-  const itemsPerPage = 8; // Number of products per page
+  const itemsPerPage = 8;
+
+  // Modal state
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [name, setName] = useState('');
+  const [mobile, setMobile] = useState('');
 
   useEffect(() => {
     fetchProducts();
-    fetchCategories(); // Fetch categories for the category dropdown
-  }, [page, filterType, filterValue, selectedCategory]);
+    fetchCategories();
+  }, [page, filterType, selectedCategory]);
 
   const fetchProducts = async () => {
     try {
       const response = await axios.get('http://134.209.145.149:9999/api/product', {
         params: {
           page,
-          limit: itemsPerPage, // Limit the number of products per page
+          limit: itemsPerPage,
           filterType,
-          filterValue,
-          category: selectedCategory
+          category: selectedCategory,
         },
       });
-      setProducts(response.data.products); // Assuming 'products' is the key in the API response
-      setTotalPages(response.data.totalPages); // Assuming 'totalPages' is provided by the API
+      setProducts(response.data.products);
+      setTotalPages(response.data.totalPages);
     } catch (error) {
       console.error('Error fetching products:', error);
     }
@@ -125,7 +112,7 @@ function ProductAll() {
   const fetchCategories = async () => {
     try {
       const response = await axios.get('http://134.209.145.149:9999/api/categories');
-      setCategories(response.data.categories); // Assuming 'categories' is the key in the API response
+      setCategories(response.data.categories);
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
@@ -134,6 +121,24 @@ function ProductAll() {
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleBuyNowClick = (product) => {
+    setSelectedProduct(product);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedProduct(null);
+    setName('');
+    setMobile('');
+  };
+
+  const handleSubmit = () => {
+    // Handle PayPal payment processing here
+    console.log("Name:", name, "Mobile:", mobile);
+    handleCloseModal();
+  };
 
   return (
     <Layout>
@@ -188,10 +193,10 @@ function ProductAll() {
             </Box>
           </Grid>
         </FilterContainer>
-        <Grid container spacing={3} marginBottom={3.5} style={{ boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)' }}>
-          <Grid item xs={12} sm={8} md={12}>
+        <Grid container spacing={3} marginBottom={3.5}>
+          <Grid item xs={12}>
             <Content>
-              <Grid container spacing={2} marginTop={2.5}>
+              <Grid container spacing={2}>
                 {filteredProducts.map(product => (
                   <Grid item xs={12} sm={6} md={3} key={product.id}>
                     <StyledCard>
@@ -202,7 +207,6 @@ function ProductAll() {
                         image="https://images.pexels.com/photos/27835751/pexels-photo-27835751/free-photo-of-a-tree-with-green-apples-on-it.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load"
                         sx={{ borderBottom: '1px solid #ddd' }}
                       />
-                      {/* <Overlay /> */}
                       <CardContentWrapper>
                         <CardContent>
                           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -223,6 +227,7 @@ function ProductAll() {
                             variant="contained"
                             startIcon={<ShoppingCartIcon />}
                             fullWidth
+                            onClick={() => handleBuyNowClick(product)}
                           >
                             Buy Now
                           </StyledButton>
@@ -245,6 +250,40 @@ function ProductAll() {
             </Content>
           </Grid>
         </Grid>
+
+        {/* Modal for Buy Now */}
+        <Dialog open={openModal} onClose={handleCloseModal}>
+          <DialogTitle>Purchase {selectedProduct?.name}</DialogTitle>
+          <DialogContent>
+            <img
+              src="https://images.pexels.com/photos/27835751/pexels-photo-27835751/free-photo-of-a-tree-with-green-apples-on-it.jpeg?auto=compress&cs=tinysrgb&w=800&lazy=load"
+              alt={selectedProduct?.name}
+              height="250"
+              style={{ width: '100%', marginBottom: '16px' }}
+            />
+            <Typography variant="h6">Price: {selectedProduct?.price}</Typography>
+            <TextField
+              label="Name"
+              variant="outlined"
+              fullWidth
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              margin="normal"
+            />
+            <TextField
+              label="Mobile No"
+              variant="outlined"
+              fullWidth
+              value={mobile}
+              onChange={(e) => setMobile(e.target.value)}
+              margin="normal"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseModal}>Cancel</Button>
+            <Button onClick={handleSubmit} color="primary">Use PayPal</Button>
+          </DialogActions>
+        </Dialog>
       </Container>
     </Layout>
   );
