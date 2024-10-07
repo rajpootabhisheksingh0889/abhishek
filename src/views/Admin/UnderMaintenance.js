@@ -23,14 +23,14 @@ const UnderMaintenance = () => {
             <Typography variant="h6" color="textSecondary" paragraph>
                 We are currently performing some updates. Please check back later.
             </Typography>
-            <Button
+            {/* <Button
                 variant="contained"
                 color="primary"
                 onClick={() => window.location.reload()}
                 sx={{ mt: 3 }}
             >
                 Refresh Page
-            </Button>
+            </Button> */}
         </Container>
     );
 };

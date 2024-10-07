@@ -9,12 +9,13 @@ import RecentTransactions from './components/RecentTransactions';
 import ProductPerformance from './components/ProductPerformance';
 import Blog from './components/Blog';
 import MonthlyEarnings from './components/MonthlyEarnings';
+import UnderMaintenance from '../Admin/UnderMaintenance';
 
 
 const Dashboard = () => {
   return (
     <PageContainer title="Dashboard" description="this is Dashboard">
-      <Box>
+      {/* <Box>
         <Grid container spacing={3}>
           <Grid item xs={12} lg={8}>
             <SalesOverview />
@@ -39,7 +40,10 @@ const Dashboard = () => {
             <Blog />
           </Grid>
         </Grid>
-      </Box>
+      </Box> */}
+
+
+      <UnderMaintenance/>
  </PageContainer>
   );
 };
