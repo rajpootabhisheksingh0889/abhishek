@@ -204,6 +204,8 @@ const AuthLogin = ({ title, subtitle, subtext }) => {
 
             switch (user.role_id) {
                 case 1:
+                    navigate('/admin-dashboard');
+                    break;
                 case 2:
                 case 3:
                 case 4:

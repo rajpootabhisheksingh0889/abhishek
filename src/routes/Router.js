@@ -20,6 +20,7 @@ import Purchase from 'src/views/Admin/Purchase';
 import AddPurchase from 'src/views/Admin/AddPurchase';
 import Inventory from 'src/views/Admin/Inventory';
 import Taxation from 'src/views/Admin/Taxation';
+import AdminDashboard from 'src/views/Admin/dashboard/Dashboard';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -73,7 +74,15 @@ const Router = [
           </PrivateRoute>
         ),
       },
-
+      {
+        path: '/admin-dashboard',
+        exact: true,
+        element: (
+          <PrivateRoute>
+            <AdminDashboard />
+          </PrivateRoute>
+        ),
+      },
       {
         path: '/icons',
         exact: true,
